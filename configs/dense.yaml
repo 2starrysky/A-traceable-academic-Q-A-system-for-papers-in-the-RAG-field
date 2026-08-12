@@ -1,0 +1,16 @@
+# 实验配置:纯稠密向量检索
+retrieval:
+  method: dense
+  top_k: 10
+
+  chunk:
+    size: 512
+    overlap: 64
+
+  dense:
+    embedding_model: BAAI/bge-m3
+    index_path: data/processed/dense_index
+
+  generation:
+    llm_model: gpt-4o-mini
+    temperature: 0.2

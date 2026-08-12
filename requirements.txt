@@ -1,0 +1,27 @@
+# ---- 运行时 ----
+# 文档解析
+pypdf
+
+# 向量化 / 检索
+sentence-transformers
+rank-bm25
+
+# 向量库
+chromadb
+
+# LLM 接入
+openai
+anthropic
+
+# 配置与工具
+pyyaml
+python-dotenv
+
+# ---- 评估 ----
+ragas
+
+# ---- 开发 ----
+pytest
+
+# ---- Web 界面(app.py,按需解注) ----
+# streamlit

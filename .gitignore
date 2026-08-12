@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 环境变量与密钥(绝不提交)
+.env
+.env.local
+
+# 数据与输出(保留目录结构,忽略内容)
+data/raw/papers/*
+!data/raw/papers/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/evaluation/*
+!data/evaluation/.gitkeep
+outputs/experiments/*
+!outputs/experiments/.gitkeep
+outputs/figures/*
+!outputs/figures/.gitkeep
+outputs/logs/*
+!outputs/logs/.gitkeep
+
+# 模型与二进制
+*.pt
+*.pkl
+*.bin
+
+# IDE
+.idea/
+.vscode/
+
+# 系统
+.DS_Store
+Thumbs.db

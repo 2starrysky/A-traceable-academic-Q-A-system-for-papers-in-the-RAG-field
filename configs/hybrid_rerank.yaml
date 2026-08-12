@@ -1,0 +1,29 @@
+# 实验配置:混合检索 + 重排
+retrieval:
+  method: hybrid
+  top_k: 30      # 候选集更大,重排后取最终 top
+  final_top_k: 10
+  fusion: rrf
+
+  chunk:
+    size: 512
+    overlap: 64
+
+  dense:
+    embedding_model: BAAI/bge-m3
+
+  bm25:
+    enabled: true
+
+  fusion:
+    weights:
+      dense: 0.5
+      bm25: 0.5
+
+  rerank:
+    enabled: true
+    model: BAAI/bge-reranker-v2-m3
+
+  generation:
+    llm_model: gpt-4o-mini
+    temperature: 0.2

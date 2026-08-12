@@ -1,0 +1,24 @@
+# 实验配置:稠密 + 稀疏混合检索(无重排)
+retrieval:
+  method: hybrid
+  top_k: 10
+  fusion: rrf  # 或 score
+
+  chunk:
+    size: 512
+    overlap: 64
+
+  dense:
+    embedding_model: BAAI/bge-m3
+
+  bm25:
+    enabled: true
+
+  fusion:
+    weights:
+      dense: 0.5
+      bm25: 0.5
+
+  generation:
+    llm_model: gpt-4o-mini
+    temperature: 0.2
