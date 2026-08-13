@@ -1,12 +1,12 @@
 # 实验配置:稠密 + 稀疏混合检索(无重排)
 retrieval:
   method: hybrid
-  top_k: 10
+  top_k: 5
   fusion: rrf  # 或 score
 
   chunk:
     size: 512
-    overlap: 64
+    overlap: 80
 
   dense:
     embedding_model: BAAI/bge-m3

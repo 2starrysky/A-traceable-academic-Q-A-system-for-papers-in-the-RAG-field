@@ -1,13 +1,13 @@
 # 实验配置:混合检索 + 重排
 retrieval:
   method: hybrid
-  top_k: 30      # 候选集更大,重排后取最终 top
-  final_top_k: 10
+  top_k: 20      # 候选集更大,重排后取最终 top
+  final_top_k: 5
   fusion: rrf
 
   chunk:
     size: 512
-    overlap: 64
+    overlap: 80
 
   dense:
     embedding_model: BAAI/bge-m3

@@ -1,11 +1,11 @@
 # 实验配置:纯稠密向量检索
 retrieval:
   method: dense
-  top_k: 10
+  top_k: 5
 
   chunk:
     size: 512
-    overlap: 64
+    overlap: 80
 
   dense:
     embedding_model: BAAI/bge-m3

@@ -7,7 +7,7 @@ sentence-transformers
 rank-bm25
 
 # 向量库
-chromadb
+faiss-cpu
 
 # LLM 接入
 openai
@@ -23,5 +23,5 @@ ragas
 # ---- 开发 ----
 pytest
 
-# ---- Web 界面(app.py,按需解注) ----
-# streamlit
+# ---- Web 界面(app.py,Day 17) ----
+gradio
