@@ -1,7 +1,7 @@
 # 研究问题定义
 
-> 状态:**已收敛**(Day 2 Socratic 会话产物 · 2026-08-13)。
-> 待 Day 5 文献综合后做最终冻结。所有结论均来自用户人工确认,非 AI 自动决定。
+> 状态:**已冻结**(Day 5 人工关卡确认 · 2026-08-14)。研究问题、Baseline、主要实验、指标、不做内容均按 `research/experiment_plan.md` 锁定。
+> Day 2 收敛后经 Day 5 文献综合(`research/synthesis.md`)复核,无改动。所有结论均来自用户人工确认,非 AI 自动决定。
 >
 > **Day 3 更新(2026-08-13)**:知识库 12 篇论文清单已定稿(用户确认),见 `research/literature_matrix.csv` 与 `research/paper_cards/`。
 

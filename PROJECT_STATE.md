@@ -9,7 +9,7 @@
 - [x] **Day 2 · 确定研究问题**(2026-08-12):RQ1/RQ2/RQ3 + H1~H4 已收敛(`research/scope/`)
 - [x] **Day 3 · 快速检索核心论文**(2026-08-13):12 篇定稿 + 文献矩阵 + 论文卡片 + 4 篇 PDF 落盘
 - [x] **Day 4 · 精读三篇基础论文**:RAG / DPR / RAG Survey
-- [ ] **Day 5 · 文献综合与创新点审计**
+- [x] **Day 5 · 文献综合与创新点审计**
 - [ ] **Day 6 · 处理论文语料**
 - [ ] **Day 7 · 实现两种 Chunking**
 - [ ] **Day 8 · Dense Retrieval Baseline**
@@ -52,12 +52,27 @@
 
 Day 4 目标是把三篇基础论文真正读懂。用 pypdf 提取全文后逐页精读,把 RAG/DPR/RAG Survey 三张卡片从"摘要级"升级为"11 字段+页码标注",并给每篇补了大白话讲解(自认 RAG 零基础)。three-way-scan 交叉核验未发现错误,让我对卡片可信度有信心。收获:①RAG 的 RAG-Sequence/Token 与 Top-K 峰值直接支撑项目 RQ3;②DPR 证明稠密检索能完胜 BM25,但结论在 12 篇小语料上未必迁移(正是 H2);③Survey 的评估框架几乎就是项目指标体系的蓝图。风险:三篇都是方法/综述论文,具体数字不能当"绝对真理",Day 5 综合时要注意与评估类论文(Ragas/Verifiability)交叉。下一步:Day 5 文献综合+创新点审计,人工冻结设计。
 
+## Day 5 进展(2026-08-14)
+
+- **研究设计已冻结(用户人工关卡确认)** ✅:RQ1-3、Baseline(E1 Dense)、E1-E6 实验矩阵、指标(双层引用正确率为北极星)、不做范围,全部锁定于 `research/experiment_plan.md`。
+- **深读 Lost in the Middle**(Day 5 阅读安排):U 型曲线 + "生成性能早于检索召回饱和"(50 vs 20 篇仅 +1.5%),直接支撑 H4/RQ3 与重排动机。
+- **三份产物落盘**:
+  - `research/synthesis.md` — 6 个分析问题综合,结论分级(🟢文献明确支持/🟡合理推断/🔴尚未验证);
+  - `research/novelty_audit.md` — 3 候选贡献(C1 实验型/C2 评估型/C3 分析型)+ 与 12 篇对照 + 防过度声称清单;结论:新在"组合与评测",不在算法;
+  - `research/experiment_plan.md` — E1-E6 矩阵、冻结项、评估集设计、神谕检索归因、可追溯性。
+- **先验信心**:H1~H4 均保持 Day 2 原值(用户决定)。H4 虽获 LitM 文献强支撑,用户选择保守保持 5/10,决策已记录于 `hypotheses.md` 各假设"Day 5 记录"。
+
+## Day 5 实验日志(2026-08-14,约 230 字)
+
+Day 5 把 Day 4 的三篇 + Lost in the Middle 的文献底子,综合成研究设计并冻结。深读 LitM 收获最大:U 型位置曲线和"生成饱和早于召回"直接坐实了 RQ3 与重排动机,也让 H4 有了文献方向性支撑。synthesis 把 12 篇按 6 个问题归类,结论分级让我知道哪些是"有出处的"(dense 胜 BM25、重排是标准优化),哪些是"得自己测的"(小语料胜负、章节感知切块、真误拒答拆分)。novelty 审计最关键的一句话:我们的新不在算法,而在"小库+双层引用+拒答拆分+神谕归因"的组合——这守住了不过度声称的底线。用户冻结了设计但选择 H4 信心保持 5/10,尊重保守判断,记录在案。风险提醒自己:Ragas/CRUD/RGB 等 8 篇还是摘要级,Day 6 后要逐篇加深,届时 synthesis 可再升级。
+
 ## 待办(下一步)
 
 - [x] **Day 3 尾巴**:12 篇 PDF 已全部归入 `data/raw/papers/`
 - [x] **Zotero 集合**:用户已手动建"RAG 知识库"集合,12 篇论文(8 已有 + 4 新增)全部就位
 - [x] **Day 4 · 精读三篇基础论文**:RAG / DPR / RAG Survey,每篇产出带页码标注的 Paper Card(11 字段),论文未明确说明的内容标"论文未明确说明"
-- [ ] **Day 5 · 文献综合与创新点审计**:`synthesis.md` + `novelty_audit.md` + `experiment_plan.md`,人工冻结研究问题 / Baseline / 主要实验 / 指标 / 不做内容
+- [x] **Day 5 · 文献综合与创新点审计**:`synthesis.md` + `novelty_audit.md` + `experiment_plan.md`,人工冻结研究问题 / Baseline / 主要实验 / 指标 / 不做内容
+- [ ] **Day 6 · 处理论文语料**:`data/processed/documents.jsonl` + `src/ingestion/{loaders,cleaner}.py` + `tests/test_loaders.py`;document 对象含 paper_id/title/section/page/text/source
 
 ## 已知问题
 
