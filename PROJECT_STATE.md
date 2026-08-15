@@ -10,7 +10,7 @@
 - [x] **Day 3 · 快速检索核心论文**(2026-08-13):12 篇定稿 + 文献矩阵 + 论文卡片 + 4 篇 PDF 落盘
 - [x] **Day 4 · 精读三篇基础论文**:RAG / DPR / RAG Survey
 - [x] **Day 5 · 文献综合与创新点审计**
-- [ ] **Day 6 · 处理论文语料**
+- [x] **Day 6 · 处理论文语料**
 - [ ] **Day 7 · 实现两种 Chunking**
 - [ ] **Day 8 · Dense Retrieval Baseline**
 - [ ] **Day 9 · 接入 LLM 与引用**
@@ -66,13 +66,27 @@ Day 4 目标是把三篇基础论文真正读懂。用 pypdf 提取全文后逐�
 
 Day 5 把 Day 4 的三篇 + Lost in the Middle 的文献底子,综合成研究设计并冻结。深读 LitM 收获最大:U 型位置曲线和"生成饱和早于召回"直接坐实了 RQ3 与重排动机,也让 H4 有了文献方向性支撑。synthesis 把 12 篇按 6 个问题归类,结论分级让我知道哪些是"有出处的"(dense 胜 BM25、重排是标准优化),哪些是"得自己测的"(小语料胜负、章节感知切块、真误拒答拆分)。novelty 审计最关键的一句话:我们的新不在算法,而在"小库+双层引用+拒答拆分+神谕归因"的组合——这守住了不过度声称的底线。用户冻结了设计但选择 H4 信心保持 5/10,尊重保守判断,记录在案。风险提醒自己:Ragas/CRUD/RGB 等 8 篇还是摘要级,Day 6 后要逐篇加深,届时 synthesis 可再升级。
 
+## Day 6 进展(2026-08-15)
+
+- **论文语料处理完成**:12 篇 PDF → `data/processed/documents.jsonl`(1888 条,0 空段,约 73 万字符)。`.gitignore` 忽略 `data/processed/*`,文档库可从 PDF 复现,不入库。
+- **文档 schema**(plan 定义):`paper_id/title/section/page/text/source`;粒度=页内段落(空行/章节标题/满行句号结尾切分),source 由 literature_matrix.csv 的 arxiv_id 生成。
+- **产物**:`src/ingestion/loaders.py`(元数据/逐页提取/语料校验/组装 Document)、`src/ingestion/cleaner.py`(页眉页脚/页码/arXiv 戳记删除、断行连字符合并、空白折叠、章节检测三模式:层级编号/单层编号+词表/罗马数字)、`scripts/build_documents.py`(生成入口+统计)、`tests/test_loaders.py`(16 项全过)。
+- **Codex 不在本机**:Loader/清洗/测试均由本会话实现(用户确认)。
+- **质量要点**:页序单调 OK;crudrag ACM 页眉(页码变体)用"数字归一模板"删除清零;参考文献中的 arXiv 引用(合法内容)保留;双栏顺序实测正确(RAG/DPR/colbert/litm)。
+- **已知噪声**(Day 16 错误分析可归类,不阻塞):pypdf 超链接乱序(colbert "h/t_tps://…")、表格/图内文本(RAG 架构图、survey TABLE I)、个别 section 名被 pypdf 截行(verifiability "4.3 Citation Precision is Inversely Related to")。
+
+## Day 6 实验日志(2026-08-15,约 240 字)
+
+Day 6 把 12 篇 PDF 转成结构化知识库。最大的坑是 pypdf 提取质量:双栏顺序其实正常,但段落间没有空行,最初只切出 256 条巨型段落,加"满行+句号结尾"启发后才切出 1888 条合理段落;ACM 页眉带页码("111:16 Lyu, et al.")每页都变,精确匹配删不掉,改"数字归一模板"后清零;章节标题识别迭代了三轮(单层编号误判列表项→加词表;survey 的罗马数字全漏→加模式;同行标题+正文→截断)。16 项测试把行为固化。收获:摸清 pypdf 的文本线结构,是 Day 7 section-aware 切块的直接输入。风险:图/表格文本仍是噪声、个别 section 名被截断,已记入已知问题。下一步 Day 7:两种 Chunking。
+
 ## 待办(下一步)
 
 - [x] **Day 3 尾巴**:12 篇 PDF 已全部归入 `data/raw/papers/`
 - [x] **Zotero 集合**:用户已手动建"RAG 知识库"集合,12 篇论文(8 已有 + 4 新增)全部就位
 - [x] **Day 4 · 精读三篇基础论文**:RAG / DPR / RAG Survey,每篇产出带页码标注的 Paper Card(11 字段),论文未明确说明的内容标"论文未明确说明"
 - [x] **Day 5 · 文献综合与创新点审计**:`synthesis.md` + `novelty_audit.md` + `experiment_plan.md`,人工冻结研究问题 / Baseline / 主要实验 / 指标 / 不做内容
-- [ ] **Day 6 · 处理论文语料**:`data/processed/documents.jsonl` + `src/ingestion/{loaders,cleaner}.py` + `tests/test_loaders.py`;document 对象含 paper_id/title/section/page/text/source
+- [x] **Day 6 · 处理论文语料**:`data/processed/documents.jsonl` + `src/ingestion/{loaders,cleaner}.py` + `scripts/build_documents.py` + `tests/test_loaders.py`;document 对象含 paper_id/title/section/page/text/source,16 项测试通过
+- [ ] **Day 7 · 实现两种 Chunking**:`src/ingestion/splitter.py` + `tests/test_splitter.py` + `outputs/chunk_statistics.json`;fixed(512/80)与 section-aware 两种,chunk ID 唯一、metadata 不丢、超长章节续拆、短段合并
 
 ## 已知问题
 
