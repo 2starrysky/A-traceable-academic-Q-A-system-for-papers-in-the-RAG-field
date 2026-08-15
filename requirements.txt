@@ -2,6 +2,9 @@
 # 文档解析
 pypdf
 
+# 分块 token 计数
+tiktoken
+
 # 向量化 / 检索
 sentence-transformers
 rank-bm25

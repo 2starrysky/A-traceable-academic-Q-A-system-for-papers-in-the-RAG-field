@@ -11,7 +11,7 @@
 - [x] **Day 4 · 精读三篇基础论文**:RAG / DPR / RAG Survey
 - [x] **Day 5 · 文献综合与创新点审计**
 - [x] **Day 6 · 处理论文语料**
-- [ ] **Day 7 · 实现两种 Chunking**
+- [x] **Day 7 · 实现两种 Chunking**
 - [ ] **Day 8 · Dense Retrieval Baseline**
 - [ ] **Day 9 · 接入 LLM 与引用**
 - [ ] **Day 10 · 构建评估集与指标**
@@ -79,14 +79,27 @@ Day 5 把 Day 4 的三篇 + Lost in the Middle 的文献底子,综合成研究�
 
 Day 6 把 12 篇 PDF 转成结构化知识库。最大的坑是 pypdf 提取质量:双栏顺序其实正常,但段落间没有空行,最初只切出 256 条巨型段落,加"满行+句号结尾"启发后才切出 1888 条合理段落;ACM 页眉带页码("111:16 Lyu, et al.")每页都变,精确匹配删不掉,改"数字归一模板"后清零;章节标题识别迭代了三轮(单层编号误判列表项→加词表;survey 的罗马数字全漏→加模式;同行标题+正文→截断)。16 项测试把行为固化。收获:摸清 pypdf 的文本线结构,是 Day 7 section-aware 切块的直接输入。风险:图/表格文本仍是噪声、个别 section 名被截断,已记入已知问题。下一步 Day 7:两种 Chunking。
 
+## Day 7 进展(2026-08-15)
+
+- **两种 Chunking 实现完成**:`src/ingestion/splitter.py` 的 `split_fixed(chunk_size=512, overlap=80)` 与 `split_section_aware(max 512/80)`。token 层滑窗(step = chunk_size - overlap = 432),tiktoken cl100k_base 计数(与 gpt-4o-mini 对齐)。
+- **Chunk schema**:`chunk_id`(paper_id-序号,全局唯一)/ paper_id / title / section(主,窗口起始段落)/ sections(覆盖节列表)/ page_start / page_end / text / source / chunking / token_count。
+- **产物**:`src/ingestion/splitter.py`、`scripts/build_chunks.py`(生成入口,读 documents.jsonl + 参数)、`tests/test_splitter.py`(10 项,**总计 26 项测试全过**)、`data/processed/chunks_fixed.jsonl`、`data/processed/chunks_section_aware.jsonl`、`outputs/chunk_statistics.json`。
+- **统计**:fixed=439 chunks(avg 503.8 token,149 跨 section)、section_aware=505(avg 422,0 跨 section)。窗口 overlap 80 token 已逐对校验;chunk_id 唯一;超长章节组内续拆、短段合并;section-aware 不跨节。
+- **已知**:fixed 切块会切断词/句子(固有,token 级);section_aware 存在极短 chunk(min 14 token,来自极短 section,如标题/致谢);两文件均在 `.gitignore` 忽略的 `data/processed/`,可从 documents.jsonl 复现。
+- 新增依赖:tiktoken(已装,requirements.txt 登记)。
+
+## Day 7 实验日志(2026-08-15,约 200 字)
+
+Day 7 把 1888 条 document 切成可检索的 chunk。设计上用"段落拼 token 流 + 滑窗"统一两种策略:fixed 整篇滑窗(可跨 section),section-aware 先按 section 分组再组内滑窗(不跨节)。踩了两个坑:①滑窗 `while start<n` 会产生超短尾窗(10 token 流切出 4 块,尾块只有 1 token),改成"覆盖到 n 即停、剩余不足一步不再滑"后正确;②用 tiktoken 重新 encode chunk 文本验证 overlap 失败(判负),因为 decode→strip→re-encode 非无损,最后改用直接校验窗口 token 区间,确认相邻窗口 overlap 恰为 80。收获:section-aware 平均 422 token(fixed 503),说明 section 边界会牺牲填充率换语义完整,这正是 RQ2 要测的权衡。下一步 Day 8:Dense Retrieval Baseline。
+
 ## 待办(下一步)
 
 - [x] **Day 3 尾巴**:12 篇 PDF 已全部归入 `data/raw/papers/`
 - [x] **Zotero 集合**:用户已手动建"RAG 知识库"集合,12 篇论文(8 已有 + 4 新增)全部就位
 - [x] **Day 4 · 精读三篇基础论文**:RAG / DPR / RAG Survey,每篇产出带页码标注的 Paper Card(11 字段),论文未明确说明的内容标"论文未明确说明"
 - [x] **Day 5 · 文献综合与创新点审计**:`synthesis.md` + `novelty_audit.md` + `experiment_plan.md`,人工冻结研究问题 / Baseline / 主要实验 / 指标 / 不做内容
-- [x] **Day 6 · 处理论文语料**:`data/processed/documents.jsonl` + `src/ingestion/{loaders,cleaner}.py` + `scripts/build_documents.py` + `tests/test_loaders.py`;document 对象含 paper_id/title/section/page/text/source,16 项测试通过
-- [ ] **Day 7 · 实现两种 Chunking**:`src/ingestion/splitter.py` + `tests/test_splitter.py` + `outputs/chunk_statistics.json`;fixed(512/80)与 section-aware 两种,chunk ID 唯一、metadata 不丢、超长章节续拆、短段合并
+- [x] **Day 7 · 实现两种 Chunking**:`src/ingestion/splitter.py`(fixed 512/80 + section-aware)+ `scripts/build_chunks.py` + `tests/test_splitter.py`(10 项)+ `outputs/chunk_statistics.json`;chunk_id 唯一、metadata 不丢、超长章节续拆、短段合并;fixed 439 / section_aware 505 块
+- [ ] **Day 8 · Dense Retrieval Baseline**:`src/retrieval/dense.py` + `scripts/build_index.py` + `scripts/query.py` + `tests/test_dense_retriever.py`;bge-m3 embedding 批处理、FAISS 索引、保存/加载、Top-K 检索,打印问题/Chunk ID/论文/章节/相似度/原文
 
 ## 已知问题
 

@@ -1,0 +1,54 @@
+{
+  "config": {
+    "chunk_size": 512,
+    "overlap": 80,
+    "tokenizer": "tiktoken cl100k_base",
+    "source": "data\\processed\\documents.jsonl"
+  },
+  "fixed": {
+    "total": 439,
+    "per_paper": {
+      "colbert_khattab2020": 37,
+      "crag_yan2024": 36,
+      "crudrag_lyu2024": 64,
+      "dpr_karpukhin2020": 33,
+      "fid_izacard2020": 14,
+      "hyde_gao2022": 27,
+      "litm_liu2023": 37,
+      "rag_lewis2021": 41,
+      "rag_survey_gao2024": 63,
+      "ragas_es2025": 18,
+      "rgb_chen2023": 32,
+      "verifiability_liu2023": 37
+    },
+    "avg_tokens": 503.8,
+    "min_tokens": 94,
+    "max_tokens": 512,
+    "empty_chunks": 0,
+    "multi_section_chunks": 149,
+    "papers_with_chunks": 12
+  },
+  "section_aware": {
+    "total": 505,
+    "per_paper": {
+      "colbert_khattab2020": 41,
+      "crag_yan2024": 42,
+      "crudrag_lyu2024": 71,
+      "dpr_karpukhin2020": 42,
+      "fid_izacard2020": 18,
+      "hyde_gao2022": 32,
+      "litm_liu2023": 42,
+      "rag_lewis2021": 48,
+      "rag_survey_gao2024": 65,
+      "ragas_es2025": 22,
+      "rgb_chen2023": 35,
+      "verifiability_liu2023": 47
+    },
+    "avg_tokens": 422.0,
+    "min_tokens": 14,
+    "max_tokens": 512,
+    "empty_chunks": 0,
+    "multi_section_chunks": 0,
+    "papers_with_chunks": 12
+  }
+}
