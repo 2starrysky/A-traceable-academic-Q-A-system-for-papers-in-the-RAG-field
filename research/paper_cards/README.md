@@ -31,4 +31,5 @@ Day 3 卡片基于摘要;Day 4 起精读全文后改为 11 项模板,每一项**
 > 页码 = PDF 物理页码,章节 = 论文章节号。
 > Day 4(2026-08-14)精读完成:rag_lewis2021、dpr_karpukhin2020、rag_survey_gao2024。
 > Day 5(2026-08-14)精读完成:litm_liu2023(Lost in the Middle,支撑 H4/RQ3)。
+> Day 6(2026-08-15)精读完成:ragas_es2025(Ragas,faithfulness 指标定义来源,支撑评估设计对比)。
 > 每张卡片末尾附 **第 12 节"小白大白话讲解"**(非模板,阅读辅助)——给 RAG 零基础读者把全篇用大白话串一遍。
