@@ -2,7 +2,7 @@
 
 面向 **RAG 领域论文**的**可溯源**学术问答系统。
 
-> 状态:Day 8 已完成——语料处理、两种 Chunking、Dense Retrieval Baseline(bge-m3 + FAISS)均可运行。
+> 状态:Day 9 已完成——Dense 检索 + DeepSeek 生成的可溯源 RAG 闭环可运行(问题 → 检索 → 答案 → 引用)。
 
 ## 项目定位
 
@@ -25,8 +25,11 @@ python scripts/build_chunks.py --chunking both
 # 4. 建 Dense 索引:bge-m3 编码 + FAISS(首次运行需下载模型)
 python scripts/build_index.py --chunks data/processed/chunks_fixed.jsonl
 
-# 5. Dense Top-5 检索:打印 问题/Chunk ID/论文/章节/相似度/原文
+# 5. 问答:完整闭环(检索 → 生成 → 带引用答案;LLM key 放 .env 的 DEEPSEEK_API_KEY)
 python scripts/query.py --question "RAG-Sequence是什么?" --top-k 5
+
+# 6. 纯检索(不接 LLM,Day 8 行为)
+python scripts/query.py --question "RAG-Sequence是什么?" --retrieve-only
 ```
 
 ## 项目结构

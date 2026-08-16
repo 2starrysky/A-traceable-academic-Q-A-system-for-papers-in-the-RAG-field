@@ -12,5 +12,7 @@ retrieval:
     index_path: data/processed/dense_index
 
   generation:
-    llm_model: gpt-4o-mini
+    provider: deepseek
+    base_url: https://api.deepseek.com/v1
+    llm_model: deepseek-chat
     temperature: 0.2

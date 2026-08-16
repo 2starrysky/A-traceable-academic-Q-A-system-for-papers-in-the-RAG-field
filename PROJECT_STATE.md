@@ -106,6 +106,27 @@ Day 7 把 1888 条 document 切成可检索的 chunk。设计上用"段落拼 to
 
 Day 8 把 439 个 chunk 编码成 1024 维向量,建好 FAISS 索引。踩了三个坑:①bge-m3 走 HuggingFace 镜像站被域名校验拦下,改成识别本地 `data/models/bge-m3/` 目录、离线加载才通;②Windows 控制台默认 GBK,打印论文原文里的数学减号(−,U+2212)直接 UnicodeEncodeError 中断,给 query.py 强制 UTF-8 解决;③CPU 编码慢,439 chunks 花了 17 分钟,单条 query 每次都要重新加载模型。验证环节最爽:中文问"RAG-Sequence是什么?",Top-2 直接命中 rag_lewis2021 的 2 Methods——正是 RAG-Sequence 定义那一句;英文问"What is HyDE?"Top-1 就是 HyDE 论文 Introduction 的定义处。双语都精准命中正确论文正确章节,说明 bge-m3 编码 + FAISS 检索这条路走通了。下一步 Day 9:接 LLM 与引用,打通第一个 RAG 闭环。
 
+## Day 9 进展(2026-08-16)
+
+- **完整 RAG 闭环完成**:问题 → Dense Top-5 → Prompt → LLM → 答案 → 引用。
+- **产物**:
+  - `src/generation/prompts.py` — 系统/用户提示词,检索命中格式化为带 `[n]` 编号上下文;**章节/页码随 chunk 由检索器带回,不由生成器猜**(冻结约束);只依据上下文、无证据拒答、不编造、引用对应真实 Chunk ID。
+  - `src/generation/generator.py` — `GenerationResult`/`Generator`/`create_generator`;client 可注入(fake 用于测试);引用解析把答案 `[n]` 映射回真实命中(越界丢弃、按 chunk_id 去重);拒答识别;空命中不调 API 直接拒答。
+  - `src/pipeline.py` — `PipelineResult`/`answer_question` 串检索+生成,retriever/generator 均可注入。
+  - `scripts/query.py` — 默认走完整闭环;**读取 `configs/dense.yaml`**(解决 Day 8 project-review 的"yaml 未被脚本消费"欠账);`--retrieve-only` 保留纯检索。
+- **LLM 接入**:DeepSeek `deepseek-chat`(OpenAI 兼容接口),key 存 `.env`(gitignore 忽略,不入库);openai 3.1 / python-dotenv 新装(requirements 已声明)。
+- **冻结项变更(用户 2026-08-16 批准)**:生成模型 gpt-4o-mini → deepseek-chat(本机无 OpenAI key),temperature 0.2 保留;`research/experiment_plan.md` §3 与 `research_scope/research_questions.md` §4 已更新记录。
+- **测试**:`tests/test_generator.py`(10)+ `tests/test_pipeline.py`(3),**总计 49 项全过**(fake client 注入,不依赖真实 API)。
+- **真实验收(3 组)**:
+  1. "RAG-Sequence是什么?" → 答案(定义+公式)+ 引用精准落到 rag_lewis2021 的 2 Methods / 2.4 Training,**跳过噪声命中**(Top-1 综述、不相关 CRUD-RAG);
+  2. `--retrieve-only` 回归,纯检索行为不变;
+  3. 知识库外题"量子退火…" → 检索仅低相似度噪声(0.44),模型正确拒答"无法从给定材料中回答",无引用。
+- 已知:每次 query 重新加载 bge-m3 模型约 1-2 分钟(单条查询较慢)。
+
+## Day 9 实验日志(2026-08-16,约 230 字)
+
+Day 9 第一次让系统"开口说话"。最大的决策是换模型:冻结项写的是 gpt-4o-mini,但本机没有 OpenAI key,用户提供 DeepSeek key,我按 OpenAI 兼容接口接入,冻结记录同步更新(改冻结项经用户批准)。实现的核心是引用解析——让模型在答案里用 [n] 标注,程序再映射回真实 Chunk ID,而不是让模型直接输出章节号(那会变成"猜章节",测的不是检索能力)。最惊喜的是验收:问"RAG-Sequence是什么?",模型不仅答对了定义和公式,还聪明地跳过了 Top-1 的综述(只泛泛介绍)和完全不相关的 CRUD-RAG,只引用 RAG 原论文的 2 Methods 和 2.4 Training——引用即证据,这就是可溯源的意义。拒答题也干净:"量子退火"在知识库外,检索捞到的都是低相似度噪声,模型答"无法从给定材料中回答"。小坑:openai 库之前没装进 venv,补装后一切正常。下一步 Day 10:构建评估集(40-60 题,人工标注三铁律)。
+
 ## 待办(下一步)
 
 - [x] **Day 3 尾巴**:12 篇 PDF 已全部归入 `data/raw/papers/`
@@ -114,7 +135,8 @@ Day 8 把 439 个 chunk 编码成 1024 维向量,建好 FAISS 索引。踩了三
 - [x] **Day 5 · 文献综合与创新点审计**:`synthesis.md` + `novelty_audit.md` + `experiment_plan.md`,人工冻结研究问题 / Baseline / 主要实验 / 指标 / 不做内容
 - [x] **Day 7 · 实现两种 Chunking**:`src/ingestion/splitter.py`(fixed 512/80 + section-aware)+ `scripts/build_chunks.py` + `tests/test_splitter.py`(10 项)+ `outputs/chunk_statistics.json`;chunk_id 唯一、metadata 不丢、超长章节续拆、短段合并;fixed 439 / section_aware 505 块
 - [x] **Day 8 · Dense Retrieval Baseline**:`src/retrieval/dense.py` + `scripts/build_index.py` + `scripts/query.py` + `tests/test_dense_retriever.py`;bge-m3 embedding 批处理、FAISS 索引、保存/加载、Top-K 检索,打印问题/Chunk ID/论文/章节/相似度/原文;439 chunks 建索引成功,中英文检索均精准命中
-- [ ] **Day 9 · 接入 LLM 与引用**:`src/generation/prompts.py` + `src/generation/generator.py` + `src/pipeline.py`;问题→Dense Top-5→Prompt→LLM→答案→引用;让 `configs/dense.yaml` 真正被脚本读取;验收 `python scripts/query.py --question "RAG-Sequence是什么?"`
+- [x] **Day 9 · 接入 LLM 与引用**:`src/generation/prompts.py` + `src/generation/generator.py` + `src/pipeline.py`;问题→Dense Top-5→Prompt→LLM(DeepSeek)→答案→引用;query.py 读取 configs/dense.yaml;三组真实验收通过(闭环/retrieve-only 回归/拒答)
+- [ ] **Day 10 · 构建评估集与指标**:40~60 题(事实/方法理解/论文对比/跨章节/无答案);每字段 question/answerable/reference_answer/relevant_chunk_ids/paper_id/section/type;**reference_answer 与 relevant_chunk_ids、answerable 只由用户人工确认**
 
 ## 已知问题
 

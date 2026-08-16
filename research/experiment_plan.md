@@ -33,7 +33,7 @@
 | 项 | 设定 | 依据 |
 |----|------|------|
 | Embedding 模型 | `BAAI/bge-m3`(零样本,不微调) | scope §4;novelty_audit C1 |
-| 生成模型 | `gpt-4o-mini`,temperature=0.2 | scope §4 |
+| 生成模型 | `deepseek-chat`,temperature=0.2(2026-08-16 用户批准由 gpt-4o-mini 改:本机无 OpenAI key,改用 DeepSeek OpenAI 兼容接口) | scope §4 |
 | 提示词模板 | 只根据上下文回答;无证据拒答;引用对应真实 Chunk ID | scope §4 |
 | 引用解析 | 返回论文 + 章节 + Chunk 原文;章节号随 Chunk 由检索器带回,**不由生成器猜** | scope §4(关键) |
 | 切块(除 E5) | fixed,size=512,overlap=80 | 对齐 configs 与 plan Day 7 |
