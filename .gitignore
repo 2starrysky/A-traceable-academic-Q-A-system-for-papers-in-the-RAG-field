@@ -16,6 +16,7 @@ data/processed/*
 !data/processed/.gitkeep
 data/evaluation/*
 !data/evaluation/.gitkeep
+!data/evaluation/questions.jsonl
 outputs/experiments/*
 !outputs/experiments/.gitkeep
 outputs/figures/*

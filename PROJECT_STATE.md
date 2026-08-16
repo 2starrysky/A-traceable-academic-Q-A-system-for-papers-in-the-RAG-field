@@ -127,6 +127,20 @@ Day 8 把 439 个 chunk 编码成 1024 维向量,建好 FAISS 索引。踩了三
 
 Day 9 第一次让系统"开口说话"。最大的决策是换模型:冻结项写的是 gpt-4o-mini,但本机没有 OpenAI key,用户提供 DeepSeek key,我按 OpenAI 兼容接口接入,冻结记录同步更新(改冻结项经用户批准)。实现的核心是引用解析——让模型在答案里用 [n] 标注,程序再映射回真实 Chunk ID,而不是让模型直接输出章节号(那会变成"猜章节",测的不是检索能力)。最惊喜的是验收:问"RAG-Sequence是什么?",模型不仅答对了定义和公式,还聪明地跳过了 Top-1 的综述(只泛泛介绍)和完全不相关的 CRUD-RAG,只引用 RAG 原论文的 2 Methods 和 2.4 Training——引用即证据,这就是可溯源的意义。拒答题也干净:"量子退火"在知识库外,检索捞到的都是低相似度噪声,模型答"无法从给定材料中回答"。小坑:openai 库之前没装进 venv,补装后一切正常。下一步 Day 10:构建评估集(40-60 题,人工标注三铁律)。
 
+## Day 10 进展(2026-08-16)
+
+- **评估集 50 题定稿(用户 2026-08-16 人工确认,铁律遵守)**。组成:事实 15 / 方法理解 10 / 论文对比 10 / 跨章节 5 / 无答案 10。落盘 `data/evaluation/questions.jsonl`(gitignore 忽略),schema 完整:`id/type/question/answerable/paper_id/section/reference_answer/relevant_chunk_ids`。
+- **候选生成**:Explore agent 通读 12 张论文卡片提炼可出题点(只取卡片明确内容,排除"论文未明确说明");我据此撰写 50 题,事实题集中在数字/定义密的 DPR/RAG/LiTM/Ragas/verifiability,方法题考原理,对比题选 RAG vs FiD、LiTM vs FiD 等有张力的组合,无答案 10 题全用知识库外话题。
+- **相关 chunk 检索验证**:40 题可答题跑 Dense top-8,**38 题 top-8 命中目标论文**(建议值有检索证据);2 题(comparison_05/cross_01)被泛泛内容拉走,手动从知识库补充建议 chunk(fid/litm/rag 相关段)。可答题相关 chunk 共 183 个。
+- **检索指标实现**:`src/evaluation/retrieval_metrics.py`(`hit_at_k`/`mrr`/`evaluate_retrieval`,gold 空的无答案题不参与检索指标)+ `tests/test_metrics.py`(12 项)。**总计 61 项测试全过**。
+- **辅助脚本**:`scripts/build_evaluation_candidates.py`(检索验证+生成确认文档)、`scripts/build_questions.py`(落盘+校验:50 题/配额/字段完整/chunk_id 合法全过)。
+- 抽验 1 题(fact_01 DPR top-5 准确率)跑完整闭环,确认评估题可被系统回答。
+- 无答案题 `answerable=false`(拒答拆分的依据);引用正确 = 论文+章节双层都对。
+
+## Day 10 实验日志(2026-08-16,约 230 字)
+
+Day 10 给系统配了把"尺子"。先让 Explore agent 把 12 张卡片通读一遍,提炼每篇能出题的点(数字、定义、可对比处),再据此写 50 题候选——事实题集中在数字密的 DPR/RAG/LiTM/Ragas/verifiability,方法题考原理(比如"in-batch negatives 为何免费获得 B² 训练对"),对比题专挑有张力的组合(RAG vs FiD 融合时机、LiTM vs FiD 的 Top-K 正反证据),无答案 10 题全用知识库外话题。相关 chunk 靠真实检索验证:40 题里 38 题 top-8 就命中目标论文,只有 2 题(对比/跨章节)被泛泛内容拉走,我手动从知识库补了建议 chunk。最后落盘 50 题 jsonl,配额、字段、chunk 合法性校验全过。这 50 题就是后面 E1-E6 实验的标尺,也是"引用正确率""真/误拒答率"的判定依据。下一步 Day 11:运行 Dense Baseline 实验。
+
 ## 待办(下一步)
 
 - [x] **Day 3 尾巴**:12 篇 PDF 已全部归入 `data/raw/papers/`
@@ -136,7 +150,8 @@ Day 9 第一次让系统"开口说话"。最大的决策是换模型:冻结项�
 - [x] **Day 7 · 实现两种 Chunking**:`src/ingestion/splitter.py`(fixed 512/80 + section-aware)+ `scripts/build_chunks.py` + `tests/test_splitter.py`(10 项)+ `outputs/chunk_statistics.json`;chunk_id 唯一、metadata 不丢、超长章节续拆、短段合并;fixed 439 / section_aware 505 块
 - [x] **Day 8 · Dense Retrieval Baseline**:`src/retrieval/dense.py` + `scripts/build_index.py` + `scripts/query.py` + `tests/test_dense_retriever.py`;bge-m3 embedding 批处理、FAISS 索引、保存/加载、Top-K 检索,打印问题/Chunk ID/论文/章节/相似度/原文;439 chunks 建索引成功,中英文检索均精准命中
 - [x] **Day 9 · 接入 LLM 与引用**:`src/generation/prompts.py` + `src/generation/generator.py` + `src/pipeline.py`;问题→Dense Top-5→Prompt→LLM(DeepSeek)→答案→引用;query.py 读取 configs/dense.yaml;三组真实验收通过(闭环/retrieve-only 回归/拒答)
-- [ ] **Day 10 · 构建评估集与指标**:40~60 题(事实/方法理解/论文对比/跨章节/无答案);每字段 question/answerable/reference_answer/relevant_chunk_ids/paper_id/section/type;**reference_answer 与 relevant_chunk_ids、answerable 只由用户人工确认**
+- [x] **Day 10 · 构建评估集与指标**:50 题定稿(用户确认,15/10/10/5/10),`data/evaluation/questions.jsonl` 落盘并校验;`src/evaluation/retrieval_metrics.py`(Hit@K/MRR)+ `tests/test_metrics.py`;相关 chunk 经检索验证
+- [ ] **Day 11 · 运行 Dense Baseline**:E1 dense(bge-m3) top5 fixed 512/80;跑评估集逐题存结果(question→检索topk→分数→答案→引用→判定),算 Hit@K/MRR/引用正确率/Faithfulness/真误拒答率/平均延迟;产物 `scripts/run_experiment.py`
 
 ## 已知问题
 
