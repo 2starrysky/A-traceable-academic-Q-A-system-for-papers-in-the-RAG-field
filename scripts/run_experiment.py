@@ -102,12 +102,13 @@ def _build_retriever(method: str, retrieval_cfg: dict, chunks: dict[str, dict], 
         dense = DenseRetriever.load(ROOT / index_path, device=device)
         bm25 = BM25Retriever.from_chunks(list(chunks.values()))
 
-        def hybrid_search(query: str, top_k: int = 5):
-            d = dense.search(query, top_k=top_k * 2)  # 候选放大避免融合丢边
-            b = bm25.search(query, top_k=top_k * 2)
-            return merge_hits(d, b, top_k=top_k)
+        class _Hybrid:
+            def search(self, query: str, top_k: int = 5):
+                d = dense.search(query, top_k=top_k * 2)  # 候选放大避免融合丢边
+                b = bm25.search(query, top_k=top_k * 2)
+                return merge_hits(d, b, top_k=top_k)
 
-        return hybrid_search, "hybrid"
+        return _Hybrid(), "hybrid"
 
     raise ValueError(f"未知检索方法: {method}")
 
