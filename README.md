@@ -2,7 +2,7 @@
 
 面向 **RAG 领域论文**的**可溯源**学术问答系统。
 
-> 状态:项目脚手架已就绪,各模块待实现。
+> 状态:Day 8 已完成——语料处理、两种 Chunking、Dense Retrieval Baseline(bge-m3 + FAISS)均可运行。
 
 ## 项目定位
 
@@ -12,7 +12,22 @@
 
 ## 快速开始
 
-(待实现后补充安装、配置、运行方式)
+```bash
+# 1. 安装依赖(建议 venv)
+pip install -r requirements.txt
+
+# 2. 语料:12 篇 PDF(data/raw/papers/) → documents.jsonl
+python scripts/build_documents.py
+
+# 3. 分块:fixed(512/80)+ section-aware 两种 chunking
+python scripts/build_chunks.py --chunking both
+
+# 4. 建 Dense 索引:bge-m3 编码 + FAISS(首次运行需下载模型)
+python scripts/build_index.py --chunks data/processed/chunks_fixed.jsonl
+
+# 5. Dense Top-5 检索:打印 问题/Chunk ID/论文/章节/相似度/原文
+python scripts/query.py --question "RAG-Sequence是什么?" --top-k 5
+```
 
 ## 项目结构
 

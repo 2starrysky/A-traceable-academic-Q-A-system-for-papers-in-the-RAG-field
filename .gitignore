@@ -27,6 +27,8 @@ outputs/logs/*
 *.pt
 *.pkl
 *.bin
+data/models/*
+!data/models/.gitkeep
 
 # IDE
 .idea/

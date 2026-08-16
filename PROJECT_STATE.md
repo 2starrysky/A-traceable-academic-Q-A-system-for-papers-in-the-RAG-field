@@ -92,6 +92,20 @@ Day 6 把 12 篇 PDF 转成结构化知识库。最大的坑是 pypdf 提取质�
 
 Day 7 把 1888 条 document 切成可检索的 chunk。设计上用"段落拼 token 流 + 滑窗"统一两种策略:fixed 整篇滑窗(可跨 section),section-aware 先按 section 分组再组内滑窗(不跨节)。踩了两个坑:①滑窗 `while start<n` 会产生超短尾窗(10 token 流切出 4 块,尾块只有 1 token),改成"覆盖到 n 即停、剩余不足一步不再滑"后正确;②用 tiktoken 重新 encode chunk 文本验证 overlap 失败(判负),因为 decode→strip→re-encode 非无损,最后改用直接校验窗口 token 区间,确认相邻窗口 overlap 恰为 80。收获:section-aware 平均 422 token(fixed 503),说明 section 边界会牺牲填充率换语义完整,这正是 RQ2 要测的权衡。下一步 Day 8:Dense Retrieval Baseline。
 
+## Day 8 进展(2026-08-16)
+
+- **Dense Retrieval Baseline 完成**:`src/retrieval/dense.py`(DenseRetriever 类,encode_fn 可注入 + FAISS IndexFlatIP + 保存/加载 + Top-K,不依赖 LangChain)。
+- **bge-m3 已落地本地** `data/models/bge-m3/`:`_prepare_model` 检测到本地目录即切离线加载(`HF_HUB_OFFLINE=1`),绕开 HuggingFace 镜像站域名校验。
+- **索引构建成功**:`chunks_fixed.jsonl`(439 chunks)→ `data/processed/dense_index/`(index.faiss/meta.jsonl/config.json),维度 1024,归一化+内积=余弦;CPU 编码约 17 分钟(1000s)。config.json 记录复现参数:`embedding_model/dim/index_type/normalize/n_chunks/source/git_head`。
+- **产物**:`src/retrieval/dense.py`、`scripts/build_index.py`(批量编码建索引)、`scripts/query.py`(Top-K 打印 问题/Chunk ID/论文/章节/相似度/原文,Day 8 不接 LLM)、`tests/test_dense_retriever.py`(10 项,确定性伪编码注入、不依赖网络)。**总计 36 项测试全过**。
+- **真实检索验证(双语)**:中文"RAG-Sequence是什么?"→ Top-3=RAG 综述+rag_lewis2021 2 Methods(定义处)+2.4 Training;英文"What is HyDE?"→ Top-3 全 hyde_gao2022,#1=Introduction 定义处。均精准命中正确论文的正确章节。
+- **修复 Windows GBK 编码 bug**:query.py 打印论文原文时 `UnicodeEncodeError`(GBK 无法编码 U+2212 减号),`sys.stdout.reconfigure(encoding="utf-8")` 解决。
+- 新增依赖:sentence-transformers / faiss-cpu / numpy(已有)。已知:CPU 编码慢;每次 query 重新加载模型约 1-2 分钟。
+
+## Day 8 实验日志(2026-08-16,约 210 字)
+
+Day 8 把 439 个 chunk 编码成 1024 维向量,建好 FAISS 索引。踩了三个坑:①bge-m3 走 HuggingFace 镜像站被域名校验拦下,改成识别本地 `data/models/bge-m3/` 目录、离线加载才通;②Windows 控制台默认 GBK,打印论文原文里的数学减号(−,U+2212)直接 UnicodeEncodeError 中断,给 query.py 强制 UTF-8 解决;③CPU 编码慢,439 chunks 花了 17 分钟,单条 query 每次都要重新加载模型。验证环节最爽:中文问"RAG-Sequence是什么?",Top-2 直接命中 rag_lewis2021 的 2 Methods——正是 RAG-Sequence 定义那一句;英文问"What is HyDE?"Top-1 就是 HyDE 论文 Introduction 的定义处。双语都精准命中正确论文正确章节,说明 bge-m3 编码 + FAISS 检索这条路走通了。下一步 Day 9:接 LLM 与引用,打通第一个 RAG 闭环。
+
 ## 待办(下一步)
 
 - [x] **Day 3 尾巴**:12 篇 PDF 已全部归入 `data/raw/papers/`
@@ -99,7 +113,8 @@ Day 7 把 1888 条 document 切成可检索的 chunk。设计上用"段落拼 to
 - [x] **Day 4 · 精读三篇基础论文**:RAG / DPR / RAG Survey,每篇产出带页码标注的 Paper Card(11 字段),论文未明确说明的内容标"论文未明确说明"
 - [x] **Day 5 · 文献综合与创新点审计**:`synthesis.md` + `novelty_audit.md` + `experiment_plan.md`,人工冻结研究问题 / Baseline / 主要实验 / 指标 / 不做内容
 - [x] **Day 7 · 实现两种 Chunking**:`src/ingestion/splitter.py`(fixed 512/80 + section-aware)+ `scripts/build_chunks.py` + `tests/test_splitter.py`(10 项)+ `outputs/chunk_statistics.json`;chunk_id 唯一、metadata 不丢、超长章节续拆、短段合并;fixed 439 / section_aware 505 块
-- [ ] **Day 8 · Dense Retrieval Baseline**:`src/retrieval/dense.py` + `scripts/build_index.py` + `scripts/query.py` + `tests/test_dense_retriever.py`;bge-m3 embedding 批处理、FAISS 索引、保存/加载、Top-K 检索,打印问题/Chunk ID/论文/章节/相似度/原文
+- [x] **Day 8 · Dense Retrieval Baseline**:`src/retrieval/dense.py` + `scripts/build_index.py` + `scripts/query.py` + `tests/test_dense_retriever.py`;bge-m3 embedding 批处理、FAISS 索引、保存/加载、Top-K 检索,打印问题/Chunk ID/论文/章节/相似度/原文;439 chunks 建索引成功,中英文检索均精准命中
+- [ ] **Day 9 · 接入 LLM 与引用**:`src/generation/prompts.py` + `src/generation/generator.py` + `src/pipeline.py`;问题→Dense Top-5→Prompt→LLM→答案→引用;让 `configs/dense.yaml` 真正被脚本读取;验收 `python scripts/query.py --question "RAG-Sequence是什么?"`
 
 ## 已知问题
 
