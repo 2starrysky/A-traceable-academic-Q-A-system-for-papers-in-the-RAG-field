@@ -160,6 +160,24 @@ Day 10 给系统配了把"尺子"。先让 Explore agent 把 12 张卡片通读�
 
 Day 11 第一次让系统交成绩。跑 E1 最精彩的是神谕消融:第一版误拒答率 37.5%,我一查发现 oracle 喂了标注 chunk 也有一批拒答——原来是 13 题里大部分是"对比题"或"跨章节题",相关 chunk 只标了单篇论文,oracle 上下文里根本没有对比方,生成器自然答不了。这坐实了误拒答率被评估集标注虚高。用户批准修正(11 题补缺失 chunk)后重跑,神谕误拒答从 32.5% 掉到 17.5%,总算把"标注噪声"和"真检索失败"分开。真正的发现是剩下的:11 题是"oracle 能答但 top-5 没召回"的真检索失败(fact_01/02 这种数字题),这才是 Dense 搜索该提升的地方;还有 7 题 oracle 也拒答,是 DeepSeek 对"要从分散证据综合"的对比题偏保守。要数据跑出"引用正确率 0.96、真拒答 100%、Hit@5 0.9",说明系统骨架是健康的,短板在召回端点。下一步 Day 12:BM25 和 Hybrid 对比。
 
+## Day 12 进展(2026-08-16)
+
+- **BM25 + Hybrid 实现并跑出 E2/E3**。`src/retrieval/bm25.py`(BM25Retriever,与 Dense 共用 RetrievalHit/search 接口,tiktoken cl100k 切词)+ `src/retrieval/fusion.py`(RRF 融合+merge_hits);`run_experiment.py` 加 `--method {dense,bm25,hybrid}`。**总计 76 项测试全过**。
+- **三组实验结果(全部可追溯)**:
+  | 实验 | Hit@1 | Hit@3 | Hit@5 | MRR | 引用正确率 | 误拒答(real/oracle) |
+  |---|---|---|---|---|---|---|
+  | E1 Dense | 0.700 | 0.875 | 0.900 | 0.780 | 0.958 | 0.400 / 0.175 |
+  | E2 BM25 | 0.000 | 0.075 | 0.125 | 0.045 | 0.800 | 0.875 / 0.175 |
+  | E3 Hybrid | 0.650 | 0.825 | 0.875 | 0.735 | 0.952 | 0.425 / 0.150 |
+- **负结论(如实报告,plan R2 预案)**:E1 Dense 全面胜出;E2 BM25 在小规模中文语义题上惨败(词面匹配弱,只能靠 tiktoken 英文/数字 token 命中个别);E3 Hybrid 略低于 Dense——**BM25 太弱,R RF 对称融合把 Dense 准确结果挤出 top-5**。
+- **关键发现(深挖点)**:逐题看那 11 个 E1 真检索失败题,Hybrid **10/11 成功找回 gold chunk**(BM25 词面命中补充了 Dense 的语义盲区,如 fact_01/fact_10 数字题)——**单题召回提升但整体 Hit@1 略降**(BM25 噪声命中占用 top 位)。这是 RQ1「混合是否有益」的细致答案:召回增强、排序略损,对生成引用正确率无显著改善(与 E1 持平)。
+- **修复**:hybrid 首次跑因返回闭包函数导致 `search` 属性错误,改用带 `.search` 的 wrapper(commit ffa57dd);E3 用修复后 commit 重跑确保 config 记录确切代码版本。
+- 三个实验产物 `outputs/experiments/{e01_dense_v2,e02_bm25,e03_hybrid}/`,config 记 git_head/method/参数,逐题可追溯。
+
+## Day 12 实验日志(2026-08-16,约 240 字)
+
+Day 12 给系统补了 BM25 和混合检索,跑出 E2/E3 对比 E1。最意外的是 BM25 惨败——Hit@1 直接是 0,因为评估题大多是中文语义题(比如"RAG-Sequence 与 RAG-Token 有何区别"),词面匹配根本捞不到;这也印证了 Day 4 精读 DPR 时那句"小语料结论未必迁移"。E3 混合反而略输 Dense:RRF 是对称融合,弱到极致的 BM25 把 Dense 的准确结果挤出了 top-5。但逐题看有惊喜:E1 里 11 个真正失败的题,Hybrid 找回了 10 个(BM25 的英文/数字 token 命中了 Dense 语义盲区的答案 chunk)。所以 RQ1 的答案是微妙的——"混合"不是简单地好或坏:召回增强、排序略损、生成引用率持平。要把这个拆清楚,跟 H2 的预测一致。下一步 Day 13:Reranker 看能不能把 Hybrid 召回的对结果排回前面。
+
 ## 待办(下一步)
 
 - [x] **Day 3 尾巴**:12 篇 PDF 已全部归入 `data/raw/papers/`
@@ -171,7 +189,8 @@ Day 11 第一次让系统交成绩。跑 E1 最精彩的是神谕消融:第一�
 - [x] **Day 9 · 接入 LLM 与引用**:`src/generation/prompts.py` + `src/generation/generator.py` + `src/pipeline.py`;问题→Dense Top-5→Prompt→LLM(DeepSeek)→答案→引用;query.py 读取 configs/dense.yaml;三组真实验收通过(闭环/retrieve-only 回归/拒答)
 - [x] **Day 10 · 构建评估集与指标**:50 题定稿(用户确认,15/10/10/5/10),`data/evaluation/questions.jsonl` 落盘并校验;`src/evaluation/retrieval_metrics.py`(Hit@K/MRR)+ `tests/test_metrics.py`;相关 chunk 经检索验证
 - [x] **Day 11 · 运行 Dense Baseline**:E1 dense(bge-m3) top5 fixed 512/80 跑通;Hit@1/3/5=0.70/0.875/0.90、MRR=0.78、引用正确率 0.958、真拒答率 1.0、误拒答 0.4(含神谕归因,评估集修正后 oracle 误拒答 0.175);`outputs/experiments/e01_dense_v2/` 逐题可追溯
-- [ ] **Day 12 · 实现 BM25 和 Hybrid**:E2 BM25 + E3 Dense+BM25 RRF;`src/retrieval/{bm25,fusion}.py` + `scripts/run_experiment.py` 扩展;对比 E1
+- [x] **Day 12 · 实现 BM25 和 Hybrid**:E2 BM25 + E3 Dense+BM25 RRF;`src/retrieval/{bm25,fusion}.py` + run_experiment --method;三组对比:E1 Dense 最优,BM25 惨败(中文语义题),Hybrid 略误(11 题召回 10/11 但 Hit@1 略降)
+- [ ] **Day 13 · 加入 Reranker**:升级 hybrid 召回 20 → bge-reranker-v2-m3 → top 5(E4);看重排能否把 Hybrid 找回的对结果排回前面;`src/retrieval/reranker.py` + E4
 
 ## 已知问题
 
