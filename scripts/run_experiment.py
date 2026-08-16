@@ -79,11 +79,46 @@ def _citation_correct_for(citations, gold_paper_id: str, gold_chunk_ids, gold_se
                for c in citations)
 
 
+def _build_retriever(method: str, retrieval_cfg: dict, chunks: dict[str, dict], device=None):
+    """按 method 构造检索器:dense / bm25 / hybrid(RRF)。
+
+    返回 (retriever, method_label)。均实现 search(query, top_k) -> list[RetrievalHit]。
+    """
+    from src.retrieval.bm25 import BM25Retriever
+    from src.retrieval.fusion import merge_hits
+
+    index_path = retrieval_cfg.get("dense", {}).get("index_path", "data/processed/dense_index")
+
+    if method == "dense":
+        print(f"加载索引 {index_path} ...")
+        return DenseRetriever.load(ROOT / index_path, device=device), "dense"
+
+    if method == "bm25":
+        print(f"构建 BM25 索引(基于 {len(chunks)} chunks) ...")
+        return BM25Retriever.from_chunks(list(chunks.values())), "bm25"
+
+    if method == "hybrid":
+        print(f"加载索引 {index_path} + 构建 BM25 ...")
+        dense = DenseRetriever.load(ROOT / index_path, device=device)
+        bm25 = BM25Retriever.from_chunks(list(chunks.values()))
+
+        def hybrid_search(query: str, top_k: int = 5):
+            d = dense.search(query, top_k=top_k * 2)  # 候选放大避免融合丢边
+            b = bm25.search(query, top_k=top_k * 2)
+            return merge_hits(d, b, top_k=top_k)
+
+        return hybrid_search, "hybrid"
+
+    raise ValueError(f"未知检索方法: {method}")
+
+
 def main() -> None:
     import argparse
-    ap = argparse.ArgumentParser(description="运行 E1 Dense Baseline 实验")
+    ap = argparse.ArgumentParser(description="运行检索+生成实验(E1 dense / E2 bm25 / E3 hybrid)")
     ap.add_argument("--config", default="configs/dense.yaml")
     ap.add_argument("--out", default=_DEFAULT_OUT)
+    ap.add_argument("--method", default=None, choices=["dense", "bm25", "hybrid"],
+                    help="检索方法(默认取 config 的 retrieval.method)")
     ap.add_argument("--device", default=None)
     args = ap.parse_args()
 
@@ -96,7 +131,7 @@ def main() -> None:
         cfg = yaml.safe_load(fh) or {}
     retrieval_cfg = cfg.get("retrieval", {})
     top_k = retrieval_cfg.get("top_k", 5)
-    index_path = retrieval_cfg.get("dense", {}).get("index_path", "data/processed/dense_index")
+    method = args.method or retrieval_cfg.get("method", "dense")
     gen_cfg = retrieval_cfg.get("generation", {})
 
     questions = _read_questions()
@@ -105,15 +140,14 @@ def main() -> None:
         print(f"ERROR 评估集 {len(questions)} 题 != 50", file=sys.stderr)
         sys.exit(1)
 
-    print(f"加载索引 {index_path} ...")
-    retriever = DenseRetriever.load(ROOT / index_path, device=args.device)
+    retriever, method_label = _build_retriever(method, retrieval_cfg, chunks, device=args.device)
     generator = create_generator(
         provider=gen_cfg.get("provider", "deepseek"),
         model=gen_cfg.get("llm_model"),
         base_url=gen_cfg.get("base_url"),
         temperature=gen_cfg.get("temperature", 0.2),
     )
-    print(f"开始 E1: {len(questions)} 题, top_k={top_k} ...")
+    print(f"开始实验: method={method_label}, {len(questions)} 题, top_k={top_k} ...")
 
     per_question: list[dict] = []
     for i, q in enumerate(questions, 1):
@@ -192,9 +226,10 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     git = _git_head()
     config = {
-        "experiment": "E1 Dense Baseline",
-        "retrieval": {"method": "dense", "top_k": top_k, "embedding_model": "BAAI/bge-m3",
-                      "index_path": index_path, "reranker": False},
+        "experiment": f"E-{method_label}",
+        "retrieval": {"method": method_label, "top_k": top_k,
+                      "embedding_model": "BAAI/bge-m3", "reranker": False,
+                      "fusion": "rrf" if method_label == "hybrid" else None},
         "chunking": {"strategy": "fixed", "size": 512, "overlap": 80},
         "generation": {"provider": gen_cfg.get("provider"), "llm_model": gen_cfg.get("llm_model"),
                        "temperature": gen_cfg.get("temperature")},
@@ -212,8 +247,8 @@ def main() -> None:
         json.dump(metrics, fh, ensure_ascii=False, indent=2)
 
     # ---- 摘要 ----
-    print("\n================ E1 摘要 ================")
-    print(f"实验配置: dense | fixed_512/80 | top_k={top_k} | git={git} | 产物: {args.out}")
+    print("\n================ 实验摘要 ================")
+    print(f"实验方法: {method_label} | fixed_512/80 | top_k={top_k} | git={git} | 产物: {args.out}")
     print(f"检索指标: Hit@1={retrieval['hit@1']:.3f} Hit@3={retrieval['hit@3']:.3f} "
           f"Hit@5={retrieval['hit@5']:.3f} MRR={retrieval['mrr']:.3f} (可答题 {retrieval['n_answered']})")
     print(f"生成(真实检索): 引用正确率={gen_real['citation_accuracy']:.3f} "
