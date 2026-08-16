@@ -141,6 +141,25 @@ Day 9 第一次让系统"开口说话"。最大的决策是换模型:冻结项�
 
 Day 10 给系统配了把"尺子"。先让 Explore agent 把 12 张卡片通读一遍,提炼每篇能出题的点(数字、定义、可对比处),再据此写 50 题候选——事实题集中在数字密的 DPR/RAG/LiTM/Ragas/verifiability,方法题考原理(比如"in-batch negatives 为何免费获得 B² 训练对"),对比题专挑有张力的组合(RAG vs FiD 融合时机、LiTM vs FiD 的 Top-K 正反证据),无答案 10 题全用知识库外话题。相关 chunk 靠真实检索验证:40 题里 38 题 top-8 就命中目标论文,只有 2 题(对比/跨章节)被泛泛内容拉走,我手动从知识库补了建议 chunk。最后落盘 50 题 jsonl,配额、字段、chunk 合法性校验全过。这 50 题就是后面 E1-E6 实验的标尺,也是"引用正确率""真/误拒答率"的判定依据。下一步 Day 11:运行 Dense Baseline 实验。
 
+## Day 11 进展(2026-08-16)
+
+- **E1 Dense Baseline 运行并修正**:`scripts/run_experiment.py` 实现(retrieval=dense top5 + 神谕oracle归因 + 逐题存结果 + 不覆盖旧实验);`src/evaluation/generation_metrics.py`(双层引用判定,章节按相关 chunk 前缀匹配;拒答四分类;指标汇总)。**总计 70 项测试全过**。
+- **第一份成绩单(E1 v2,评估集修正后)**:
+  - 检索:Hit@1=0.700 / Hit@3=0.875 / Hit@5=0.900 / MRR=0.780(40 可答题);
+  - 生成(真实检索):引用正确率 0.958、真拒答率 1.000(10 无答案全拒对)、误拒答率 0.400、应拒未拒 0、平均延迟 2.1s;
+  - 生成(神谕):引用正确率 1.000、误拒答率 0.175。
+- **神谕消融的关键发现**:
+  - v1 神谕误拒答 32.5% → 归因为**评估集标注问题**(对比/跨章节题的相关 chunk 只标单篇,oracle 上下文缺对比方)→ 用户批准修正评估集(11 题补缺失 chunk,提交 `7ef69e7`)→ v2 神谕误拒答**降到 17.5%**;
+  - v2 剩余 7 题 oracle 拒答 = **生成器保守性**(要求从分散证据综合的对比题,DeepSeek 倾向拒答),非标注问题;
+  - 11 题真检索失败(real拒答且oracle能答):fact_01/02/06/09/10、method_03/04/10、comparison_04/06、cross_01 → **系统真实提升空间**(top-5 未召回答案 chunk)。
+- **归因结论**:引用正确率与拒答行为表现好(神谕 1.0/真实 0.958);检索能力可信(Hit@5=0.9);highest价值=神谕消融把"误拒答"拆成标注问题 vs 检索失败 vs 生成保守三部分。
+- 产物 `outputs/experiments/e01_dense/`(v1)+ `e01_dense_v2/`(修正后,config 记 git_head=7ef69e7)。plan 7 项要求全部满足(配置/commit/逐题/指标/延迟/不覆盖/不改结论)。
+- 已知:真检索失败的 11 题是 Day 12 Hybrid 等的对照基线;评估集修正后相关 chunk 数变化(对比题含多篇)。
+
+## Day 11 实验日志(2026-08-16,约 260 字)
+
+Day 11 第一次让系统交成绩。跑 E1 最精彩的是神谕消融:第一版误拒答率 37.5%,我一查发现 oracle 喂了标注 chunk 也有一批拒答——原来是 13 题里大部分是"对比题"或"跨章节题",相关 chunk 只标了单篇论文,oracle 上下文里根本没有对比方,生成器自然答不了。这坐实了误拒答率被评估集标注虚高。用户批准修正(11 题补缺失 chunk)后重跑,神谕误拒答从 32.5% 掉到 17.5%,总算把"标注噪声"和"真检索失败"分开。真正的发现是剩下的:11 题是"oracle 能答但 top-5 没召回"的真检索失败(fact_01/02 这种数字题),这才是 Dense 搜索该提升的地方;还有 7 题 oracle 也拒答,是 DeepSeek 对"要从分散证据综合"的对比题偏保守。要数据跑出"引用正确率 0.96、真拒答 100%、Hit@5 0.9",说明系统骨架是健康的,短板在召回端点。下一步 Day 12:BM25 和 Hybrid 对比。
+
 ## 待办(下一步)
 
 - [x] **Day 3 尾巴**:12 篇 PDF 已全部归入 `data/raw/papers/`
@@ -151,7 +170,8 @@ Day 10 给系统配了把"尺子"。先让 Explore agent 把 12 张卡片通读�
 - [x] **Day 8 · Dense Retrieval Baseline**:`src/retrieval/dense.py` + `scripts/build_index.py` + `scripts/query.py` + `tests/test_dense_retriever.py`;bge-m3 embedding 批处理、FAISS 索引、保存/加载、Top-K 检索,打印问题/Chunk ID/论文/章节/相似度/原文;439 chunks 建索引成功,中英文检索均精准命中
 - [x] **Day 9 · 接入 LLM 与引用**:`src/generation/prompts.py` + `src/generation/generator.py` + `src/pipeline.py`;问题→Dense Top-5→Prompt→LLM(DeepSeek)→答案→引用;query.py 读取 configs/dense.yaml;三组真实验收通过(闭环/retrieve-only 回归/拒答)
 - [x] **Day 10 · 构建评估集与指标**:50 题定稿(用户确认,15/10/10/5/10),`data/evaluation/questions.jsonl` 落盘并校验;`src/evaluation/retrieval_metrics.py`(Hit@K/MRR)+ `tests/test_metrics.py`;相关 chunk 经检索验证
-- [ ] **Day 11 · 运行 Dense Baseline**:E1 dense(bge-m3) top5 fixed 512/80;跑评估集逐题存结果(question→检索topk→分数→答案→引用→判定),算 Hit@K/MRR/引用正确率/Faithfulness/真误拒答率/平均延迟;产物 `scripts/run_experiment.py`
+- [x] **Day 11 · 运行 Dense Baseline**:E1 dense(bge-m3) top5 fixed 512/80 跑通;Hit@1/3/5=0.70/0.875/0.90、MRR=0.78、引用正确率 0.958、真拒答率 1.0、误拒答 0.4(含神谕归因,评估集修正后 oracle 误拒答 0.175);`outputs/experiments/e01_dense_v2/` 逐题可追溯
+- [ ] **Day 12 · 实现 BM25 和 Hybrid**:E2 BM25 + E3 Dense+BM25 RRF;`src/retrieval/{bm25,fusion}.py` + `scripts/run_experiment.py` 扩展;对比 E1
 
 ## 已知问题
 
