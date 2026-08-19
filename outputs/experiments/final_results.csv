@@ -1,14 +1,14 @@
-experiment,retriever,chunking,top_k,rerank,hit@1,hit@3,hit@5,mrr,citation_accuracy,true_refusal_rate,false_refusal_rate,should_have_refused,avg_latency_s,note
-E1 Dense,dense,fixed_512_80,5,no,0.7,0.875,0.9,0.78,0.9583,1.0,0.4,0,2.06,
-E2 BM25,bm25,fixed_512_80,5,no,0.0,0.075,0.125,0.0446,0.8,1.0,0.875,0,1.08,
-E3 Hybrid,hybrid,fixed_512_80,5,no,0.65,0.825,0.875,0.735,0.9565,1.0,0.425,0,1.89,
-E4 Hybrid+Rerank,hybrid_rerank,fixed_512_80,20→5,yes,0.675,0.875,0.875,0.7667,0.9615,1.0,0.35,0,307.83,
-E5 fixed_256_50,dense,fixed_256_50,5,no,0.625,0.85,0.875,0.73125,,,,,31.5203,"E5切块(章节级),256/50"
-E5 fixed_512_80,dense,fixed_512_80,5,no,0.55,0.85,0.9,0.6945833333333333,,,,,2.44528,"E5切块(章节级),当前最佳"
-E5 section_aware,dense,section_aware,5,no,0.525,0.825,0.875,0.6725,,,,,2.30606,"E5切块(章节级),0跨章但检索略弱"
-E6 Top-K=3,dense,fixed_512_80,3,no,0.7,0.875,0.875,0.775,,,,,0.38228,RQ3 Top-K消融(纯检索)
-E6 Top-K=5,dense,fixed_512_80,5,no,0.7,0.875,0.9,0.78,,,,,0.35414,RQ3 Top-K消融(纯检索)
-E6 Top-K=8,dense,fixed_512_80,8,no,0.7,0.875,0.9,0.7835714285714286,,,,,0.34568,RQ3 Top-K消融(纯检索)
-E6 Top-K=3(生成),dense,fixed_512_80,3,no,,,,,0.9583,1.0,0.4,0,2.07,北极星(引用/拒答/延迟)
-E6 Top-K=5(生成),dense,fixed_512_80,5,no,,,,,0.9615,1.0,0.35,0,2.2,北极星(引用/拒答/延迟)
-E6 Top-K=8(生成),dense,fixed_512_80,8,no,,,,,1.0,1.0,0.3,0,2.39,北极星(引用/拒答/延迟)
+experiment,retriever,chunking,top_k,rerank,hit@1,hit@3,hit@5,mrr,citation_accuracy,faithfulness,true_refusal_rate,false_refusal_rate,should_have_refused,avg_latency_s,note
+E1 Dense,dense,fixed_512_80,5,no,0.7,0.875,0.9,0.78,0.9583,0.9583,1.0,0.4,0,2.06,
+E2 BM25,bm25,fixed_512_80,5,no,0.0,0.075,0.125,0.0446,0.8,0.8,1.0,0.875,0,1.08,
+E3 Hybrid,hybrid,fixed_512_80,5,no,0.65,0.825,0.875,0.735,0.9565,0.9565,1.0,0.425,0,1.89,
+E4 Hybrid+Rerank,hybrid_rerank,fixed_512_80,20→5,yes,0.675,0.875,0.875,0.7667,0.9615,0.9615,1.0,0.35,0,307.83,
+E5 fixed_256_50,dense,fixed_256_50,5,no,0.625,0.85,0.875,0.73125,,,,,,31.5203,"E5切块(章节级),256/50"
+E5 fixed_512_80,dense,fixed_512_80,5,no,0.55,0.85,0.9,0.6945833333333333,,,,,,2.44528,"E5切块(章节级),当前最佳"
+E5 section_aware,dense,section_aware,5,no,0.525,0.825,0.875,0.6725,,,,,,2.30606,"E5切块(章节级),0跨章但检索略弱"
+E6 Top-K=3,dense,fixed_512_80,3,no,0.7,0.875,0.875,0.775,,,,,,0.38228,RQ3 Top-K消融(纯检索)
+E6 Top-K=5,dense,fixed_512_80,5,no,0.7,0.875,0.9,0.78,,,,,,0.35414,RQ3 Top-K消融(纯检索)
+E6 Top-K=8,dense,fixed_512_80,8,no,0.7,0.875,0.9,0.7835714285714286,,,,,,0.34568,RQ3 Top-K消融(纯检索)
+E6 Top-K=3(生成),dense,fixed_512_80,3,no,,,,,0.9583,0.9583,1.0,0.4,0,2.07,北极星(引用/拒答/延迟)
+E6 Top-K=5(生成),dense,fixed_512_80,5,no,,,,,0.9615,0.9615,1.0,0.35,0,2.2,北极星(引用/拒答/延迟)
+E6 Top-K=8(生成),dense,fixed_512_80,8,no,,,,,1.0,1.0,1.0,0.3,0,2.39,北极星(引用/拒答/延迟)

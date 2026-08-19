@@ -9,5 +9,6 @@
     "n_answerable": 40,
     "n_unanswerable": 10
   },
-  "faithfulness": 1.0
+  "faithfulness": 0.9615384615384616,
+  "faithfulness_note": "近似:引用正确性(无声明级证据标注,拒答不计入)"
 }

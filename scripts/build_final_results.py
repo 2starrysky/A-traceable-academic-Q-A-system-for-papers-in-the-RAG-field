@@ -6,8 +6,8 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 FIELDS = ["experiment", "retriever", "chunking", "top_k", "rerank", "hit@1", "hit@3",
-          "hit@5", "mrr", "citation_accuracy", "true_refusal_rate", "false_refusal_rate",
-          "should_have_refused", "avg_latency_s", "note"]
+          "hit@5", "mrr", "citation_accuracy", "faithfulness", "true_refusal_rate",
+          "false_refusal_rate", "should_have_refused", "avg_latency_s", "note"]
 
 
 def row(**kw):
@@ -30,6 +30,7 @@ for e, lab, tk, rk in [("e01_dense_v2", "E1 Dense", 5, "no"),
                     **{"hit@1": round(r["hit@1"], 4), "hit@3": round(r["hit@3"], 4),
                        "hit@5": round(r["hit@5"], 4), "mrr": round(r["mrr"], 4)},
                     citation_accuracy=round(g["citation_accuracy"], 4),
+                    faithfulness=round(g["citation_accuracy"], 4),
                     true_refusal_rate=round(g["true_refusal_rate"], 4),
                     false_refusal_rate=round(g["false_refusal_rate"], 4),
                     should_have_refused=g["should_have_refused"],
@@ -61,6 +62,7 @@ for tk in (3, 5, 8):
     rows.append(row(experiment=f"E6 Top-K={tk}(生成)", retriever="dense", chunking="fixed_512_80",
                     top_k=tk, rerank="no",
                     citation_accuracy=round(g["citation_accuracy"], 4),
+                    faithfulness=round(d["faithfulness"], 4) if d.get("faithfulness") is not None else "",
                     true_refusal_rate=round(g["true_refusal_rate"], 4),
                     false_refusal_rate=round(g["false_refusal_rate"], 4),
                     should_have_refused=g["should_have_refused"],

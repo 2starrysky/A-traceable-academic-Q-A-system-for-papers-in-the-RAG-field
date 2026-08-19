@@ -32,21 +32,24 @@
       "true_refusal_rate": 1.0,
       "false_refusal_rate": 0.4,
       "should_have_refused": 0,
-      "avg_latency": 2.0686399999999994
+      "avg_latency": 2.0686399999999994,
+      "faithfulness": 0.9583333333333334
     },
     "top5": {
       "citation_accuracy": 0.9615384615384616,
       "true_refusal_rate": 1.0,
       "false_refusal_rate": 0.35,
       "should_have_refused": 0,
-      "avg_latency": 2.19706
+      "avg_latency": 2.19706,
+      "faithfulness": 0.9615384615384616
     },
     "top8": {
       "citation_accuracy": 1.0,
       "true_refusal_rate": 1.0,
       "false_refusal_rate": 0.3,
       "should_have_refused": 0,
-      "avg_latency": 2.3875199999999994
+      "avg_latency": 2.3875199999999994,
+      "faithfulness": 1.0
     }
   },
   "total_time_sec": 721

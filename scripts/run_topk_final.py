@@ -148,19 +148,24 @@ def _run_generation_topk(retriever: DenseRetriever, questions: list[dict],
         real["refusal_class"] = generation_metrics.classify_refusal(gen.refused, answerable)
 
         rec = {"id": q["id"], "answerable": answerable, "real": real}
-        if answerable and gold_ids:
-            t0 = time.time()
-            ogen = generator.generate(q["question"], _oracle_hits(gold_ids, chunks))
-            rec["oracle"] = {"refused": ogen.refused, "latency": round(time.time() - t0, 3)}
         per.append(rec)
 
     real_records = [{"answerable": r["answerable"], "refused": r["real"]["refused"],
                      "citation_correct": r["real"]["citation_correct"], "latency": r["real"]["latency"]}
                     for r in per]
     gen_real = generation_metrics.compute_generation_metrics(real_records)
-    faith = sum(1 for r in per if r["answerable"])  # 强约束只依据上下文作答 → 忠实
-    faithfulness = faith / gen_real["n_answerable"] if gen_real["n_answerable"] else 0.0
-    return {"top_k": top_k, "generation_real": gen_real, "faithfulness": faithfulness}, per
+    # Faithfulness 代理:本项目无"答案声明↔证据"标注,无法严格度量;
+    # 以"引用正确性"作操作化近似(答案忠实于证据 ≈ 引用的出处正确)。
+    # 拒答的答案既非忠实也非不忠实,排除——分母用"作答且引用正确的可答题"。
+    answered = [r for r in per if r["answerable"] and not r["real"]["refused"]]
+    faith = sum(1 for r in answered if r["real"]["citation_correct"])
+    faithfulness = faith / len(answered) if answered else None
+    return {
+        "top_k": top_k,
+        "generation_real": gen_real,
+        "faithfulness": faithfulness,
+        "faithfulness_note": "近似:引用正确性(无声明级证据标注,拒答不计入)",
+    }, per
 
 
 def _write_final_csv() -> None:

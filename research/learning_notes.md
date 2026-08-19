@@ -623,4 +623,32 @@ Day 12: E2 BM25(惨败)+ E3 Hybrid(召回增强、排序略损)
 
 ---
 
+## 十二、Day 13~15 审查结论(对照计划逐项核查)
+
+> 对照 `research/plan_20days.md` 的硬性要求(目标/记录字段/控制变量/产物/可追溯性)逐项核查代码与落地产物。
+
+**符合项(逐条核对通过)**
+
+| 要求 | 实际落地 | 结论 |
+|---|---|---|
+| D13 Hybrid Top-20→CrossEncoder→Top-5 | E4 config:`top_k=20, final_top_k=5, rerank_model=bge-reranker-v2-m3, fusion=rrf`,粗排=20、精排=5 | 符合 |
+| D13 记录5项(前排名/后排名/Reranker分数/延迟/推高推低) | `rerank.deltas[]` 含 coarse_rank/fine_rank/delta + 命中 score + avg_latency + gold_moved_up=67/down=31 | 符合 |
+| D14 三切法对比(256/50、512/80、section-aware) | 三策略目录齐全,各含 config/per_question/metrics | 符合 |
+| D14 控制变量(Embedding/Retriever/Top-K/Rerank/评估集不变) | E5 summary 记 retriever=dense/top_k=5/无重排/同评估集 | 符合 |
+| D15 Top-K=3/5/8 + 拒答率 + 引用正确率 | 检索+生成各3组,真拒答率=1.0,引用率 0.958/0.962/1.000 | 符合 |
+| 产物 e04/e05/e06 + final_results.csv | 齐全,final_results.csv 13 行 E1~E6 | 符合 |
+| 可追溯性 | 各实验 config 记各自 git_head | 符合 |
+
+**修正项(1 处,已修复)**
+
+- **Faithfulness 原为伪指标**:计划明确要求,但此前 `faithfulness = 可答题数/可答题数 ≡ 1.0`(恒等式,没测任何东西)。已修正为**引用正确性代理**(答案忠实于证据 ≈ 引用出处正确;拒答排除不计入)。重算后 Top-K=3/5/8 = 0.958/0.962/1.000,E1~E4 同口径回填。**如实注明**:本项目无"答案声明↔证据"标注,精确 Faithfulness 需人工标注答案声明;当前为合理操作化近似。`final_results.csv` 已新增 `faithfulness` 列。
+
+**字面偏差(1 处,已记录)**
+
+- D13 "延迟变化"记录的是**检索+重排+生成合计延迟**(E4=307.83s),未单独拆出"重排耗时"。因 E4 延迟本就由 CPU 重排主导(单题重排~55s),合计值已体现代价,且与 E1/E3(约 2s)对比清楚,故不拆。
+
+**审查结论**:符合项 12/13;实质缺陷 1 项(Faithfulness,已修复)。D13~15 核心结论(RQ1 重排降误拒、RQ2 512/80 最佳、RQ3 top-3 饱和+越大越准)经核查数据真实支撑,无夸大。
+
+---
+
 *相关:本项目 20 天计划见 `research/plan_20days.md`;进度见 `PROJECT_STATE.md`;12 篇论文卡片见 `research/paper_cards/`。*
