@@ -1,0 +1,13 @@
+{
+  "top_k": 3,
+  "generation_real": {
+    "citation_accuracy": 0.9583333333333334,
+    "true_refusal_rate": 1.0,
+    "false_refusal_rate": 0.4,
+    "should_have_refused": 0,
+    "avg_latency": 2.0686399999999994,
+    "n_answerable": 40,
+    "n_unanswerable": 10
+  },
+  "faithfulness": 1.0
+}

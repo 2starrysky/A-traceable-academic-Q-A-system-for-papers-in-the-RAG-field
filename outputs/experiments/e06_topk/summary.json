@@ -1,0 +1,53 @@
+{
+  "experiment": "E6_topk",
+  "retriever": "dense",
+  "chunking": "fixed_512_80",
+  "git_head": "4115e90",
+  "strategies": {
+    "top3": {
+      "hit@1": 0.7,
+      "hit@3": 0.875,
+      "hit@5": 0.875,
+      "mrr": 0.775,
+      "avg_latency": 0.38228
+    },
+    "top5": {
+      "hit@1": 0.7,
+      "hit@3": 0.875,
+      "hit@5": 0.9,
+      "mrr": 0.78,
+      "avg_latency": 0.35414
+    },
+    "top8": {
+      "hit@1": 0.7,
+      "hit@3": 0.875,
+      "hit@5": 0.9,
+      "mrr": 0.7835714285714286,
+      "avg_latency": 0.34568
+    }
+  },
+  "topk_generation": {
+    "top3": {
+      "citation_accuracy": 0.9583333333333334,
+      "true_refusal_rate": 1.0,
+      "false_refusal_rate": 0.4,
+      "should_have_refused": 0,
+      "avg_latency": 2.0686399999999994
+    },
+    "top5": {
+      "citation_accuracy": 0.9615384615384616,
+      "true_refusal_rate": 1.0,
+      "false_refusal_rate": 0.35,
+      "should_have_refused": 0,
+      "avg_latency": 2.19706
+    },
+    "top8": {
+      "citation_accuracy": 1.0,
+      "true_refusal_rate": 1.0,
+      "false_refusal_rate": 0.3,
+      "should_have_refused": 0,
+      "avg_latency": 2.3875199999999994
+    }
+  },
+  "total_time_sec": 721
+}
