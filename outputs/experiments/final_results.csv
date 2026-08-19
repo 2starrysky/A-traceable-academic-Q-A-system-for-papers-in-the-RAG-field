@@ -1,0 +1,8 @@
+experiment,retriever,chunking,top_k,rerank,hit@1,hit@3,hit@5,mrr,citation_accuracy,true_refusal_rate,false_refusal_rate,should_have_refused,avg_latency_s,note
+E1 Dense,dense,fixed_512_80,5,no,0.7,0.875,0.9,0.78,0.9583,1.0,0.4,0,2.06,
+E2 BM25,bm25,fixed_512_80,5,no,0.0,0.075,0.125,0.0446,0.8,1.0,0.875,0,1.08,
+E3 Hybrid,hybrid,fixed_512_80,5,no,0.65,0.825,0.875,0.735,0.9565,1.0,0.425,0,1.89,
+E4 Hybrid+Rerank,hybrid_rerank,fixed_512_80,20→5,yes,0.675,0.875,0.875,0.7667,0.9615,1.0,0.35,0,307.83,
+E6 Top-K=3,dense,fixed_512_80,3,no,0.7,0.875,0.875,0.775,,,,,0.33856,RQ3 Top-K消融(纯检索)
+E6 Top-K=5,dense,fixed_512_80,5,no,0.7,0.875,0.9,0.78,,,,,0.31873999999999997,RQ3 Top-K消融(纯检索)
+E6 Top-K=8,dense,fixed_512_80,8,no,0.7,0.875,0.9,0.7835714285714286,,,,,0.31544,RQ3 Top-K消融(纯检索)
