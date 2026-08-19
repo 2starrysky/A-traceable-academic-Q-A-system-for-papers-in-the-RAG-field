@@ -188,6 +188,7 @@ def main() -> None:
     print(f"开始实验: method={method_label}, {len(questions)} 题, top_k={top_k} ...")
 
     per_question: list[dict] = []
+    _t_start = time.time()
     for i, q in enumerate(questions, 1):
         answerable = bool(q.get("answerable"))
         gold_ids = q.get("relevant_chunk_ids", [])
@@ -254,7 +255,9 @@ def main() -> None:
 
         per_question.append(record)
         if i % 10 == 0:
-            print(f"  完成 {i}/{len(questions)}")
+            print(f"  完成 {i}/{len(questions)}  (用时 {time.time() - _t_start:.0f}s)")
+        elif rerank:
+            print(f"  [{i}] {q['id']} 重排 {real_lat:.1f}s", flush=True)
 
     # ---- 指标 ----
     # 检索(Hit@K/MRR):gold=相关 chunk,只在可答题上
