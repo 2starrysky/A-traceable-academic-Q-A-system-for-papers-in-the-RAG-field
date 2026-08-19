@@ -151,6 +151,9 @@ def main() -> None:
     ap.add_argument("--device", default=None)
     args = ap.parse_args()
 
+    print(f"\n>>> 启动实验: {args.config} (method 待解析) @ {time.strftime('%Y-%m-%d %H:%M:%S')}")
+    sys.stdout.flush()
+
     with open(ROOT / args.config, encoding="utf-8") as fh:
         cfg = yaml.safe_load(fh) or {}
     retrieval_cfg = cfg.get("retrieval", {})
