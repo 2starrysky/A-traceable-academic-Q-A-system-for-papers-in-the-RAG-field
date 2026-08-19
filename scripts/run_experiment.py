@@ -79,8 +79,9 @@ def _citation_correct_for(citations, gold_paper_id: str, gold_chunk_ids, gold_se
                for c in citations)
 
 
-def _build_retriever(method: str, retrieval_cfg: dict, chunks: dict[str, dict], device=None):
-    """按 method 构造检索器:dense / bm25 / hybrid(RRF)。
+def _build_retriever(method: str, retrieval_cfg: dict, chunks: dict[str, dict],
+                     top_k: int = 5, device=None):
+    """按 method 构造检索器:dense / bm25 / hybrid(RRF) / hybrid_rerank。
 
     返回 (retriever, method_label)。均实现 search(query, top_k) -> list[RetrievalHit]。
     """
@@ -176,7 +177,7 @@ def main() -> None:
         print(f"ERROR 评估集 {len(questions)} 题 != 50", file=sys.stderr)
         sys.exit(1)
 
-    retriever, method_label = _build_retriever(method, retrieval_cfg, chunks, device=args.device)
+    retriever, method_label = _build_retriever(method, retrieval_cfg, chunks, top_k=top_k, device=args.device)
     rerank = method == "hybrid_rerank"
     generator = create_generator(
         provider=gen_cfg.get("provider", "deepseek"),
