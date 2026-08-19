@@ -152,4 +152,380 @@ Day 11-12 跑实验 (用考试卷量三种检索方式)               → 给不
 
 ---
 
+---
+
+## 七、Day 7~9 逐日代码详解(含函数级)
+
+> 本节按"先讲它在实验里起什么作用、再指着真实函数讲它怎么做"的方式,给 Day 7~9 做函数级拆解。
+> 延续"图书馆/图书管理员"比喻。**先讲为什么,再讲怎么做。**
+
+### Day 7:切块(`src/ingestion/splitter.py`)——把论文切成带身份证的小块
+
+**它在实验里干什么**:系统要"问某句话、答某句话",但整篇论文太长,既塞不进模型上下文,也无法定位出处。切块 = 像**切香肠**一样把每篇论文切成一段段。每段都**小得进得了模型、大得表达完整意思**,并且**标好身份证**:出自哪篇论文、哪个章节、哪几页、第几个块。这个"身份证"就是后面"可溯源"的物质基础。
+
+**为什么做两种切法**(对应 RQ2 切块消融):
+- **fixed(固定切)**:切香肠——不管内容,每 512 个 token 一刀。简单,但可能把一句话从中间劈开,甚至跨章节。
+- **section-aware(按章节切)**:按盘分菜——每道"章节"单独切,绝不跨盘。溯源天然准,但可能切出很短的块。
+
+**代码怎么做的**:
+
+1. **每块的身份证(`Chunk` 类,第 22~48 行)**:每个 Chunk 有 chunk_id、paper_id、title、section(主章节)、sections(涉及的所有章节)、page_start/end、text、chunking(标记是 fixed 还是 section_aware)、token_count。`frozen=True` 表示一旦创建就不能改,防止后面流程把出处记录改坏。
+
+2. **一切都在 token 流上做(`_build_stream`,第 51~62 行)**:代码不直接切文字,而是先把所有段落 encode 成一串**数字 token**(模型只认识数字),用空行隔开拼成长流;同时记下"每段话在流里的起止位置 + 章节 + 页码",这张表叫 `segs`。
+   - **为什么用 token 而不是字符切**:因为模型的上下文长度是按 token 算的,切 512 字符 ≠ 512 token。用 token 切才能精确控制"不超模型上限"。
+
+3. **滑动窗口切法(`_windows`,第 65~82 行)——两种切法共用,最关键**:
+   ```
+   step = max(1, chunk_size - overlap)  # 步长 = 块大小 - 重叠
+   ```
+   比喻:**切香肠时相邻两刀之间留一段重叠**。chunk_size=512、overlap=80 → 步长 = 432。**重叠是为了不把一句话劈开**——"因为...所以..."这种长句,有重叠就保证它完整出现在某一块里。
+
+4. **两种切法的唯一区别**:
+   - `split_fixed`(第 107~136 行):整篇段落**无脑拼成一条流**,从头滑到尾。结果窗口可能跨章节。
+   - `split_section_aware`(第 139~175 行):先按章节**分组**(第 149~154 行,相同 `doc.section` 归一组),**在每个组内部**单独滑窗。每块只属于一个章节。
+
+5. **切完怎么标"属于哪章哪页"(`_build_chunk_data`,第 85~104 行)**:把窗口 token 解码回文字 → 查 `segs` 表找出覆盖窗口区间的所有段落 → 主章节 = 窗口起点落在哪段里 → 页码 = 覆盖段落的最小页到最大页。
+
+**统计结果**:fixed 切出 439 块(平均 504 token,**149 块跨章节**);section-aware 切出 505 块(平均 422 token,**0 块跨章节**)。149 块跨章节就是 fixed 溯源会模糊的直接证据,也是做对比实验的理由。
+
+---
+
+### Day 8:Dense Retrieval(`src/retrieval/dense.py`)——给图书馆建"语义索引"
+
+**它在实验里干什么**:现在有了 439 块段落("图书馆的书")。有人问"RAG-Sequence 是什么?",系统得找出和这个问题最相关的几块。Dense 检索的核心比喻:给每块段落算一个"**意思指纹**"(1024 维向量),意思越像,数字串越接近。提问时把问题也变成同样长度的指纹,找**和它最接近**的段落。
+
+**为什么用 Dense 不用 BM25**:BM25 是"**按关键词字面匹配**"——搜 `villain`(反派)找不到写 `bad guy`(坏人)的段落,因为字不一样。Dense 是"**按意思匹配**"——villain 和 bad guy 意思一样,指纹接近,就能找到。RQ1 就要对比这两条路线。
+
+**代码怎么做的**:
+
+1. **把每块变成向量**:`from_model_name("BAAI/bge-m3")`(第 178~190 行)加载模型,内部有一个 `encode_fn`——喂一段文字,吐一串 1024 维数字。`_prepare_model`(第 145~161 行)检查本机 `data/models/` 有没有本地模型,有就离线加载(解决镜像站域名校验的坑)。
+
+2. **建索引(`build_index`,第 73~91 行)**:
+   ```
+   vecs = encode_fn(texts)           # 439 块 → 439 个向量
+   index = faiss.IndexFlatIP(dim)    # "精确内积"索引
+   index.add(vecs)                   # 灌进去
+   ```
+   FAISS = Facebook 的"超快找最相似向量"库。`IndexFlatIP` = 存所有向量,查询时用内积算相似度。数据量小(439 个)够用。
+   - **关键设计**:向量(`index.faiss`)和元数据(`meta.jsonl`)**分开保存,但顺序一一对应**——索引第 0 个向量 = meta 第 0 行。后续所有溯源的准确,都靠这个"顺序对齐"。
+
+3. **提问时检索(`search` 第 215~217 行 + `search_index` 第 130~142 行),三步**:
+   - ①问题也变成向量(`encode_query`)
+   - ②`index.search(qv, k)` 算问题和 439 个向量的内积,取最大前 K 个
+   - ③把对应元数据找回来,包成 `RetrievalHit` 返回
+
+   **`RetrievalHit`(第 17~47 行)**:一次检索命中的完整记录——除相似度分数,还带 chunk_id、paper_id、section、页码、原文。**这些就是"可溯源"要的全部字段。**
+
+4. **保存/加载可复现(`save` 第 219~222 行)**:索引 + 元数据 + `config.json`(记模型、维度、git 提交)一起存,凭 config 以后能重跑出一模一样的索引。
+
+**验证**:问中文"RAG-Sequence是什么?"Top-2 命中 rag 论文 2 Methods(定义处);问英文"What is HyDE?"Top-1 即 Introduction 定义处。**双语都精准** = "按意思找"真生效。
+
+---
+
+### Day 9:接 LLM 并强制"标引用"(`prompts.py` + `generator.py` + `pipeline.py`)——让管理员开口,且必须报出处
+
+**它在实验里干什么**:前两步备好了"证据材料",Day 9 让系统**真正开口回答**。核心危险是大模型的"幻觉"——会一本正经编造不存在的引用。所以 Day 9 的核心不是"让模型回答",而是"**让模型回答,且必须说出每个回答的依据来自哪块段落**"。
+
+**全项目的灵魂设计**:你**不让模型自己猜章节号**,而是:
+1. 检索器把 top-5 块喂给模型,每块带编号 `[1][2][3][4][5]`;
+2. 模型回答时用 `[1]`、`[2]` 标注"这句话依据第几块";
+3. **由你的程序**把 `[1]` 查回真实的 chunk_id、论文、章节。
+
+**为什么这么绕**:如果让模型直接说"出自 Methods 第 5 节",那**测的是模型的记性,不是检索器的能力**。模型可能瞎编章节名,或碰巧猜对。你想测的是"检索器有没有把对的段落捞出来"——所以章节信息必须由检索器带回(本就带在 `RetrievalHit` 里),模型只负责"选编号"。**这样模型没法撒谎**。这也是 Day 11 能用 oracle 精准归因的前提。
+
+**代码怎么做的**:
+
+**① `prompts.py` 提示词模板**:
+- `build_system_prompt`(第 8~21 行)逐条钉死模型:只能依据上下文回答;不够就拒答说"无法从给定材料中回答";不得编造章节页码(以上下文标注为准);引用用 `[1][2]` 标注(取上下文编号)。
+  - 第 2 条"拒答"对应 H1;第 3、5 条就是"模型只选编号、不猜章节"。
+- `build_user_prompt`(第 33~43 行)把 5 块格式化成编号块,每块带 `论文 | 章节 | 页码 | Chunk ID | 原文`,末尾附问题。**章节/页码/Chunk ID 都随块进来**——模型看到的"章节:2 Methods"是检索器捞回来的真实信息,不是它猜的。
+
+**② `generator.py` 调用 LLM + 解析引用**:
+- `Generator.generate`(第 43~58 行):
+  - **空命中直接拒答**(第 44~45 行):`hits` 为空时根本不调 API,直接返回"无法从给定材料中回答"——省钱,也符合"没证据不答"。
+  - 否则组装系统/用户提示 → 调 DeepSeek → 拿回答文本 → `_parse_citations` 解析引用 → 识别是否拒答。
+- `_parse_citations`(第 60~72 行)**把 [n] 映射回真实段落**:正则提取所有 `[数字]` → 越界编号(如模型瞎写 `[99]`)丢弃 → `[1]` 对应第 0 个命中 → 去重后返回。**越界丢弃 + 去重就是"防模型撒谎"的护栏**。
+- 拒答识别(`_REFUSAL_PATTERNS` 第 17~22 行):正则匹配"无法从给定材料中回答""上下文中没有"等,判断模型是"答了"还是"拒答了",直接关系到 H1 的真/误拒答拆分。
+- `create_generator`(第 75~92 行):从 `.env` 读 DeepSeek API key 的工厂函数。
+
+**③ `pipeline.py` 串起来(最薄最关键,第 33~38 行)**:
+```
+def answer_question(question, retriever, generator, top_k=5):
+    hits = retriever.search(question, top_k=top_k)     # 检索
+    generation = generator.generate(question, hits)     # 生成
+    return PipelineResult(question, hits, generation)
+```
+**一行核心逻辑就通了整个 RAG 闭环。** 注意 retriever 和 generator 都是"可注入"的——run_experiment 换 dense/bm25/hybrid,**pipeline 一行都不用改**。retriever 只需有 `search(q, top_k)`,generator 只需有 `generate(q, hits)`——**统一的接口契约**,这是 Day 11/12 能"换电池换检索方法"的根基。
+
+**真实验收**:问"RAG-Sequence是什么?"出带引用答案,精准引用 rag 论文 2 Methods/2.4 Training,并自动跳过 Top-1 不相关的综述命中(说明模型真在"选证据")。问知识库外的"量子退火",正确拒答。
+
+---
+
+### Day 7~9 串起来看
+
+```
+12 篇 PDF
+  ↓ Day 6 处理
+documents.jsonl(1888 段,带章节/页码)
+  ↓ Day 7 切块
+chunks_fixed.jsonl(439 块,每块有身份证)
+  ↓ Day 8 建语义索引
+dense_index/(439 个"意思指纹")
+  ↓ Day 9 接 LLM
+问"RAG-Sequence是什么?"
+  → 检索器捞 5 块(带章节/页码/Chunk ID)
+  → 模型依块回答 + 标 [1][2]
+  → 程序把 [1][2] 映射回真实出处
+  = 带出处的答案 ✓
+```
+
+**一条"证据链"就此打通。**
+
+---
+
+## 八、Day 10~12 逐日代码详解(含函数级)
+
+> 延续"先讲它在实验里起什么作用、再指着真实函数讲它怎么做"的方式。
+
+### Day 10:造评估集(`data/evaluation/questions.jsonl` + `src/evaluation/retrieval_metrics.py`)——出考试卷
+
+**它在实验里干什么**:系统能回答问题了,但**怎么知道它答得好不好**?就像学生考完试,得先有"标准答案"才能打分。评估集 = **一张有标准答案的考试卷**,50 道题,每题有:标准答案、答案出自哪篇论文、答案出自哪些段落(relevant_chunk_ids)、这道题**能不能答**(answerable:true/false)。
+
+**为什么分五种题型**(每类考系统一种不同能力):
+
+| 类型 | 数量 | 考什么 |
+|---|---|---|
+| 事实题 | 15 | 能不能捞到具体数字/定义 |
+| 方法理解 | 10 | 能不能解释一个方法怎么工作 |
+| 对比题 | 10 | 能不能整合**两篇不同论文**的信息(最难) |
+| 跨章节 | 5 | 能不能整合**同一篇不同章节**的信息 |
+| 无答案题 | 10 | 系统**该不该拒答**——拒答=正确(真拒答);该答没答=错误(误拒答) |
+
+**无答案题(10 道)是 H1 假设的命门**,专门考系统"克制自己、不乱编"的能力,直接决定能不能区分"真拒答"和"误拒答"。
+
+**检索指标怎么算(`retrieval_metrics.py`)**:
+
+1. **`hit_at_k`(第 9~14 行)——最直观**:
+   ```
+   def hit_at_k(retrieved_ids, gold_ids, k):
+       gold = set(gold_ids)
+       if not gold:
+           return False                    # 无答案题不算
+       return bool(gold & set(retrieved_ids[:k]))  # 正确答案有没有出现在前 k 个里
+   ```
+   比喻:看"系统列出的前 k 个依据里,有没有一个是标准出处"。前 1 个=Hit@1(最强),前 3 个=Hit@3,前 5 个=Hit@5。
+
+2. **`mrr`(第 17~23 行)——平均倒数排名**:
+   ```
+   def mrr(retrieved_ids, gold_ids):
+       for rank, cid in enumerate(retrieved_ids, 1):
+           if cid in gold:
+               return 1.0 / rank           # 第 1 个命中→1.0;第 2 个→0.5;第 3 个→0.33
+       return 0.0                          # 没命中→0
+   ```
+   比喻:不仅看"找没找到",还看"排第几找到的"。找对了但排第 5,比排第 1 差——因为排越靠前,模型越可能被引用到。MRR 把"排名靠前的命中"奖励得更重。
+   - **Hit@K 和 MRR 互补**:Hit@K 只问"找没找到",MRR 问"排第几找到"。光有一个不够。
+
+3. **`evaluate_retrieval`(第 26~52 行)——批量汇总**:对 50 题逐一算再平均。注意第 40 行 `if not gold: continue`——**无答案题(gold 空)不参与检索指标**,因为无答案题本来就没标准出处。
+
+---
+
+### Day 11:E1 Dense Baseline + 神谕归因(`run_experiment.py` + `generation_metrics.py`)
+
+**它在实验里干什么**:50 题全跑一遍 Dense 检索算分。但 Day 11 最关键的**不是跑实验,而是"神谕(oracle)检索归因"**。
+
+**什么是神谕检索?——趟坑趟出来的科研精髓**:
+
+当引用正确率只有 60% 时,你不知道是:
+- **检索器的锅**:没把对的段落捞出来(没证据,自然答错)
+- **生成器的锅**:捞到了对答案,但模型答砸了
+
+**神谕 = 开挂**——不跑检索器,直接把标准答案所在段落喂给模型,看它能答对多少(`_oracle_hits`,第 63~74 行):
+```
+def _oracle_hits(chunk_ids, chunks):
+    hits = []
+    for cid in chunk_ids:                     # 直接用标注的正确 chunk
+        hits.append(RetrievalHit(...))        # 分数直接给 1.0
+    return hits
+```
+**归因逻辑**:真实 60%、神谕 90% → **差距是检索的锅**;神谕也只有 60% → **不是检索问题**,是生成器或评估集标注的问题。
+- **比喻**:真实检索=让学生自己翻书;神谕=直接把答案页翻好递给学生。递到手还答错 → 学生(生成器)或卷子(评估集)的问题;能答对但自己翻不到 → 翻书能力(检索器)的问题。
+
+**生成指标怎么算(`generation_metrics.py`)**:
+
+1. **双层引用判定(第 26~33 行)——北极星指标**:
+   ```
+   def citation_correct(citation, gold_paper_id, gold_chunk_ids, gold_sections):
+       if citation.paper_id != gold_paper_id:
+           return False                     # 论文错 → 直接错
+       if citation.chunk_id in set(gold_chunk_ids):
+           return True                      # chunk 完全对上 → 对
+       return any(section_match(citation.section, gs) for gs in gold_sections)
+   ```
+   **论文 + 章节两层都对才算引用正确。** 光论文对不算(同一篇几十章,指错章等于没溯源)。
+   - **章节怎么算"对"**(第 14~23 行):用"**章节号前缀匹配**"——参考答"5 Experiments",chunk 实际"5.2 Ablation Study",直接比对对不上,但取章节号"5"和"5"相等 → 算同一章。这是趟出来的真实坑(坑 #3)。
+
+2. **拒答四分类(第 36~41 行)——H1 的命门**:
+   ```
+   def classify_refusal(refused, answerable):
+       if refused:
+           return "true_refusal" if not answerable else "false_refusal"
+       return "answered_ok" if answerable else "should_have_refused"
+   ```
+   2×2 表:
+
+   |  | 有答案(answerable=true) | 无答案(answerable=false) |
+   |---|---|---|
+   | **拒答** | **误拒答**(该答没答=检索失败) | **真拒答**(该拒答=正确 ✓) |
+   | **作答** | **答对了** | **应拒未拒**(乱编=错误 ✗) |
+
+   四个分类是 H1 的完整度量——光看"拒答率"一个数不够,必须拆开看。
+
+3. **汇总(第 44~79 行)**:`compute_generation_metrics` 算引用正确率、真拒答率、误拒答率、应拒未拒数、平均延迟。
+   - **注意分母**(第 72 行):引用正确率的分母 = "**作答的可答题**"。拒答的不算(由拒答率另算)——不能让"拒答"稀释"引用正确率"。
+
+**`run_experiment.py` 主流程(第 116~249 行)**:逐题跑真实检索 + 神谕检索(仅可答题),都记延迟。落盘三份:
+- `config.json`:配置 + **git commit hash** + 评估集版本 + 时间戳 → 可追溯
+- `per_question.jsonl`:逐题全量(真实 + 神谕) → 可逐题复查
+- `metrics.json`:汇总指标 → 可直接画论文图
+- **不覆盖旧实验**(第 127~129 行):目录已存在就报错退出——科研纪律,每次实验是独立可追溯快照。
+
+**E1 v2 成绩单 + 神谕揪出的坑**:
+
+| 指标 | Dense 真实 | 神谕 | 含义 |
+|---|---|---|---|
+| Hit@1/3/5 | 0.70/0.875/0.90 | — | 召回不错 |
+| MRR | 0.78 | — | 答案排得靠前 |
+| 引用正确率 | 0.958 | 1.0 | 几乎都引对 |
+| 真拒答率 | 1.0(10/10) | — | 无答案题全拒对 ✓ |
+| 误拒答率 | 0.40 | 0.175 | 有些该答的题拒答了 |
+
+**神谕归因揪出的真实坑**:v1 神谕误拒答率 32.5% → 一查发现**评估集标注问题**(对比题只标了单篇论文段落,神谕喂进去没另一篇内容,模型答不了)→ 补上缺失 chunk → 降到 17.5%。**修的是标注,不是改系统。** 这就是"先有尺子再量东西"的意义。
+
+---
+
+### Day 12:BM25 + Hybrid(E2/E3)(`bm25.py` + `fusion.py`)
+
+**它在实验里干什么**:RQ1 要对比三种检索,Dense(E1)跑完,现在跑 BM25 和 Hybrid。
+
+**BM25 怎么做(`bm25.py`)**:按**关键词字面频率**打分——chunk 里出现"query 里的词"越多,分越高。
+```
+class BM25Retriever:
+    @classmethod
+    def from_chunks(cls, chunks):
+        corpus = [_tokenize(c["text"]) for c in chunks]   # 每块切词
+        bm25 = BM25Okapi(corpus)                           # 建索引
+        return cls(bm25, metas)
+
+    def search(self, query, top_k=5):
+        q_tok = self._tokenize(query)                      # 问题也切词
+        scores = self._bm25.get_scores(q_tok)              # 算每个 chunk 的 BM25 分
+        order = sorted(..., reverse=True)[:top_k]          # 取 top_k
+        包成 RetrievalHit 返回
+```
+用 `tiktoken cl100k_base` 切词(第 16~19 行),和 Dense 侧**同一个分词器**,保证两边 token 一致。
+- **比喻**:BM25 = 图书馆"关键词卡片",只有字面出现的词能查到。"villain"查不到"bad guy"。
+
+**Hybrid + RRF 融合怎么做(`fusion.py`)**:Hybrid = Dense + BM25 一起用,但两分数**尺度不同**(Dense 是 0~1 内积,BM25 是任意正数),不能直接相加。用 **RRF(互惠秩融合)**:
+```
+def reciprocal_rank_fusion(ranked_lists, k=60):
+    acc = {}
+    for lst in ranked_lists:
+        for rank, item in enumerate(lst, 1):
+            acc[item] = acc.get(item, 0.0) + 1.0 / (rank + k)  # 名次越靠前,分越高
+    return 按融合分降序排列
+```
+**RRF 的妙处**:不关心原始分数多少,只关心"**在每条列表里排第几**"。某 chunk 如果同时在 Dense 和 BM25 都排前面,融合分就高。
+
+`merge_hits`(第 25~45 行):按 chunk_id 做 RRF 融合,取 top_k,保留原始元数据。
+
+**在 `run_experiment.py` 里怎么串联**(第 100~111 行):
+```
+class _Hybrid:
+    def search(self, query, top_k=5):
+        d = dense.search(query, top_k=top_k * 2)   # 候选放大,避免融合丢边
+        b = bm25.search(query, top_k=top_k * 2)
+        return merge_hits(d, b, top_k=top_k)
+```
+**为什么 `top_k * 2`**:融合会重排序,只取 top_5 再融合可能丢第 6~10 里的好结果。放大候选池再融合再取 top_5,更安全。
+- **坑修复**:hybrid 首跑 `AttributeError: search`——merge_hits 返回裸列表不是带 search 方法的对象。用 `_Hybrid` wrapper 类包一下(提交 ffa57dd)。
+
+**三组对比结果**:
+
+|  | E1 Dense | E2 BM25 | E3 Hybrid |
+|---|---|---|---|
+| Hit@1 | **0.70** | **0.00** | 0.65 |
+| MRR | **0.78** | 0.045 | 0.735 |
+| 引用正确率 | **0.958** | 0.80 | 0.952 |
+| 误拒答率 | 0.40 | 0.875 | 0.425 |
+
+**两个关键发现**:
+1. **BM25 惨败(Hit@1=0)**——50 题多是中文语义题,按字面匹配根本捞不到。印证 H2(dense 完胜)。**"负结果"也是可发表的结论**。
+2. **Hybrid"召回增强、排序略损"**——逐题看,E1 的 11 个真检索失败题,**Hybrid 找回 10 个**(BM25 的英文/数字 token 补 Dense 盲区);但整体 Hit@1 略输 Dense,因 BM25 噪声挤掉 Dense 准确 top 位。**这就是 RQ1 的细致答案**。
+
+---
+
+### Day 10~12 串起来看
+
+```
+Day 10: 造 50 题考试卷(5 类题型,每题有标准答案+出处+能否答)
+  ↓
+Day 11: E1 Dense 跑分 + 神谕归因
+  → 真实 95.8% vs 神谕 100% → 差距=检索失败贡献
+  → 神谕揪出评估集标注坑 → 修正 → 重跑 v2
+  ↓
+Day 12: E2 BM25(惨败)+ E3 Hybrid(召回增强、排序略损)
+  → 逐题对照:Hybrid 找回 E1 失败的 10/11 题
+  → RQ1 初步回答
+```
+
+### 整个 Day 7~12 的完整证据链
+
+```
+切块(439块带身份证) → 建索引(语义指纹) → 检索(捞5块)
+    → 生成(模型依块答+[n]标注) → 解析([n]映射回真实出处)
+        → 评估(逐题对照标准答案)
+            → 归因(神谕分离检索/生成/评估集三锅)
+```
+
+**每一步可追溯、可复现、可归因**——这就是科研型项目的标准。
+
+---
+
+## 九、Day 13:加入 Reranker(精排)——先"挑一打候选"再"精挑细选"(E4)
+
+**它在实验里干什么**:E3 已经拿到 Hybrid(粗排)结果,但 RRF 融合有个先天短板:它只看"每条列表里排第几",不看"问题和段落到底配不配"。RQ1 的最后一种方案是 **Hybrid + Reranker**:粗排(混合)先召回一批候选(20 个)→ 重排器把"问题+每个候选段落"当成配对喂给一个更强的模型,重新打分 → 只留最贴切的前 5 个。计划里这一步叫 E4。
+
+**为什么要"粗排+精排"两步走,而不是一个强模型从头排到尾?** 因为重排模型(**CrossEncoder**)特别准,但也特别慢——它要"逐对"看问题和段落,439 个候选要算 439 次。粗排(Dense/BM25)飞快,439 个一次算完。所以分工:**粗排负责"快而广"地把范围缩到 20 个,精排负责"慢而准"地在这 20 个里挑 5 个**。
+
+- **比喻**:粗排像"在货架上快速扫一圈、抱一怀候选下来";精排像"坐下来一本本翻,挑最贴切的那本"。
+- **和 Day 12 的关系**:Day 12 发现 Hybrid 召回好(找回 Dense 丢的 10/11 题)但排序略输。重排器要回答的就是:**能不能把 Hybrid 找回的"对的段落"重新排到更前面?**
+
+**代码怎么做的**:
+
+1. **`src/retrieval/reranker.py` 的 `Reranker` 类**:核心是一个 `predict_fn(配对列表) → 分数列表`,和 Dense/BM25 一样**注入式设计**,测试用伪打分、生产用 `CrossEncoder`。`rerank(query, hits, top_k)` 对每个 `(query, hit.text)` 配对打分 → 降序取 top_k → 返回新命中(score 被覆写为重打分,其余元数据原样保留)。
+
+2. **`from_model_name("BAAI/bge-reranker-v2-m3")`** 工厂:加载 BAAI 的现成重排模型(和 embedding 同一家,质量有保障),`max_length=512` 对齐切块大小。它支持本地离线加载(和你 bge-m3 放在 `data/models/` 一样,放一份到本地就能离线跑)。
+
+3. **在 `run_experiment.py` 里怎么串(`hybrid_rerank` 分支)**:
+   ```
+   粗排20 = merge_hits(dense顶20, bm25顶20)      # 召回阶段,和 E3 一样
+   精排5  = rerank_hits(query, 粗排20, reranker, top_k=5)  # 精排阶段
+   ```
+   和 Dense/BM25/Hybrid 共用 `search(q, top_k)` 接口——**换检索器 pipeline 一行不用改**。
+
+4. **记录"重排前后排名变化"(plan 硬性要求)**:E4 多记一份 `rerank` 字段——每个标准段落在粗排里排第几、精排里排第几、**上升/下降/不变**。这是"重排器到底有没有把对的段落排高"的直接证据。
+
+**离线测试 5 项全过**(共 81 项):核心验证"粗排把对的 chunk 排到后面,重排能把它提到前面"(`test_rerank_moves_lower_rank_up`)——正是重排器的价值所在。
+
+**⚠️ E4 实跑被网络卡住(真实坑)**:重排模型 `BAAI/bge-reranker-v2-m3` 需从 HuggingFace 下载,但本机网络/镜像站(hf-mirror.com)当前均不通,本机也无本地缓存 → 无法离线加载,**E4 暂时跑不起来**。
+- **对策**(和 Day 8 的 bge-m3 一样):让模型先"落地本地"。把重排模型文件(约 1.2GB)放到 `data/models/bge-reranker-v2-m3/` 目录(含 `config.json`),代码会自动识别并切到本地离线加载,`E4` 即可复跑。bge-m3 走过的同一套离线流程,重排器也支持。
+- **代码已就绪、可追溯**:reranker 模块 + 测试 + 实验 `hybrid_rerank` 分支 + 排名变化记录全部提交;一旦模型落盘,E4 一行命令 `python scripts/run_experiment.py --method hybrid_rerank --config configs/hybrid_rerank.yaml` 即可跑出成绩单。
+
+**Day 13 小结**:重排器模块实现 + 离线测试 + 实验 E4 接入 + 排名变化记录全部完成;E4 实跑因重排模型需网络下载被阻塞,已给出"本地落盘即可复跑"的对策(与 bge-m3 同一离线流程)。代码零破坏(81 项测试全过)。
+
+---
+
+*相关:本项目 20 天计划见 `research/plan_20days.md`;进度见 `PROJECT_STATE.md`;12 篇论文卡片见 `research/paper_cards/`。*
+
 *相关:本项目 20 天计划见 `research/plan_20days.md`;进度见 `PROJECT_STATE.md`;12 篇论文卡片见 `research/paper_cards/`。*
