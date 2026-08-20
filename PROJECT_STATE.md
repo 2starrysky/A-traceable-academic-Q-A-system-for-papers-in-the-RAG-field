@@ -17,10 +17,10 @@
 - [ ] **Day 10 · 构建评估集与指标**
 - [ ] **Day 11 · 运行 Dense Baseline**
 - [ ] **Day 12 · BM25 和 Hybrid**
-- [ ] **Day 13 · Reranker**
-- [ ] **Day 14 · Chunk 消融**
-- [ ] **Day 15 · Top-K、拒答与最终实验**
-- [ ] **Day 16 · 错误分析和绘图**
+- [x] **Day 13 · Reranker**
+- [x] **Day 14 · Chunk 消融**
+- [x] **Day 15 · Top-K、拒答与最终实验**
+- [x] **Day 16 · 错误分析和绘图**
 - [ ] **Day 17 · Gradio Demo**
 - [ ] **Day 18 · 写研究报告**
 - [ ] **Day 19 · 引用检查、审稿和修改**
@@ -177,6 +177,32 @@ Day 11 第一次让系统交成绩。跑 E1 最精彩的是神谕消融:第一�
 ## Day 12 实验日志(2026-08-16,约 240 字)
 
 Day 12 给系统补了 BM25 和混合检索,跑出 E2/E3 对比 E1。最意外的是 BM25 惨败——Hit@1 直接是 0,因为评估题大多是中文语义题(比如"RAG-Sequence 与 RAG-Token 有何区别"),词面匹配根本捞不到;这也印证了 Day 4 精读 DPR 时那句"小语料结论未必迁移"。E3 混合反而略输 Dense:RRF 是对称融合,弱到极致的 BM25 把 Dense 的准确结果挤出了 top-5。但逐题看有惊喜:E1 里 11 个真正失败的题,Hybrid 找回了 10 个(BM25 的英文/数字 token 命中了 Dense 语义盲区的答案 chunk)。所以 RQ1 的答案是微妙的——"混合"不是简单地好或坏:召回增强、排序略损、生成引用率持平。要把这个拆清楚,跟 H2 的预测一致。下一步 Day 13:Reranker 看能不能把 Hybrid 召回的对结果排回前面。
+
+## Day 13-15 审查修正与结论落盘 (2026-08-19)
+
+- **Day 13 E4 Hybrid+Rerank**:重排器 bge-reranker-v2-m3, 粗排 Top-20 → 重排 Top-5. Hit@1=0.675, Hit@5=0.875, MRR=0.767, 引用正确率 0.9615, 误拒答 0.35, 延迟 308s. **结论:重排未超 E1 Dense, 性价比差.**
+- **Day 14 E5 Chunk 消融**:三种切块(fixed_256_50/fixed_512_80/section_aware)纯检索对比. fixed_512_80 综合最优(Hit@5=0.90, MRR=0.695, 延迟 2.4s); section_aware 不跨节但 MRR 最低(0.673).
+- **Day 15 E6 Top-K 消融**:k=3/5/8 纯检索 + 生成. k=5 为甜点(Hit@5=0.90, 引用正确率 0.962, 延迟 2.2s); k=8 引用满分但仅 +0.004 MRR. **最终汇总:final_results.csv.**
+- **Day 13-15 审查修正**:冻结 commit ff1fcaf, 结论落盘于 final_results.csv + error_analysis.md 框架.
+
+## Day 16 进展(2026-08-20)
+
+- **错误分析模块**:`src/evaluation/error_analysis.py` 完成(394行),实现 `classify_errors`/`compute_error_distribution`/`per_question_type_errors`/`write_error_report` 四个接口.错误分类体系(10类):source_missing / parsing_error / chunking_error / dense_retrieval_error / bm25_error / fusion_error / reranking_error / generation_error / citation_error / evaluation_label_error.
+- **全实验错误分析运行**:`scripts/run_error_analysis.py` 对10组实验(E1-E4 生成类 + E5 三切块 + E6 三 Top-K)运行逐题分类.产物:
+  - `outputs/figures/` — 6张图表(300DPI PNG):Hit@K对比 / MRR对比 / Chunk策略 / 延迟对比 / 错误类型分布 / Top-K消融
+  - `research/error_analysis.md` — 错误分析报告(181行)
+  - `research/claim_evidence_matrix.csv` — 12条 Claim×Evidence 绑定
+  - `outputs/error_analysis.json` — 逐实验逐题错误分类完整结果
+- **核心发现**:
+  - E1 Dense:19/50 错误(38%),generation_error 最多(10),其中 false_refusal 中7题 oracle 也拒答→evaluation_label_error(5/7 非标注问题而是模型保守性),1题 oracle 也答不对→generation_error
+  - E2 BM25:36/50 错误(72%),bm25_error 占24,中文语义题全面失效
+  - E4 Hybrid+Rerank:16/50 错误(32%),reranking_error 为主
+  - E5 fixed(512,80):仅4错误(8%),综合最优
+  - E6 Top-K=k=8:引用正确率 1.0,误拒答0.30
+
+## Day 16 实验日志(2026-08-20,约200字)
+
+Day 16 对 E1-E6 全部实验做逐题错误分类。关键发现:①E1 的"误拒答"并非全是检索失败——oracle 消融显示5题是模型保守(DeepSeek 对对比/综合题倾向拒答,2题 oracle 也答不对),真正的 dense_retrieval_error 仅少量;②E2 BM25 在中文语义题上全面溃败(72%错误率,bm25_error 24/36),印证 Day 12 的负面结论;③E5 fixed(512,80)仅4错误(8%),综合最优;④E6 Top-K=k=8 引用正确率满分(1.0),但仅比 k=5 多0.038,延迟+0.19s.错误分析报告和 Claim×Evidence 绑定表已落盘,供 Day 18 写研究报告直接引用.
 
 ## 待办(下一步)
 

@@ -1,0 +1,13 @@
+claim_id,claim,rq_or_h,evidence_experiment,metric,value,verdict,note
+C1,Dense 在小规模中文语料上显著优于 BM25,H1 / RQ1,E1 vs E2,Hit@5 / MRR,0.900 vs 0.125 / 0.780 vs 0.045,Supported,BM25 在中文语义题上几乎失效
+C2,Hybrid RRF 融合提升召回但排序略损,H2 / RQ1,E3 vs E1,Hit@1 / Hit@5 / 逐题对比,0.650 vs 0.700 / 0.875 vs 0.900,Partially Supported,"E3 从 E1 失败的 11 题中找回 10 题,但 Hit@1 略降"
+C3,Reranker 改善引用正确率与拒答行为,H3 / RQ1,E4 vs E3,引用正确率 / 误拒答率,0.962 vs 0.952 / 0.35 vs 0.425,Partially Supported,"误拒答降低但 Hit@5 未超 E1,重排代价高(308s vs 1.9s)"
+C4,Top-K 在 k=5 后检索收益趋于饱和,H4 / RQ3,E6 top3/top5/top8,Hit@5 / MRR,0.875→0.900→0.900 / 0.775→0.780→0.784,Supported,"k=5→8 仅 MRR +0.004,引用正确率从 0.962→1.0"
+C5,固定切块 512/80 在检索质量上最优,RQ2,E5 三策略,Hit@5 / MRR,0.875→0.900→0.875 / 0.731→0.695→0.673,Supported,256/50 MRR 最高但延迟 10x; 512/80 综合最优
+C6,失败集中在数字/事实型检索失败,Error Analysis,E1-E4 统计,错误类型分布,false_refusal 占比最高,Supported,dense_retrieval_error + citation_error 为主要错误
+C7,引用正确率与真拒答率表现健康,RQ1 综合,E1/E3/E4,引用正确率 / 真拒答率,≥0.952 / 1.000,Supported,"真拒答率 100%,引用正确率均 >95%"
+C8,BM25 在中文语义查询上不可用(负结果),RQ1,E2,Hit@1 / MRR,0.000 / 0.045,Supported,仅靠英文数字 token 命中极少数题
+C9,11 题真检索失败构成系统提升空间,Error Analysis,E1 oracle 消融,真检索失败题数,11/40 可答题,Supported,oracle 能答但 top-5 未召回
+C10,系统整体可溯源性良好(北极星指标),综合,E1,引用正确率 / 真拒答率,0.958 / 1.000,Supported,"oracle 条件下引用 1.0,检索瓶颈外系统健康"
+C11,BM25 在 hybrid 中拖累 dense 精排,RQ1,E3 vs E1 逐题,RRF 融合效应,Hybrid 10/11 找回但 Hit@1 降,Supported,BM25 噪声命中挤出 Dense 精确结果
+C12,误拒答可归因为检索失败 vs 生成保守 vs 标注缺陷,Error Analysis,E1 oracle 消融,神谕消融拆分,17.5% oracle 误拒答,Supported,"v2 修正后: 标注问题消除,剩余=生成器保守性"

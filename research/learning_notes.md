@@ -651,4 +651,44 @@ Day 12: E2 BM25(惨败)+ E3 Hybrid(召回增强、排序略损)
 
 ---
 
-*相关:本项目 20 天计划见 `research/plan_20days.md`;进度见 `PROJECT_STATE.md`;12 篇论文卡片见 `research/paper_cards/`。*
+## Day 16:错误分析和绘图
+
+**今天干什么:**把 E1-E6 全部实验跑完后,对每一道题的"失败原因"进行分类统计——不是看"答对了多少"而是看"为什么答错"。最后生成6张图表、一份分析报告、一张 Claim×Evidence 绑定表。
+
+### 错误分类是怎么设计的
+
+系统每回答一道题,可能在三层出错:
+1. **检索层**:没把正确论文/段落捞出来(根本没机会回答)
+2. **生成层**:捞到了正确内容,但 LLM 答错、拒答、或引用了错误的 chunk
+3. **标注层**:评估集的 gold 标签本身有问题(oracle 也回答不了)
+
+具体分类规则:
+- **dense_retrieval_error**:Dense 检索 top-5 没捞到正确 chunk
+- **bm25_error**:BM25 检索没捞到正确 chunk
+- **fusion_error**:混合检索融合后把正确结果挤出了
+- **reranking_error**:重排器把正确结果排到了更后面
+- **generation_error**:LLM 拒答(有证据)或答了但引用错误(无证据时乱编)
+- **citation_error**:LLM 引用了错误的 chunk(有证据但选错了)
+- **evaluation_label_error**:oracle 也拒绝回答,标注可能有误
+
+### 核心发现
+
+E1 Dense 的"误拒答率 40%"背后,其实分三层:
+- 5 题是 DeepSeek 保守性(对比/综合题倾向拒答)→ generation_error
+- 2 题是 DeepSeek 也无法正确回答→ generation_error (oracle 也错了)
+- 3 题是 oracle 能答但 DeepSeek 引用了错误 chunk→ generation_error
+
+E2 BM25 最惨:72%错误率,几乎全是 bm25_error——中文语义题 BM25 词面匹配彻底失效。
+
+E5 的 fixed(512,80) 最优:仅4错误(8%),说明512 token 滑窗 +80 token overlap 是本语料的甜点参数。
+
+### 图表说明
+
+1. **Hit@K 对比**:Dense 各项领先,BM25 碎底
+2. **MRR 对比**:Dense 最高(0.78),BM25 最低(0.045)
+3. **Chunk 策略**:fixed(512,80) Hit@5=0.90 最佳
+4. **延迟对比**:E4 重排 308s vs 其他<3s(E4 延迟代价太大)
+5. **错误分布**:E1 以 generation_error 为主;E2 以 bm25_error 为主
+6. **Top-K 消融**:k=5→8 仅引用正确率 0.962→1.0,延迟+0.19s
+
+*相关:Day 13 见上方 E4 Reranker 讲解;Day 18 将引用 `research/error_analysis.md` 和 `claim_evidence_matrix.csv` 写研究报告。*
