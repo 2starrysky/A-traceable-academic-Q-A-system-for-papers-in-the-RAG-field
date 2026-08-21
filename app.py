@@ -66,21 +66,22 @@ def _get_retriever(method: str):
     if method in _retrievers:
         return _retrievers[method]
 
-    chunks = _load_chunks()
-    chunk_list = list(chunks.values())
+    _load_chunks()
 
     if method == "Dense":
-        retriever = DenseRetriever.from_chunks(chunk_list)
+        retriever = DenseRetriever.load(ROOT / "data" / "processed" / "dense_index")
 
     elif method == "BM25":
         from src.retrieval.bm25 import BM25Retriever
+        chunk_list = list(_chunks.values())
         retriever = BM25Retriever.from_chunks(chunk_list)
 
     elif method == "Hybrid":
         from src.retrieval.bm25 import BM25Retriever
         from src.retrieval.fusion import merge_hits
 
-        dense = DenseRetriever.from_chunks(chunk_list)
+        dense = DenseRetriever.load(ROOT / "data" / "processed" / "dense_index")
+        chunk_list = list(_chunks.values())
         bm25 = BM25Retriever.from_chunks(chunk_list)
 
         class _Hybrid:
@@ -96,7 +97,8 @@ def _get_retriever(method: str):
         from src.retrieval.fusion import merge_hits
         from src.retrieval.reranker import Reranker, rerank_hits
 
-        dense = DenseRetriever.from_chunks(chunk_list)
+        dense = DenseRetriever.load(ROOT / "data" / "processed" / "dense_index")
+        chunk_list = list(_chunks.values())
         bm25 = BM25Retriever.from_chunks(chunk_list)
         reranker = Reranker.from_model_name("BAAI/bge-reranker-v2-m3")
 
