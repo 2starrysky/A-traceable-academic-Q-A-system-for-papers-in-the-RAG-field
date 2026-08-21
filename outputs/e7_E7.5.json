@@ -1,0 +1,3192 @@
+[
+  {
+    "question_id": "fact_01",
+    "question": "DPR 论文 Table 2 比较不同检索系统时,用哪个 top-k 准确率?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据片段 [1]，DPR 论文 Table 2 比较不同段落检索系统时，使用的是 top-k 准确率，其中 k 取值为 20 和 100（即 k∈{20, 100}）[1]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "DPR 论文 Table 2 比较不同段落检索系统时，使用的是 top-k 准确率",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和论文上下文均表明 Table 2 使用 top-k 检索准确率作为评估指标。"
+        },
+        {
+          "claim": "其中 k 取值为 20 和 100（即 k∈{20, 100}）",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确给出 k∈{20,100}，且论文中 Table 2 的典型设置即为 top-20 和 top-100。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 100
+    }
+  },
+  {
+    "question_id": "fact_01",
+    "question": "DPR 论文 Table 2 比较不同检索系统时,用哪个 top-k 准确率?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，DPR 论文 Table 2 比较不同段落检索系统时，使用的是 top-k 准确率，其中 k 取值为 20 和 100（即 k∈{20, 100}）[1]。具体原文表述为：“Table 2 compares different passage retrieval systems on five QA datasets, using the top-k accuracy (k∈{20, 100})”[1]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "DPR 论文 Table 2 比较不同段落检索系统时，使用的是 top-k 准确率，其中 k 取值为 20 和 100（即 k∈{20, 100}）",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确说明使用 top-k 准确率，k∈{20,100}，模型回答与此一致。"
+        },
+        {
+          "claim": "具体原文表述为：“Table 2 compares different passage retrieval systems on five QA datasets, using the top-k accuracy (k∈{20, 100})”",
+          "verdict": "REFUSE",
+          "reason": "提供的来源论文证据中并未包含该原文表述，该引用无法在证据中找到，属于编造或错误引用。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 50
+    }
+  },
+  {
+    "question_id": "fact_02",
+    "question": "DPR 训练时使用了哪三类负样本?每问额外引入的困难负样本来自哪里?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据提供的论文片段，无法完整回答该问题。片段中仅提及了“in-batch negative setting”和“one additional BM25 negative passage per question”[1]，以及“G.+BM25 (1)和G.+BM25(2) denote in-batch training with 1 or 2 additional BM25 negatives”[3]，但未明确列出DPR训练时使用的全部三类负样本，也未说明每问额外引入的困难负样本的具体来源（如是否来自BM25检索结果或其他方式）。因此，无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "根据提供的论文片段，无法完整回答该问题",
+          "verdict": "PARTIAL",
+          "reason": "虽然提供的片段确实不完整，但标准答案和部分证据（如证据3）已明确给出三类负样本及BM25困难负样本，模型本可结合这些信息回答，而非仅依赖片段。"
+        },
+        {
+          "claim": "片段中仅提及了in-batch negative setting和one additional BM25 negative passage per question",
+          "verdict": "SUPPORT",
+          "reason": "该论断与提供的证据1和证据3一致，片段中确实只提到这些内容。"
+        },
+        {
+          "claim": "未明确列出DPR训练时使用的全部三类负样本",
+          "verdict": "PARTIAL",
+          "reason": "标准答案明确列出Random、BM25、Gold三类负样本，且证据3中G.+BM25暗示Gold+BM25，但模型未从证据中推断出完整分类。"
+        },
+        {
+          "claim": "未说明每问额外引入的困难负样本的具体来源（如是否来自BM25检索结果或其他方式）",
+          "verdict": "PARTIAL",
+          "reason": "标准答案和证据3明确说明额外负样本来自BM25，模型虽提到BM25但未确认其为困难负样本来源，且未结合证据3中的'BM25 negatives'。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 40
+    }
+  },
+  {
+    "question_id": "fact_02",
+    "question": "DPR 训练时使用了哪三类负样本?每问额外引入的困难负样本来自哪里?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据提供的论文片段，无法完整回答该问题。片段[1]中仅提到DPR使用了“in-batch negative setting”以及“one additional BM25 negative passage per question”[1]，但未明确说明三类负样本的具体构成，也未说明每问额外引入的困难负样本的来源。其他片段[2][3][4][5]也未涉及此具体细节。因此，无法从给定材料中回答。\n\n无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "根据提供的论文片段，无法完整回答该问题",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文证据明确给出了三类负样本及BM25困难负样本来源，模型回答声称无法回答，与事实不符。"
+        },
+        {
+          "claim": "片段[1]中仅提到DPR使用了in-batch negative setting以及one additional BM25 negative passage per question",
+          "verdict": "PARTIAL",
+          "reason": "该论断部分正确，但片段[1]并非唯一相关证据，且模型未识别出其他证据（如证据3）中明确说明的三类负样本构成。"
+        },
+        {
+          "claim": "未明确说明三类负样本的具体构成，也未说明每问额外引入的困难负样本的来源",
+          "verdict": "REFUSE",
+          "reason": "来源论文证据3明确提到G.+BM25(1)和G.+BM25(2)表示in-batch训练中额外BM25负样本，且标准答案明确三类负样本为Random、BM25、Gold，模型论断错误。"
+        },
+        {
+          "claim": "其他片段[2][3][4][5]也未涉及此具体细节",
+          "verdict": "REFUSE",
+          "reason": "证据3明确涉及训练方案和BM25负样本细节，模型论断与事实不符。"
+        },
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "REFUSE",
+          "reason": "给定材料（包括标准答案和证据）足以回答该问题，模型错误地拒绝回答。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "fact_03",
+    "question": "DPR 用哪种相似度函数计算问题与段落的匹配分数?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，DPR 在实验中测试了多种相似度函数，包括点积（dot product）、余弦相似度（cosine）和欧几里得 L2 距离（Euclidean L2 distance）。实验发现，L2 距离与点积表现相当，且两者均优于余弦相似度 [4]。因此，DPR 使用的相似度函数可以是点积或 L2 距离，其中点积是基线设置中采用的方案 [2][4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "DPR 在实验中测试了多种相似度函数，包括点积、余弦相似度和欧几里得 L2 距离。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文（证据2）提到在点积、余弦和L2距离上进行了实验，并比较了性能。"
+        },
+        {
+          "claim": "实验发现，L2 距离与点积表现相当，且两者均优于余弦相似度。",
+          "verdict": "SUPPORT",
+          "reason": "证据2明确说明L2与点积表现相当，且均优于余弦。"
+        },
+        {
+          "claim": "DPR 使用的相似度函数可以是点积或 L2 距离。",
+          "verdict": "PARTIAL",
+          "reason": "虽然实验测试了多种，但标准答案和论文基线明确采用点积（内积），L2并非最终采用方案。"
+        },
+        {
+          "claim": "点积是基线设置中采用的方案。",
+          "verdict": "SUPPORT",
+          "reason": "证据2提到基线设置使用DP（点积）和NLL损失，且标准答案明确为内积。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 85
+    }
+  },
+  {
+    "question_id": "fact_03",
+    "question": "DPR 用哪种相似度函数计算问题与段落的匹配分数?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，DPR 在实验中测试了多种相似度函数，包括点积（dot product）、余弦相似度（cosine）和欧几里得 L2 距离（Euclidean L2 distance）。实验发现，L2 距离的表现与点积相当，且两者均优于余弦相似度 [4]。此外，在训练过程中，DPR 使用点积分数计算相似度，并在应用 softmax 前对相似度分数进行处理，例如在 triplet loss 中改变正负样本相似度的符号 [2]。因此，DPR 主要使用点积作为相似度函数，但 L2 距离也被验证为有效的替代方案 [4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "DPR 在实验中测试了多种相似度函数，包括点积、余弦相似度和欧几里得 L2 距离",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2提到在训练过程中使用点积分数，并在triplet loss中改变符号，且表6总结了额外实验，这些实验涉及不同相似度函数（包括点积、余弦、L2），因此该论断被支持。"
+        },
+        {
+          "claim": "实验发现，L2 距离的表现与点积相当，且两者均优于余弦相似度",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2明确提到“L2 distance performs comparably to dot product, and both outperform cosine similarity”，该论断直接对应。"
+        },
+        {
+          "claim": "在训练过程中，DPR 使用点积分数计算相似度，并在应用 softmax 前对相似度分数进行处理，例如在 triplet loss 中改变正负样本相似度的符号",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2原文为“similarity scores before applying softmax and change signs of question-to-positive and question-to-negative similarities when applying the triplet loss on dot product scores”，完全支持该论断。"
+        },
+        {
+          "claim": "DPR 主要使用点积作为相似度函数，但 L2 距离也被验证为有效的替代方案",
+          "verdict": "SUPPORT",
+          "reason": "标准答案为“内积相似度(dot product)”，且证据2表明L2与点积相当，因此该论断既符合标准答案，也被论文支持。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 100
+    }
+  },
+  {
+    "question_id": "fact_04",
+    "question": "RAG-Sequence 与 RAG-Token 两种模型有何区别?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，RAG-Sequence 与 RAG-Token 两种模型的主要区别在于它们处理检索文档的方式不同：\n\n1. **RAG-Sequence 模型**：使用同一个检索到的文档来生成完整的输出序列。它将检索到的文档视为一个单一的潜在变量，通过 top-K 近似进行边缘化，得到序列到序列的概率。具体来说，检索器检索出 top K 个文档，生成器为每个文档生成输出序列概率，然后对这些概率进行边缘化 [1]。\n\n2. **RAG-Token 模型**：可以为每个目标 token 抽取不同的潜在文档，并相应地进行边缘化。这使得生成器在生成答案时可以从多个文档中选择内容。具体来说，检索器检索出 top K 个文档，生成器为每个文档生成下一个输出 token 的分布，然后进行边缘化，并重复此过程 [1]。\n\n此外，在解码方式上两者也有区别：RAG-Token 可以被视为标准的自回归 seq2seq 生成器，其转移概率为对 top-k 文档的边缘化，可以直接使用标准波束解码器进行解码；而 RAG-Sequence 的似然函数无法分解为传统的逐 token 似然，因此不能通过单一波束搜索解决，需要对每个文档分别运行波束搜索，并采用“Thorough Decoding”过程来估计假设的概率 [4]。\n\n在实验结果上，RAG-Token 在 Jeopardy 问题生成任务上表现优于 RAG-Sequence，这可能是因为 RAG-Token 能够生成结合多个文档内容的响应 [2]。同时，RAG-Sequence 的生成结果比 RAG-Token 更多样化 [5]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "RAG-Sequence 模型使用同一个检索到的文档来生成完整的输出序列。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文明确说明 RAG-Sequence 使用同一文档预测每个目标 token。"
+        },
+        {
+          "claim": "RAG-Sequence 将检索到的文档视为一个单一的潜在变量，通过 top-K 近似进行边缘化，得到序列到序列的概率。",
+          "verdict": "SUPPORT",
+          "reason": "论文描述 RAG-Sequence 将文档作为潜在变量，并对 top-K 文档边缘化以生成整个序列。"
+        },
+        {
+          "claim": "RAG-Token 模型可以为每个目标 token 抽取不同的潜在文档，并相应地进行边缘化。",
+          "verdict": "SUPPORT",
+          "reason": "论文明确说明 RAG-Token 可以基于不同文档预测每个目标 token。"
+        },
+        {
+          "claim": "RAG-Token 可以被视为标准的自回归 seq2seq 生成器，其转移概率为对 top-k 文档的边缘化，可以直接使用标准波束解码器进行解码。",
+          "verdict": "SUPPORT",
+          "reason": "论文提到 RAG-Token 的似然可分解，因此可使用标准波束解码。"
+        },
+        {
+          "claim": "RAG-Sequence 的似然函数无法分解为传统的逐 token 似然，因此不能通过单一波束搜索解决，需要对每个文档分别运行波束搜索，并采用“Thorough Decoding”过程来估计假设的概率。",
+          "verdict": "SUPPORT",
+          "reason": "论文描述了 RAG-Sequence 需要针对每个文档进行波束搜索，并使用 Thorough Decoding。"
+        },
+        {
+          "claim": "RAG-Token 在 Jeopardy 问题生成任务上表现优于 RAG-Sequence。",
+          "verdict": "SUPPORT",
+          "reason": "论文表2显示 RAG-Token 在 Jeopardy 上的 Q-BLEU-1 高于 RAG-Sequence。"
+        },
+        {
+          "claim": "RAG-Token 能够生成结合多个文档内容的响应。",
+          "verdict": "SUPPORT",
+          "reason": "论文提到 RAG-Token 可以基于不同文档预测不同 token，因此能结合多个文档信息。"
+        },
+        {
+          "claim": "RAG-Sequence 的生成结果比 RAG-Token 更多样化。",
+          "verdict": "SUPPORT",
+          "reason": "论文明确说明 RAG-Sequence 的生成比 RAG-Token 更多样。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 100
+    }
+  },
+  {
+    "question_id": "fact_04",
+    "question": "RAG-Sequence 与 RAG-Token 两种模型有何区别?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，RAG-Sequence 与 RAG-Token 两种模型的主要区别如下：\n\n1. **对检索文档的使用方式不同**：RAG-Sequence 模型使用同一个检索文档来生成完整的输出序列，它将检索到的文档视为一个单一的潜在变量，通过 top-K 近似进行边缘化处理 [1]。而 RAG-Token 模型则可以为每个目标 token 抽取不同的潜在文档，并据此进行边缘化，这使得生成器在生成答案时可以从多个文档中选择内容 [1]。\n\n2. **生成机制不同**：RAG-Sequence 在生成整个序列时，每个目标 token 的预测都基于同一个文档 [1]；RAG-Token 则可以为每个目标 token 基于不同的文档进行预测 [1]。\n\n3. **解码方式不同**：RAG-Token 可以被视为一个标准的自回归 seq2seq 生成器，其转移概率为对 top-k 文档的求和，因此可以直接使用标准的 beam decoder 进行解码 [4]。而 RAG-Sequence 的似然函数无法分解为传统的逐 token 似然，因此不能通过单一的 beam search 解决，需要为每个文档分别运行 beam search，并采用“Thorough Decoding”过程来估计假设的概率 [4]。\n\n4. **性能表现存在差异**：在 Jeopardy 问题生成任务上，RAG-Token 的表现优于 RAG-Sequence [2][3]，这可能是因为 RAG-Token 能够生成结合多个文档内容的响应 [2]。此外，RAG-Sequence 的生成结果比 RAG-Token 更多样化 [5]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "RAG-Sequence 模型使用同一个检索文档来生成完整的输出序列，它将检索到的文档视为一个单一的潜在变量，通过 top-K 近似进行边缘化处理",
+          "verdict": "SUPPORT",
+          "reason": "来源论文明确说明RAG-Sequence使用同一文档预测每个目标token，并将检索文档视为潜在变量，通过top-K近似边缘化。"
+        },
+        {
+          "claim": "RAG-Token 模型则可以为每个目标 token 抽取不同的潜在文档，并据此进行边缘化，这使得生成器在生成答案时可以从多个文档中选择内容",
+          "verdict": "SUPPORT",
+          "reason": "来源论文明确说明RAG-Token可以基于不同文档预测每个目标token，从而拼接多个文档信息。"
+        },
+        {
+          "claim": "RAG-Sequence 在生成整个序列时，每个目标 token 的预测都基于同一个文档；RAG-Token 则可以为每个目标 token 基于不同的文档进行预测",
+          "verdict": "SUPPORT",
+          "reason": "这是对两种模型核心区别的直接复述，来源论文明确支持。"
+        },
+        {
+          "claim": "RAG-Token 可以被视为一个标准的自回归 seq2seq 生成器，其转移概率为对 top-k 文档的求和，因此可以直接使用标准的 beam decoder 进行解码",
+          "verdict": "SUPPORT",
+          "reason": "来源论文提到RAG-Token的似然可分解，因此可用标准beam search解码。"
+        },
+        {
+          "claim": "RAG-Sequence 的似然函数无法分解为传统的逐 token 似然，因此不能通过单一的 beam search 解决，需要为每个文档分别运行 beam search，并采用“Thorough Decoding”过程来估计假设的概率",
+          "verdict": "SUPPORT",
+          "reason": "来源论文描述了RAG-Sequence需要为每个文档运行beam search并采用Thorough Decoding，因为其似然不可分解。"
+        },
+        {
+          "claim": "在 Jeopardy 问题生成任务上，RAG-Token 的表现优于 RAG-Sequence",
+          "verdict": "SUPPORT",
+          "reason": "来源论文Table 2显示RAG-Token在Jeopardy上的Q-BLEU-1高于RAG-Sequence。"
+        },
+        {
+          "claim": "RAG-Token 能够生成结合多个文档内容的响应",
+          "verdict": "SUPPORT",
+          "reason": "来源论文指出RAG-Token可以基于不同文档预测每个token，因此能结合多个文档内容。"
+        },
+        {
+          "claim": "RAG-Sequence 的生成结果比 RAG-Token 更多样化",
+          "verdict": "SUPPORT",
+          "reason": "来源论文明确说明RAG-Sequence的生成比RAG-Token更多样化。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 100
+    }
+  },
+  {
+    "question_id": "fact_05",
+    "question": "RAG 端到端训练时,哪些组件被冻结、哪些被训练?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。检索片段中未提及RAG端到端训练时哪些组件被冻结、哪些被训练的具体信息。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索片段中未提及RAG端到端训练时哪些组件被冻结、哪些被训练的具体信息。",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文明确说明冻结文档编码器与索引，只训练query编码器与BART生成器，模型回答声称无法回答，与事实不符。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "fact_05",
+    "question": "RAG 端到端训练时,哪些组件被冻结、哪些被训练?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容未提及RAG端到端训练时哪些组件被冻结、哪些被训练的具体信息。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索内容未提及RAG端到端训练时哪些组件被冻结、哪些被训练的具体信息。",
+          "verdict": "REFUSE",
+          "reason": "标准答案明确给出了冻结文档编码器与索引、训练query编码器与BART生成器的信息，且来源论文证据（如证据1、证据2、证据5）支持该结论，因此模型回答错误地声称无法回答。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "fact_06",
+    "question": "RAG-Sequence 在 Natural Questions 数据集上的端到端精确匹配(EM)是多少?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，RAG-Sequence 在 Natural Questions 数据集上的端到端精确匹配（EM）为 44.0 [3]。该数据出现在表 6 的消融实验结果中，对应 RAG-Sequence 在 NQ 任务上的 Exact Match 分数 [3]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "RAG-Sequence 在 Natural Questions 数据集上的端到端精确匹配（EM）为 44.0",
+          "verdict": "REFUSE",
+          "reason": "标准答案为44.5，来源论文表2中明确显示RAG-Seq.在NQ上的EM为44.5，而非44.0。"
+        },
+        {
+          "claim": "该数据出现在表 6 的消融实验结果中",
+          "verdict": "REFUSE",
+          "reason": "表6是消融实验，但其中并未列出NQ的EM分数；NQ的EM分数出现在表2中。"
+        },
+        {
+          "claim": "对应 RAG-Sequence 在 NQ 任务上的 Exact Match 分数",
+          "verdict": "PARTIAL",
+          "reason": "确实对应RAG-Sequence在NQ上的EM分数，但数值错误（44.0 vs 44.5），且表格引用错误。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 20
+    }
+  },
+  {
+    "question_id": "fact_06",
+    "question": "RAG-Sequence 在 Natural Questions 数据集上的端到端精确匹配(EM)是多少?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，RAG-Sequence 在 Natural Questions 数据集上的端到端精确匹配（EM）分数为 44.0 [3]。\n\n具体来说，在表 6 的消融实验中，RAG-Sequence 在 NQ（Natural Questions）列下的 Exact Match 值为 44.0 [3]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "RAG-Sequence 在 Natural Questions 数据集上的端到端精确匹配（EM）分数为 44.0",
+          "verdict": "REFUSE",
+          "reason": "标准答案为44.5，且来源论文表2中明确显示RAG-Seq.在NQ上的EM为44.5，而非44.0。模型回答引用的表6中NQ列对应的是RAG-Sequence-BM25的31.8和RAG-Sequence-Frozen的41.x，并非44.0。"
+        },
+        {
+          "claim": "在表 6 的消融实验中，RAG-Sequence 在 NQ 列下的 Exact Match 值为 44.0",
+          "verdict": "REFUSE",
+          "reason": "表6中NQ列下RAG-Sequence-BM25为31.8，RAG-Sequence-Frozen为41.x（具体值未完整显示），没有44.0。44.5出现在表2中，而非表6。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "fact_07",
+    "question": "Lost in the Middle 的核心发现是什么?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，关于“Lost in the Middle”的核心发现如下：\n\n语言模型在需要从长输入上下文中识别相关信息时，其性能会因相关信息位置的变化而显著下降，表明当前语言模型并不能稳健地利用长输入上下文中的信息[2]。具体而言，当相关信息出现在输入上下文的开头或结尾时，模型性能通常最高；而当模型必须访问长上下文中间位置的相关信息时，性能会显著下降，即使对于明确支持长上下文的模型也是如此[2]。这一现象被称为“Lost in the middle”问题，即语言模型倾向于只关注长文本的开头和结尾，而忽略中间部分[1]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "语言模型在需要从长输入上下文中识别相关信息时，其性能会因相关信息位置的变化而显著下降，表明当前语言模型并不能稳健地利用长输入上下文中的信息",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和来源论文（Lost in the Middle）明确支持该论断，即模型性能随相关信息位置变化而显著波动。"
+        },
+        {
+          "claim": "当相关信息出现在输入上下文的开头或结尾时，模型性能通常最高",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确指出开头或结尾时性能最高，来源论文也支持这一U型曲线现象。"
+        },
+        {
+          "claim": "当模型必须访问长上下文中间位置的相关信息时，性能会显著下降，即使对于明确支持长上下文的模型也是如此",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和来源论文均指出中间位置性能下降，且该现象在支持长上下文的模型中同样存在。"
+        },
+        {
+          "claim": "这一现象被称为“Lost in the middle”问题，即语言模型倾向于只关注长文本的开头和结尾，而忽略中间部分",
+          "verdict": "SUPPORT",
+          "reason": "来源论文标题和内容明确使用“Lost in the Middle”描述该现象，且解释与标准答案一致。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "fact_07",
+    "question": "Lost in the Middle 的核心发现是什么?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，关于“Lost in the Middle”的核心发现如下：\n\n语言模型在需要从长输入上下文中识别相关信息时，其性能会因相关信息位置的变化而显著下降，表明当前语言模型并未稳健地利用长输入上下文中的信息[2]。具体而言，当相关信息出现在输入上下文的开头或结尾时，模型性能通常最高；而当模型必须访问长上下文中间部分的相关信息时，性能会显著下降，即使对于明确支持长上下文的模型也是如此[2]。此外，实验还表明，即使在使用随机干扰项（而非检索到的干扰项）的情况下，模型仍然难以对整个输入上下文进行推理，说明性能下降并非仅仅因为无法识别相关文档[4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "语言模型在需要从长输入上下文中识别相关信息时，其性能会因相关信息位置的变化而显著下降，表明当前语言模型并未稳健地利用长输入上下文中的信息",
+          "verdict": "SUPPORT",
+          "reason": "该论断与标准答案及来源论文核心发现一致，即位置影响性能，模型未稳健利用长上下文。"
+        },
+        {
+          "claim": "当相关信息出现在输入上下文的开头或结尾时，模型性能通常最高；而当模型必须访问长上下文中间部分的相关信息时，性能会显著下降，即使对于明确支持长上下文的模型也是如此",
+          "verdict": "SUPPORT",
+          "reason": "该论断准确描述了U型曲线现象，且标准答案明确提及开头/结尾性能最高、中间显著下降，来源论文也支持此发现。"
+        },
+        {
+          "claim": "即使在使用随机干扰项（而非检索到的干扰项）的情况下，模型仍然难以对整个输入上下文进行推理，说明性能下降并非仅仅因为无法识别相关文档",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据4明确说明在随机干扰项设置下模型仍难以推理整个上下文，性能下降并非仅因无法识别相关文档，该论断被支持。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "fact_08",
+    "question": "Lost in the Middle 用哪两类受控任务验证位置效应?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，Lost in the Middle 使用了两类受控任务来验证位置效应：**多文档问答（multi-document question answering）** 和 **键值检索（key-value retrieval）** [1]。其中，多文档问答任务要求模型在提供的文档中查找相关信息并回答问题，通过改变文档数量和相关信息在输入上下文中的位置（开头、中间或结尾）来控制实验条件 [3]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "Lost in the Middle 使用了两类受控任务来验证位置效应：多文档问答和键值检索",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和论文证据1均明确提到这两类任务"
+        },
+        {
+          "claim": "多文档问答任务要求模型在提供的文档中查找相关信息并回答问题",
+          "verdict": "SUPPORT",
+          "reason": "论文证据3描述该任务需要模型在文档中查找相关信息"
+        },
+        {
+          "claim": "通过改变文档数量和相关信息在输入上下文中的位置（开头、中间或结尾）来控制实验条件",
+          "verdict": "SUPPORT",
+          "reason": "论文证据3提到对输入上下文大小和相关信息位置进行受控变化"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 90
+    }
+  },
+  {
+    "question_id": "fact_08",
+    "question": "Lost in the Middle 用哪两类受控任务验证位置效应?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，论文《Lost in the Middle》使用了**多文档问答（multi-document question answering）**和**键值检索（key-value retrieval）**这两类受控任务来验证位置效应。[1]\n\n具体而言，在多文档问答任务中，研究者通过控制输入上下文中的文档数量（即上下文长度）以及相关文档在上下文中的位置（开头、中间或结尾），来观察模型性能的变化。[3] 实验发现，当相关信息位于输入上下文的开头或结尾时，模型性能最高；而当相关信息位于长上下文的中间时，性能显著下降，呈现出U形曲线。[1][3]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "论文《Lost in the Middle》使用了多文档问答和键值检索这两类受控任务来验证位置效应",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确列出这两类任务，且来源论文证据1提到“two tasks”，证据3详细描述多文档问答，证据5提及键值检索相关实验设置。"
+        },
+        {
+          "claim": "在多文档问答任务中，研究者通过控制输入上下文中的文档数量（即上下文长度）以及相关文档在上下文中的位置（开头、中间或结尾），来观察模型性能的变化",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据3明确说明“make controlled changes to the input context size and the position of the relevant information”，标准答案也提及文档数10/20/30。"
+        },
+        {
+          "claim": "实验发现，当相关信息位于输入上下文的开头或结尾时，模型性能最高；而当相关信息位于长上下文的中间时，性能显著下降，呈现出U形曲线",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2描述“primacy bias”和“recency bias”，并指出中间位置性能下降，与U形曲线描述一致。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "fact_09",
+    "question": "Ragas 的 Faithfulness 指标如何计算?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。检索片段仅提及Ragas框架包含faithfulness（忠实性）这一质量维度，并描述了其与人类标注者的一致性评估结果（如Ragas在faithfulness上的准确率为0.95 [2]），但未说明该指标的具体计算方法或公式。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索片段仅提及Ragas框架包含faithfulness（忠实性）这一质量维度，并描述了其与人类标注者的一致性评估结果（如Ragas在faithfulness上的准确率为0.95 [2]），但未说明该指标的具体计算方法或公式。",
+          "verdict": "REFUSE",
+          "reason": "标准答案明确给出了Faithfulness的计算公式F = |V| / |S|，且来源论文证据中虽未直接给出公式，但模型回答声称“无法从给定材料中回答”与标准答案矛盾，且检索片段中实际包含关于faithfulness的评估描述，但模型未正确提取或推断出计算方法，属于错误论断。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "fact_09",
+    "question": "Ragas 的 Faithfulness 指标如何计算?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容仅提及Ragas框架包含faithfulness、answer relevance和context relevance三个质量维度，并报告了其与人类标注者的一致性结果（如faithfulness一致性为0.95）[1][2]，但未说明Faithfulness指标的具体计算方法（如公式、步骤或实现细节）。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索内容仅提及Ragas框架包含faithfulness、answer relevance和context relevance三个质量维度，并报告了其与人类标注者的一致性结果（如faithfulness一致性为0.95），但未说明Faithfulness指标的具体计算方法（如公式、步骤或实现细节）。",
+          "verdict": "PARTIAL",
+          "reason": "该论断前半部分正确（检索材料确实未提供公式），但后半部分声称检索内容仅提及一致性结果，而标准答案和来源论文中明确给出了公式F=|V|/|S|，因此该论断不完整，忽略了标准答案中已提供的计算方法。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 60
+    }
+  },
+  {
+    "question_id": "fact_10",
+    "question": "Ragas 三个指标与人类标注的一致率分别是多少?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，Ragas 三个指标与人类标注的一致率（即与人类标注者在两两比较中的一致率）分别为：Faithfulness（忠实性）0.95、Answer Relevance（答案相关性）0.78、Context Relevance（上下文相关性）0.70 [1]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "Ragas 三个指标与人类标注的一致率分别为：Faithfulness 0.95、Answer Relevance 0.78、Context Relevance 0.70",
+          "verdict": "REFUSE",
+          "reason": "来源论文证据1明确说明：faithfulness和context relevance的标注者间一致率约为95%，answer relevance约为90%，但这是标注者之间的一致率，并非Ragas指标与人类标注的一致率。证据2描述的是Ragas与人类偏好的准确率比较，但未给出具体数值。标准答案中的0.95、0.78、0.70在提供的证据中无法找到对应支持，属于编造或错误。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "fact_10",
+    "question": "Ragas 三个指标与人类标注的一致率分别是多少?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，Ragas 三个指标与人类标注的一致率（即与人类标注者在两两比较中的一致率）分别为：\n\n- **Faithfulness（忠实性）**：0.95 [1]\n- **Answer Relevance（答案相关性）**：0.78 [1]\n- **Context Relevance（上下文相关性）**：0.70 [1]\n\n这些数据来自 Table 1，显示 Ragas 在三个质量维度上与人类标注者的一致率 [1]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "Faithfulness（忠实性）与人类标注的一致率为0.95",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和论文证据1均明确给出Faithfulness的一致率约为95%，且表1中Ragas的准确率为0.95。"
+        },
+        {
+          "claim": "Answer Relevance（答案相关性）与人类标注的一致率为0.78",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确给出Answer Relevance为0.78，论文表1中Ragas的准确率与此一致。"
+        },
+        {
+          "claim": "Context Relevance（上下文相关性）与人类标注的一致率为0.70",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确给出Context Relevance为0.70，论文表1中Ragas的准确率与此一致。"
+        },
+        {
+          "claim": "这些数据来自Table 1，显示Ragas在三个质量维度上与人类标注者的一致率",
+          "verdict": "SUPPORT",
+          "reason": "论文证据2和证据3明确说明表1报告了Ragas与人类标注者的一致率（accuracy），且数值与回答一致。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 100
+    }
+  },
+  {
+    "question_id": "fact_11",
+    "question": "Verifiability 论文提出的两层引用标准分别是什么?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，Verifiability 论文提出的两层引用标准分别是：\n\n1. **引用召回率（citation recall）**：指生成的关于外部世界的陈述中被其关联引用完全支持的比例，即所有陈述都应被引用完全支持（高召回率）[3][5]。\n2. **引用精确率（citation precision）**：指每个提供的引用都支持其关联陈述的比例，即每个引用都应准确支持其关联陈述（高精确率）[3][5]。\n\n此外，论文还定义了结合两者的**引用F1（citation F1）** 指标[3]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "Verifiability 论文提出的两层引用标准分别是引用召回率和引用精确率",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和来源论文证据2、3均明确提及citation recall和citation precision作为两个核心指标。"
+        },
+        {
+          "claim": "引用召回率指生成的关于外部世界的陈述中被其关联引用完全支持的比例，即所有陈述都应被引用完全支持（高召回率）",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2指出citation recall是生成的句子被引用完全支持的比例，标准答案也表述为所有陈述都应有引用支撑。"
+        },
+        {
+          "claim": "引用精确率指每个提供的引用都支持其关联陈述的比例，即每个引用都应准确支持其关联陈述（高精确率）",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2指出citation precision是引用支持其关联句子的比例，标准答案也表述为每个引用都应支持其关联的陈述。"
+        },
+        {
+          "claim": "论文还定义了结合两者的引用F1（citation F1）指标",
+          "verdict": "REFUSE",
+          "reason": "来源论文证据中未提及citation F1指标，标准答案也未包含此内容，属于模型额外添加的未支持论断。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 60
+    }
+  },
+  {
+    "question_id": "fact_11",
+    "question": "Verifiability 论文提出的两层引用标准分别是什么?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据论文片段，Verifiability 论文提出的两层引用标准分别是：\n\n1. **引用召回率（citation recall）**：指生成的关于外部世界的陈述中，被其关联引用完全支持的比例。该标准旨在奖励那些引用全面的系统（即高召回率，所有陈述都被引用完全支持）[3][5]。\n\n2. **引用精确率（citation precision）**：指每个提供的引用是否支持其关联陈述的比例。该标准旨在奖励那些引用准确的系统（即高精确率，每个引用都支持其关联陈述）[3][5]。\n\n此外，论文还定义了**引用F1**，这是一个结合了引用精确率和引用召回率的综合指标 [3]。\n\n具体而言，论文在评估中发现，现有生成式搜索引擎的响应中，平均仅有51.5%的生成句子被引用完全支持（即引用召回率），而只有74.5%的引用支持其关联句子（即引用精确率）[2]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "Verifiability 论文提出的两层引用标准分别是引用召回率和引用精确率",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和论文证据均明确提到citation recall和citation precision，且定义为两层标准。"
+        },
+        {
+          "claim": "引用召回率指生成的关于外部世界的陈述中，被其关联引用完全支持的比例",
+          "verdict": "SUPPORT",
+          "reason": "论文证据2中描述'generated sentences are fully supported with citations (citation recall)'，与定义一致。"
+        },
+        {
+          "claim": "引用精确率指每个提供的引用是否支持其关联陈述的比例",
+          "verdict": "SUPPORT",
+          "reason": "论文证据2中描述'citations support their associated sentence (citation precision)'，与定义一致。"
+        },
+        {
+          "claim": "论文还定义了引用F1，这是一个结合了引用精确率和引用召回率的综合指标",
+          "verdict": "SUPPORT",
+          "reason": "虽然标准答案未提及，但论文中通常定义F1为精确率和召回率的调和平均，且模型回答基于论文片段，未与标准答案冲突。"
+        },
+        {
+          "claim": "现有生成式搜索引擎的响应中，平均仅有51.5%的生成句子被引用完全支持（即引用召回率），而只有74.5%的引用支持其关联句子（即引用精确率）",
+          "verdict": "SUPPORT",
+          "reason": "论文证据2明确给出这些数值，与模型回答一致。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "fact_12",
+    "question": "对四个生成式搜索系统的审计发现,平均有多少比例的生成句子被引用完全支撑?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，对四个生成式搜索系统（Bing Chat、NeevaAI、perplexity.ai 和 YouChat）的审计发现，平均仅有 **51.5%** 的生成句子被引用完全支撑（即 citation recall）[1][2][3][5]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "对四个生成式搜索系统（Bing Chat、NeevaAI、perplexity.ai 和 YouChat）的审计发现，平均仅有51.5%的生成句子被引用完全支撑（即citation recall）",
+          "verdict": "SUPPORT",
+          "reason": "来源论文明确提到“On average, merely 51.5% of generated sentences are fully supported with citations (citation recall)”，且审计对象为四个系统，与标准答案一致。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 100
+    }
+  },
+  {
+    "question_id": "fact_12",
+    "question": "对四个生成式搜索系统的审计发现,平均有多少比例的生成句子被引用完全支撑?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，对四个生成式搜索系统（Bing Chat、NeevaAI、perplexity.ai 和 YouChat）的审计发现，平均仅有 **51.5%** 的生成句子被引用完全支撑（即引用召回率）[1][2][3]。这一结果在多个片段中均有明确表述，例如：“on average, a mere 51.5% of generated sentences are fully supported by citations”[1]，“merely 51.5% of generated sentences are fully supported with citations (citation recall)”[2]，以及“a mere 51.5% of generated statements are fully supported by citations (recall)”[3]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "对四个生成式搜索系统（Bing Chat、NeevaAI、perplexity.ai 和 YouChat）的审计发现，平均仅有51.5%的生成句子被引用完全支撑（即引用召回率）",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和来源论文证据2明确表述“on average, merely 51.5% of generated sentences are fully supported with citations (citation recall)”，且论文审计了这四个系统。"
+        },
+        {
+          "claim": "这一结果在多个片段中均有明确表述",
+          "verdict": "SUPPORT",
+          "reason": "模型回答引用了三个不同片段，均包含51.5%的表述，与来源论文一致。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "fact_13",
+    "question": "ColBERT 的 MaxSim 匹配如何计算?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，ColBERT 的 MaxSim 匹配计算方式如下：\n\n首先，对于查询 q 和文档 d，查询编码器 fQ 将 q 编码为一组固定大小的嵌入 Eq，文档编码器 fD 将 d 编码为另一组嵌入 Ed [4]。在匹配阶段，每个查询嵌入与文档的所有嵌入通过 MaxSim 算子进行交互，该算子计算最大相似度（例如余弦相似度）[5]。具体来说，对于每个查询词项 tq，MaxSim 会以反映其在查询中上下文的方式，在文档嵌入中“软性”搜索，通过计算 tq 与文档词项 td 之间的最大相似度分数来量化匹配强度 [2]。然后，将这些词项分数跨所有查询词项求和，以估计文档的相关性 [2]。\n\n此外，除了余弦相似度，还评估了平方 L2 距离作为向量相似度的度量 [2]。这种求和最大相似度计算的机制具有两个显著特点：一是计算成本特别低，二是非常适合高效的 top-k 检索剪枝 [2]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "查询编码器 fQ 将 q 编码为一组固定大小的嵌入 Eq，文档编码器 fD 将 d 编码为另一组嵌入 Ed",
+          "verdict": "SUPPORT",
+          "reason": "来源论文描述ColBERT使用两个编码器分别编码查询和文档，生成嵌入表示。"
+        },
+        {
+          "claim": "每个查询嵌入与文档的所有嵌入通过 MaxSim 算子进行交互，该算子计算最大相似度（例如余弦相似度）",
+          "verdict": "SUPPORT",
+          "reason": "来源论文明确说明MaxSim计算查询词项与文档词项之间的最大相似度，并提及余弦相似度。"
+        },
+        {
+          "claim": "对于每个查询词项 tq，MaxSim 会以反映其在查询中上下文的方式，在文档嵌入中“软性”搜索，通过计算 tq 与文档词项 td 之间的最大相似度分数来量化匹配强度",
+          "verdict": "SUPPORT",
+          "reason": "来源论文原文描述“softly searches for each query term tq—in a manner that reflects its context in the query—against the document’s embeddings, quantifying the strength of the match via the largest similarity score”。"
+        },
+        {
+          "claim": "将这些词项分数跨所有查询词项求和，以估计文档的相关性",
+          "verdict": "SUPPORT",
+          "reason": "来源论文明确说“summing the matching evidence across all query terms”。"
+        },
+        {
+          "claim": "除了余弦相似度，还评估了平方 L2 距离作为向量相似度的度量",
+          "verdict": "SUPPORT",
+          "reason": "来源论文原文“Besides cosine, we also evaluate squared L2 distance as a measure of vector similarity”。"
+        },
+        {
+          "claim": "这种求和最大相似度计算的机制具有两个显著特点：一是计算成本特别低，二是非常适合高效的 top-k 检索剪枝",
+          "verdict": "PARTIAL",
+          "reason": "来源论文支持计算成本低，但未明确提及“top-k检索剪枝”，只提到“enabling end-to-end retrieval”和“scalable”，因此该论断部分正确但“剪枝”表述无直接证据。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 85
+    }
+  },
+  {
+    "question_id": "fact_13",
+    "question": "ColBERT 的 MaxSim 匹配如何计算?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，ColBERT 的 MaxSim 匹配计算方式如下：\n\n首先，给定查询 q 和文档 d，查询编码器 fQ 将 q 编码为一组固定大小的嵌入 Eq，文档编码器 fD 将 d 编码为另一组嵌入 Ed [4]。每个查询嵌入会与文档的所有嵌入通过 MaxSim 算子进行交互，该算子计算最大相似度（例如余弦相似度）[5][2]。具体来说，对于每个查询词项 tq，MaxSim 会以反映其在查询中上下文的方式，在文档嵌入中“软性”搜索，通过计算 tq 与文档词项 td 之间的最大相似度分数来量化“匹配”的强度 [2]。\n\n然后，根据这些词项分数，通过将所有查询词项的匹配证据求和来估计文档相关性 [2]。这种“最大相似度求和”的机制具有两个显著特点：一是作为一种特别廉价的交互机制（其 FLOPs 在论文 §4.2 中分析）；二是它非常适合高效的 top-k 检索剪枝（在 §4.3 中评估），这使得可以使用向量相似度算法跳过文档，而无需物化完整的交互矩阵或单独考虑每个文档 [2]。\n\n此外，除了余弦相似度，论文还评估了平方 L2 距离作为向量相似度的度量 [2]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "查询编码器 fQ 将 q 编码为一组固定大小的嵌入 Eq，文档编码器 fD 将 d 编码为另一组嵌入 Ed",
+          "verdict": "SUPPORT",
+          "reason": "来源论文描述ColBERT使用两个编码器分别编码查询和文档，生成嵌入表示。"
+        },
+        {
+          "claim": "每个查询嵌入会与文档的所有嵌入通过 MaxSim 算子进行交互，该算子计算最大相似度（例如余弦相似度）",
+          "verdict": "SUPPORT",
+          "reason": "论文明确说明MaxSim计算查询词项与文档词项之间的最大相似度，并提及余弦相似度。"
+        },
+        {
+          "claim": "对于每个查询词项 tq，MaxSim 会以反映其在查询中上下文的方式，在文档嵌入中“软性”搜索，通过计算 tq 与文档词项 td 之间的最大相似度分数来量化“匹配”的强度",
+          "verdict": "SUPPORT",
+          "reason": "论文原文描述“softly searches for each query term tq ... quantifying the strength of the match via the largest similarity score between tq and a document term td”。"
+        },
+        {
+          "claim": "然后，根据这些词项分数，通过将所有查询词项的匹配证据求和来估计文档相关性",
+          "verdict": "SUPPORT",
+          "reason": "论文明确说“summing the matching evidence across all query terms”。"
+        },
+        {
+          "claim": "这种“最大相似度求和”的机制具有两个显著特点：一是作为一种特别廉价的交互机制（其 FLOPs 在论文 §4.2 中分析）；二是它非常适合高效的 top-k 检索剪枝（在 §4.3 中评估），这使得可以使用向量相似度算法跳过文档，而无需物化完整的交互矩阵或单独考虑每个文档",
+          "verdict": "SUPPORT",
+          "reason": "论文在§4.2和§4.3中讨论了计算效率和top-k剪枝，且提到无需物化完整交互矩阵。"
+        },
+        {
+          "claim": "除了余弦相似度，论文还评估了平方 L2 距离作为向量相似度的度量",
+          "verdict": "SUPPORT",
+          "reason": "论文原文“Besides cosine, we also evaluate squared L2 distance as a measure of vector similarity”。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "fact_14",
+    "question": "CRAG 的检索评估器输出哪三种状态?各自触发什么动作?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，CRAG 的检索评估器会输出三种状态，并触发相应的知识检索动作：\n\n1. **Correct（正确）**：当检索结果质量较高时触发该动作。[2]\n2. **Incorrect（不正确）**：当检索结果质量较低时触发该动作。[2]\n3. **Ambiguous（模糊）**：当检索结果质量不确定时触发该动作。[2]\n\n具体来说，评估器会为每个查询计算一个置信度，基于该置信度触发上述三种动作之一（即 {Correct, Incorrect, Ambiguous}）[2]。此外，在消融实验中，当移除 Correct 或 Incorrect 动作时，它们会与 Ambiguous 合并，使得原本触发 Correct 或 Incorrect 的比例转而触发 Ambiguous[4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "CRAG 的检索评估器会输出三种状态：Correct、Incorrect、Ambiguous",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和论文均明确提到三种状态，且论文中消融实验也列出了这三种动作。"
+        },
+        {
+          "claim": "Correct 状态在检索结果质量较高时触发",
+          "verdict": "SUPPORT",
+          "reason": "标准答案指出 Correct 对应检索质量好，直接生成，论文中消融实验也表明 Correct 动作对应高质量检索。"
+        },
+        {
+          "claim": "Incorrect 状态在检索结果质量较低时触发",
+          "verdict": "SUPPORT",
+          "reason": "标准答案指出 Incorrect 对应检索质量差，触发纠错，论文中消融实验也支持该动作。"
+        },
+        {
+          "claim": "Ambiguous 状态在检索结果质量不确定时触发",
+          "verdict": "SUPPORT",
+          "reason": "标准答案指出 Ambiguous 对应不确定，也触发纠错，论文中消融实验也包含该动作。"
+        },
+        {
+          "claim": "评估器会为每个查询计算一个置信度，基于该置信度触发上述三种动作之一",
+          "verdict": "PARTIAL",
+          "reason": "论文中确实提到评估器预测相关性分数，但未明确说明是“置信度”或“每个查询”计算，更准确的是对每个查询-文档对计算相关性分数。"
+        },
+        {
+          "claim": "在消融实验中，当移除 Correct 或 Incorrect 动作时，它们会与 Ambiguous 合并，使得原本触发 Correct 或 Incorrect 的比例转而触发 Ambiguous",
+          "verdict": "SUPPORT",
+          "reason": "论文中消融实验表格显示 w/o Correct 和 w/o Incorrect 时性能变化，暗示这些动作被合并到 Ambiguous，但具体“合并”机制未详细说明，不过该论断与实验设计一致。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 85
+    }
+  },
+  {
+    "question_id": "fact_14",
+    "question": "CRAG 的检索评估器输出哪三种状态?各自触发什么动作?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，CRAG 的检索评估器会输出三种状态，并触发相应的知识检索动作：\n\n1. **Correct（正确）**：当检索结果被评估为正确时，触发“Correct”动作。[2]\n2. **Incorrect（不正确）**：当检索结果被评估为不正确时，触发“Incorrect”动作。[2]\n3. **Ambiguous（模糊）**：当检索结果被评估为模糊时，触发“Ambiguous”动作。[2]\n\n这三种动作分别对应“Correct, Incorrect, Ambiguous”，由评估器基于置信度触发。[2] 此外，在消融实验中，移除某个动作时会将其与“Ambiguous”合并，例如移除“Correct”或“Incorrect”时，原本触发这些动作的情况会改为触发“Ambiguous”。[4]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "CRAG 的检索评估器会输出三种状态：Correct、Incorrect、Ambiguous",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和论文均明确提及这三种状态。"
+        },
+        {
+          "claim": "Correct 状态触发“Correct”动作",
+          "verdict": "PARTIAL",
+          "reason": "标准答案指出 Correct 状态对应“直接生成”，而非简单触发“Correct”动作；模型回答未说明具体动作内容。"
+        },
+        {
+          "claim": "Incorrect 状态触发“Incorrect”动作",
+          "verdict": "PARTIAL",
+          "reason": "标准答案指出 Incorrect 状态触发“纠错”动作，而非简单触发“Incorrect”动作；模型回答未说明纠错细节。"
+        },
+        {
+          "claim": "Ambiguous 状态触发“Ambiguous”动作",
+          "verdict": "PARTIAL",
+          "reason": "标准答案指出 Ambiguous 状态也触发“纠错”，而非简单触发“Ambiguous”动作；模型回答未说明纠错细节。"
+        },
+        {
+          "claim": "这三种动作分别对应“Correct, Incorrect, Ambiguous”，由评估器基于置信度触发",
+          "verdict": "PARTIAL",
+          "reason": "论文中评估器基于置信度输出标签，但动作并非直接同名，而是对应生成或纠错等具体行为。"
+        },
+        {
+          "claim": "在消融实验中，移除某个动作时会将其与“Ambiguous”合并",
+          "verdict": "SUPPORT",
+          "reason": "论文证据4中的消融实验表格显示移除 Correct 或 Incorrect 时与 Ambiguous 合并。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 60
+    }
+  },
+  {
+    "question_id": "fact_15",
+    "question": "CRUD-RAG 把 RAG 应用场景分为哪四类?各代表什么?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，CRUD-RAG 将 RAG 应用场景分为四类：Create（创建）、Read（读取）、Update（更新）和 Delete（删除）[2]。\n\n各分类代表的能力如下：\n- **Create（创建）**：系统通过从外部来源添加相关信息来改进输入文本，生成创造性输出，如诗歌、故事或代码 [2]。\n- **Read（读取）**：系统利用外部知识检索来回答问题、解决问答、对话和推理中的问题，并增强对输入文本的理解 [2]。\n- **Update（更新）**：系统使用检索到的内容修复输入文本中的错误，纠正拼写、语法或事实错误，使文本更完善 [2]。\n- **Delete（删除）**：系统通过改进检索结果来简化输入，去除不必要的细节，执行文本摘要或简化等任务 [2]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "CRUD-RAG 将 RAG 应用场景分为四类：Create（创建）、Read（读取）、Update（更新）和 Delete（删除）",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2明确列出actions: create, read, update, and delete，即CRUD框架。"
+        },
+        {
+          "claim": "Create（创建）：系统通过从外部来源添加相关信息来改进输入文本，生成创造性输出，如诗歌、故事或代码",
+          "verdict": "SUPPORT",
+          "reason": "证据2原文：'In CREATE, the system improves the input text by adding relevant information from external sources, making creative outputs such as poetry, stories, or code.'"
+        },
+        {
+          "claim": "Read（读取）：系统利用外部知识检索来回答问题、解决问答、对话和推理中的问题，并增强对输入文本的理解",
+          "verdict": "SUPPORT",
+          "reason": "标准答案中Read为'知识密集复杂问答'，证据2虽未逐字列出Read细节，但结合CRUD框架和标准答案，该描述与论文中Read类别的定义一致（论文中Read对应知识密集型问答）。"
+        },
+        {
+          "claim": "Update（更新）：系统使用检索到的内容修复输入文本中的错误，纠正拼写、语法或事实错误，使文本更完善",
+          "verdict": "SUPPORT",
+          "reason": "标准答案中Update为'修订既有文本的错误/不一致'，该描述与论文中Update类别的定义一致（论文中Update对应修订错误）。"
+        },
+        {
+          "claim": "Delete（删除）：系统通过改进检索结果来简化输入，去除不必要的细节，执行文本摘要或简化等任务",
+          "verdict": "SUPPORT",
+          "reason": "标准答案中Delete为'长文本浓缩精简'，该描述与论文中Delete类别的定义一致（论文中Delete对应文本简化/摘要）。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "fact_15",
+    "question": "CRUD-RAG 把 RAG 应用场景分为哪四类?各代表什么?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，CRUD-RAG 将 RAG 应用场景分为四类：Create（创建）、Read（读取）、Update（更新）和 Delete（删除）[2][3]。\n\n各分类代表的能力如下：\n- **CREATE（创建）**：系统通过添加外部来源的相关信息来改进输入文本，生成创造性输出，如诗歌、故事或代码 [2]。\n- **READ（读取）**：系统利用外部知识检索来回答问题、解决问题（如问答、对话和推理），并增强对输入文本的理解 [2]。\n- **UPDATE（更新）**：系统使用检索到的内容修复输入文本中的错误，如纠正拼写、语法或事实错误，以改进文本 [2]。\n- **DELETE（删除）**：系统通过改进检索结果来简化输入，去除不必要的细节，执行文本摘要或简化等任务 [2]。\n\n此外，该分类框架基于数据库中的 CRUD 操作（创建、读取、更新、删除）概念，用于系统化地评估 RAG 系统在不同文本处理场景下的能力 [2][4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "CRUD-RAG 将 RAG 应用场景分为四类：Create（创建）、Read（读取）、Update（更新）和 Delete（删除）",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和证据2均明确列出这四类，且与数据库CRUD操作对应。"
+        },
+        {
+          "claim": "CREATE（创建）：系统通过添加外部来源的相关信息来改进输入文本，生成创造性输出，如诗歌、故事或代码",
+          "verdict": "SUPPORT",
+          "reason": "证据2原文直接支持该描述。"
+        },
+        {
+          "claim": "READ（读取）：系统利用外部知识检索来回答问题、解决问题（如问答、对话和推理），并增强对输入文本的理解",
+          "verdict": "SUPPORT",
+          "reason": "标准答案中READ对应知识密集复杂问答，证据2中虽未逐字列出但结合上下文和标准答案，该描述合理。"
+        },
+        {
+          "claim": "UPDATE（更新）：系统使用检索到的内容修复输入文本中的错误，如纠正拼写、语法或事实错误，以改进文本",
+          "verdict": "SUPPORT",
+          "reason": "标准答案中UPDATE对应修订既有文本的错误/不一致，该描述与之相符。"
+        },
+        {
+          "claim": "DELETE（删除）：系统通过改进检索结果来简化输入，去除不必要的细节，执行文本摘要或简化等任务",
+          "verdict": "SUPPORT",
+          "reason": "标准答案中DELETE对应长文本浓缩精简，该描述与之相符。"
+        },
+        {
+          "claim": "该分类框架基于数据库中的 CRUD 操作（创建、读取、更新、删除）概念",
+          "verdict": "SUPPORT",
+          "reason": "证据2明确提到actions: create, read, update, and delete, which are also known as CRUD actions [48]。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_01",
+    "question": "为什么 DPR 的 in-batch negatives 能免费获得一个 batch 内 B 个问题 × B 个段落的训练信号?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，DPR 的 in-batch negatives 能免费获得一个 batch 内 B 个问题 × B 个段落的训练信号，是因为其计算方式的设计：在训练中，假设一个 mini-batch 内有 B 个问题，每个问题关联一个相关段落。令 Q 和 P 分别为 batch 大小为 B 的问题和段落嵌入矩阵（维度为 B×d），则相似度分数矩阵 S = QPᵀ 是一个 B×B 的矩阵，其中每一行对应一个问题，并与 B 个段落配对。这样，通过复用计算，每个 batch 实际上训练了 B² 个 (qᵢ, pⱼ) 的问题/段落对；其中当 i = j 时为正例，否则为负例，从而每个问题有 B−1 个负段落 [1]。这种 in-batch negatives 技巧通过复用 batch 内已有的负例，而非额外创建新的负例，是一种简单且内存高效的方式，能有效增加训练样本数量，并提升模型性能 [2]。\n\n因此，in-batch negatives 之所以能“免费”获得 B×B 的训练信号，是因为它利用矩阵运算同时计算了 batch 内所有问题与所有段落的相似度，从而在不增加额外计算或存储成本的情况下，将每个 batch 的训练对数量从 B 个扩展到 B² 个 [1][2]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "DPR 的 in-batch negatives 能免费获得一个 batch 内 B 个问题 × B 个段落的训练信号，是因为其计算方式的设计：在训练中，假设一个 mini-batch 内有 B 个问题，每个问题关联一个相关段落。令 Q 和 P 分别为 batch 大小为 B 的问题和段落嵌入矩阵（维度为 B×d），则相似度分数矩阵 S = QPᵀ 是一个 B×B 的矩阵，其中每一行对应一个问题，并与 B 个段落配对。",
+          "verdict": "SUPPORT",
+          "reason": "该论断直接对应来源论文证据1中的描述，包括矩阵定义和相似度计算方式。"
+        },
+        {
+          "claim": "这样，通过复用计算，每个 batch 实际上训练了 B² 个 (qᵢ, pⱼ) 的问题/段落对；其中当 i = j 时为正例，否则为负例，从而每个问题有 B−1 个负段落。",
+          "verdict": "SUPPORT",
+          "reason": "证据1明确说明“effectively train on B² (qi,pj) question/passage pairs”，且对角线为正例，其余为负例。"
+        },
+        {
+          "claim": "这种 in-batch negatives 技巧通过复用 batch 内已有的负例，而非额外创建新的负例，是一种简单且内存高效的方式，能有效增加训练样本数量，并提升模型性能。",
+          "verdict": "SUPPORT",
+          "reason": "证据2指出“in-batch negative training is an easy and memory-efficient way to reuse the negative examples already in the batch”，且实验显示性能提升。"
+        },
+        {
+          "claim": "因此，in-batch negatives 之所以能“免费”获得 B×B 的训练信号，是因为它利用矩阵运算同时计算了 batch 内所有问题与所有段落的相似度，从而在不增加额外计算或存储成本的情况下，将每个 batch 的训练对数量从 B 个扩展到 B² 个。",
+          "verdict": "SUPPORT",
+          "reason": "该总结与证据1和证据2一致，强调复用计算和内存高效性。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_01",
+    "question": "为什么 DPR 的 in-batch negatives 能免费获得一个 batch 内 B 个问题 × B 个段落的训练信号?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，DPR 的 in-batch negatives 能免费获得一个 batch 内 B 个问题 × B 个段落的训练信号，原因如下：\n\n在 in-batch negatives 设置中，假设一个 mini-batch 内有 B 个问题，每个问题关联一个相关段落。令 Q 和 P 分别为 batch 大小为 B 的问题和段落嵌入矩阵（维度为 B×d），则相似度分数矩阵 S = QPᵀ 是一个 B×B 矩阵，其中每一行对应一个问题，并与 B 个段落配对 [1]。这样，通过复用计算，每个 batch 实际上训练了 B² 个 (qᵢ, pⱼ) 问题/段落对 [1]。其中，当 i = j 时，(qᵢ, pⱼ) 为正例，否则为负例，因此每个 batch 中每个问题有 B−1 个负段落 [1]。\n\n此外，in-batch negative 训练是一种简单且内存高效的方式，它复用 batch 中已有的负例，而不是创建新的负例，从而产生更多配对并增加训练样本数量，这有助于提升模型性能 [2]。因此，通过这种机制，无需额外计算即可获得 B×B 的训练信号。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "在 in-batch negatives 设置中，假设一个 mini-batch 内有 B 个问题，每个问题关联一个相关段落。令 Q 和 P 分别为 batch 大小为 B 的问题和段落嵌入矩阵（维度为 B×d），则相似度分数矩阵 S = QPᵀ 是一个 B×B 矩阵，其中每一行对应一个问题，并与 B 个段落配对",
+          "verdict": "SUPPORT",
+          "reason": "该论断直接来自来源论文证据1，描述了矩阵形式和配对关系。"
+        },
+        {
+          "claim": "通过复用计算，每个 batch 实际上训练了 B² 个 (qᵢ, pⱼ) 问题/段落对",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1明确说明“effectively train on B² (qi,pj) question/passage pairs”。"
+        },
+        {
+          "claim": "当 i = j 时，(qᵢ, pⱼ) 为正例，否则为负例，因此每个 batch 中每个问题有 B−1 个负段落",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和论文逻辑一致，对角线为正样本，每行其余B-1个为负样本。"
+        },
+        {
+          "claim": "in-batch negative 训练是一种简单且内存高效的方式，它复用 batch 中已有的负例，而不是创建新的负例，从而产生更多配对并增加训练样本数量，这有助于提升模型性能",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2明确提到“easy and memory-efficient way to reuse the negative examples already in the batch”，且实验表明提升性能。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_02",
+    "question": "为什么在负样本中加入'BM25 高分但不含答案'的困难负样本能提升 DPR 训练效果?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，加入“BM25 高分但不含答案”的困难负样本能提升 DPR 训练效果的原因如下：\n\n在消融实验中，研究者探索了在批内负样本训练（in-batch negative training）基础上，额外加入具有高 BM25 分数但不包含答案字符串的“困难”负样本（hard negative passages）的效果。这些额外段落被用作同一批次中所有问题的负样本。实验发现，加入单个 BM25 负样本能显著提升结果，而加入两个则没有进一步帮助 [1]。\n\n具体而言，表 3 显示，在批内训练（IB）基础上，使用 1 个额外的 BM25 负样本（G.+BM25(1)）时，Top-5、Top-20、Top-100 的检索准确率分别达到 65.0、77.3、84.4，明显高于仅使用黄金负样本（Gold）或随机负样本（Random）的设置 [1][3]。这表明，这类困难负样本与问题高度相关（BM25 分数高），但又不包含答案，能更有效地训练模型区分相关与不相关段落，从而提升检索性能 [1]。\n\n因此，困难负样本通过提供更具挑战性的对比示例，增强了模型对“表面相关但实际不相关”段落的判别能力，从而改善了 DPR 的训练效果 [1][3]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "加入单个 BM25 负样本能显著提升结果，而加入两个则没有进一步帮助",
+          "verdict": "SUPPORT",
+          "reason": "来源论文表3及描述明确支持该论断"
+        },
+        {
+          "claim": "在批内训练基础上，使用1个额外的BM25负样本时，Top-5、Top-20、Top-100准确率分别达到65.0、77.3、84.4，明显高于仅使用黄金负样本或随机负样本的设置",
+          "verdict": "PARTIAL",
+          "reason": "表3中G.+BM25(1)的准确率确实为65.0、77.3、84.4，但标准答案和论文并未直接对比'仅使用黄金负样本'或'随机负样本'的数值，且'明显高于'的表述缺乏直接数据支持，存在一定推断成分"
+        },
+        {
+          "claim": "这类困难负样本与问题高度相关（BM25分数高），但又不包含答案，能更有效地训练模型区分相关与不相关段落",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和论文逻辑一致，困难负样本提供更具挑战性的对比，增强判别能力"
+        },
+        {
+          "claim": "困难负样本通过提供更具挑战性的对比示例，增强了模型对'表面相关但实际不相关'段落的判别能力，从而改善了DPR的训练效果",
+          "verdict": "SUPPORT",
+          "reason": "该论断与标准答案完全一致，且符合论文中关于困难负样本作用的解释"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 85
+    }
+  },
+  {
+    "question_id": "method_02",
+    "question": "为什么在负样本中加入'BM25 高分但不含答案'的困难负样本能提升 DPR 训练效果?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，在负样本中加入“BM25 高分但不含答案”的困难负样本能提升 DPR 训练效果，原因如下：\n\n1. **增加训练样本数量**：在批内负样本训练（in-batch negative training）中，加入额外的 BM25 困难负样本后，这些负样本会作为同一批次中所有问题的负样本，从而产生更多训练对，增加了训练样本的数量，这可能有助于提升模型性能 [1]。\n\n2. **显著提升检索准确率**：实验表明，在原有批内负样本基础上，仅添加 1 个 BM25 困难负样本就能大幅提升结果（例如，Top-5 准确率从 52.1 提升至 65.0，Top-20 从 70.8 提升至 77.3，Top-100 从 82.1 提升至 84.4）[1]。而添加 2 个 BM25 困难负样本则没有进一步帮助 [1]。\n\n3. **与批内负样本结合有效**：这种设置是在批内负样本训练的基础上，额外加入具有高 BM25 分数但不包含答案字符串的困难负样本，作为同一批次所有问题的负样本 [1]。这种组合方式被证明是有效的 [1]。\n\n综上，加入 BM25 困难负样本通过增加训练样本数量并显著提升检索准确率，从而改善了 DPR 的训练效果 [1]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "在批内负样本训练中，加入额外的 BM25 困难负样本后，这些负样本会作为同一批次中所有问题的负样本，从而产生更多训练对，增加了训练样本的数量，这可能有助于提升模型性能。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据3明确说明BM25负样本作为批次中所有问题的负样本，且证据2提到更多训练样本对某些数据集有益，因此该论断被支持。"
+        },
+        {
+          "claim": "实验表明，在原有批内负样本基础上，仅添加 1 个 BM25 困难负样本就能大幅提升结果（例如，Top-5 准确率从 52.1 提升至 65.0，Top-20 从 70.8 提升至 77.3，Top-100 从 82.1 提升至 84.4）。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据3中的表格显示了这些具体数值，且文本说明添加1个BM25负样本显著提升，添加2个无进一步帮助。"
+        },
+        {
+          "claim": "添加 2 个 BM25 困难负样本则没有进一步帮助。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据3明确说明添加2个BM25负样本没有进一步帮助。"
+        },
+        {
+          "claim": "这种设置是在批内负样本训练的基础上，额外加入具有高 BM25 分数但不包含答案字符串的困难负样本，作为同一批次所有问题的负样本。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据3描述G.+BM25设置，且标准答案也指出这类负样本是BM25高分但不含答案的困难负样本。"
+        },
+        {
+          "claim": "加入 BM25 困难负样本通过增加训练样本数量并显著提升检索准确率，从而改善了 DPR 的训练效果。",
+          "verdict": "SUPPORT",
+          "reason": "该论断综合了前几个被支持的论断，且来源论文证据支持增加样本数量和提升准确率，因此整体被支持。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_03",
+    "question": "FiD 为什么让每个 passage 与问题独立编码,而不是把所有 passage 拼成一个长序列?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，FiD（Fusion-in-Decoder）让每个 passage 与问题独立编码，而不是把所有 passage 拼成一个长序列，是因为其设计目标是让模型在解码器中进行证据融合（evidence fusion）。具体而言，每个检索到的 passage 及其标题与问题拼接后，由编码器独立处理，而解码器则对所有检索到的 passage 的表示进行注意力操作，从而实现证据融合 [1]。这种“在编码器中独立处理 passage，但在解码器中联合处理”的方式，是 FiD 与 Min et al. (2020) 和 Lewis et al. 的方法不同的关键点 [1]。因此，独立编码是为了在解码阶段统一融合所有 passage 的信息，而非在编码阶段合并它们。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "FiD让每个passage与问题独立编码，是因为其设计目标是让模型在解码器中进行证据融合。",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和论文均指出FiD在解码器中进行融合，独立编码是为了在解码阶段统一融合信息。"
+        },
+        {
+          "claim": "每个检索到的passage及其标题与问题拼接后，由编码器独立处理，而解码器对所有passage的表示进行注意力操作。",
+          "verdict": "SUPPORT",
+          "reason": "论文描述FiD将每个passage与问题拼接后独立编码，解码器对所有编码表示进行注意力融合。"
+        },
+        {
+          "claim": "独立编码是为了在解码阶段统一融合所有passage的信息，而非在编码阶段合并它们。",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和论文均强调融合发生在解码器层，编码器独立处理避免合并。"
+        },
+        {
+          "claim": "独立编码避免了passage之间token的交叉注意力，计算量随passage数线性增长而非二次，且各passage可并行编码。",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确给出此理由，论文中FiD的设计也隐含此效率优势。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_03",
+    "question": "FiD 为什么让每个 passage 与问题独立编码,而不是把所有 passage 拼成一个长序列?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，FiD（Fusion-in-Decoder）让每个 passage 与问题独立编码，而不是把所有 passage 拼成一个长序列，是因为其设计目标是让模型在解码器中进行证据融合（evidence fusion）。具体而言，每个检索到的 passage 及其标题与问题拼接后，由编码器独立处理，而解码器则对所有检索到的 passage 的表示进行注意力操作，从而实现融合 [1]。这种“在编码器中独立处理 passage，但在解码器中联合处理”的方式，是 FiD 区别于其他方法（如 Min et al. (2020) 和 Lewis et al.）的关键 [1]。因此，独立编码是为了在解码阶段统一融合所有 passage 的证据，而非在编码阶段拼接成长序列。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "FiD让每个passage与问题独立编码，而不是把所有passage拼成一个长序列，是因为其设计目标是让模型在解码器中进行证据融合。",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和FiD论文均指出，独立编码后解码器对所有passage表示进行注意力融合，这是FiD的核心设计。"
+        },
+        {
+          "claim": "每个检索到的passage及其标题与问题拼接后，由编码器独立处理，而解码器则对所有检索到的passage的表示进行注意力操作，从而实现融合。",
+          "verdict": "SUPPORT",
+          "reason": "该描述与FiD论文一致，编码器独立处理每个passage，解码器跨passage进行注意力。"
+        },
+        {
+          "claim": "这种“在编码器中独立处理passage，但在解码器中联合处理”的方式，是FiD区别于其他方法（如Min et al. (2020) 和 Lewis et al.）的关键。",
+          "verdict": "SUPPORT",
+          "reason": "FiD论文明确对比了其他方法，强调其编码-解码分离的融合策略是独特之处。"
+        },
+        {
+          "claim": "独立编码是为了在解码阶段统一融合所有passage的证据，而非在编码阶段拼接成长序列。",
+          "verdict": "PARTIAL",
+          "reason": "该论断正确但不够完整，未提及计算效率（线性而非二次增长）和并行编码的优势，这些是标准答案中的关键点。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 70
+    }
+  },
+  {
+    "question_id": "method_04",
+    "question": "为什么 ColBERT 能把文档表示离线预计算,而 cross-encoder 不能?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，ColBERT 能将文档表示离线预计算，是因为其设计上“隔离了查询与文档之间几乎所有的计算”[1]，即通过“延迟查询-文档交互”的方式，使得文档编码可以在离线阶段独立完成[2]。具体来说，ColBERT 采用“表示聚焦型模型”的思路，将查询和文档的计算分离，从而可以预先计算并存储文档的嵌入表示[2]。其索引过程就是离线地对文档批量运行文档编码器 fD，并存储每个文档的输出嵌入[1]。\n\n而 cross-encoder 之所以不能这样做，是因为它属于“交互型模型”，其计算依赖于“联合查询-文档对”[3]，即查询和文档必须同时输入模型进行联合编码，无法将文档表示单独预先计算。检索内容明确指出，ColBERT 的晚交互机制“将交互型模型的细粒度匹配与表示型模型的文档表示预计算相结合”[2]，而 cross-encoder 不具备这种分离特性，因此无法离线预计算文档表示。\n\n综上，ColBERT 通过延迟交互和隔离查询/文档计算，实现了文档表示的离线预计算；而 cross-encoder 因依赖联合查询-文档计算，无法做到这一点。[1][2][3]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "ColBERT 能将文档表示离线预计算，是因为其设计上隔离了查询与文档之间几乎所有的计算",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2明确提到“representation-focused model—by isolating the computations among q and d—makes it possible to precompute document representations offline”"
+        },
+        {
+          "claim": "ColBERT 通过延迟查询-文档交互的方式，使得文档编码可以在离线阶段独立完成",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2提到“retaining yet judiciously delaying the query–document interaction”，且证据3提到“indexing document representations offline”"
+        },
+        {
+          "claim": "ColBERT 采用表示聚焦型模型的思路，将查询和文档的计算分离，从而可以预先计算并存储文档的嵌入表示",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2明确支持表示聚焦型模型隔离计算并预计算文档表示"
+        },
+        {
+          "claim": "ColBERT 的索引过程就是离线地对文档批量运行文档编码器 fD，并存储每个文档的输出嵌入",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1提到“Document Embeddings”部分，且证据3提到“indexing document representations offline”"
+        },
+        {
+          "claim": "cross-encoder 属于交互型模型，其计算依赖于联合查询-文档对，查询和文档必须同时输入模型进行联合编码",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确说明cross-encoder将query与文档拼接输入，且来源论文证据2对比了交互型模型与表示型模型，交互型模型无法预计算文档表示"
+        },
+        {
+          "claim": "cross-encoder 无法将文档表示单独预先计算",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和来源论文证据2均表明交互型模型依赖联合计算，无法预计算文档表示"
+        },
+        {
+          "claim": "ColBERT 的晚交互机制将交互型模型的细粒度匹配与表示型模型的文档表示预计算相结合",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2明确提到“the fine-grained matching of interaction-based models and the precomputation of document representations of representation-based models can be combined”"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_04",
+    "question": "为什么 ColBERT 能把文档表示离线预计算,而 cross-encoder 不能?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，ColBERT 能将文档表示离线预计算，而 cross-encoder 不能，原因在于两者的架构设计不同：\n\n1. **ColBERT 采用“表示聚焦”的架构**：ColBERT 通过“延迟查询-文档交互”的方式，将查询和文档的计算相互隔离，从而使得文档表示可以在离线状态下预先计算 [2]。具体来说，ColBERT 的文档编码器 `fD` 在索引阶段对文档进行编码，并将输出嵌入存储下来，这一过程是离线的 [1]。\n\n2. **ColBERT 的交互机制无需联合编码**：ColBERT 的“后期交互”机制（Late Interaction）通过 MaxSim 算子计算查询嵌入与文档嵌入之间的最大相似度，并将标量输出跨查询词求和 [2]。这种机制使得文档编码不依赖于查询，因此可以预先计算并存储文档表示 [1][3]。\n\n3. **Cross-encoder 需要联合处理查询-文档对**：相比之下，cross-encoder 这类模型将大量计算条件化在联合的查询-文档对上 [3]，即其计算依赖于同时输入查询和文档，因此无法将文档表示单独离线预计算。检索内容中明确指出，ColBERT 通过隔离查询和文档的计算，使得文档表示可以离线预计算，从而大幅减少每次查询的计算负载 [2]。\n\n综上，ColBERT 之所以能离线预计算文档表示，是因为其后期交互机制将查询与文档的计算解耦，而 cross-encoder 因依赖联合查询-文档计算而无法做到这一点 [1][2][3]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "ColBERT 采用“表示聚焦”的架构，通过延迟查询-文档交互，将查询和文档的计算相互隔离，从而使得文档表示可以在离线状态下预先计算",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2明确说明表示聚焦模型通过隔离q和d的计算，可以离线预计算文档表示。"
+        },
+        {
+          "claim": "ColBERT 的文档编码器在索引阶段对文档进行编码，并将输出嵌入存储下来，这一过程是离线的",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据3提到索引文档表示离线进行，且证据1描述文档嵌入的生成过程。"
+        },
+        {
+          "claim": "ColBERT 的后期交互机制通过 MaxSim 算子计算查询嵌入与文档嵌入之间的最大相似度，并将标量输出跨查询词求和",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据3明确提到MaxSim-based late interaction机制，且标准答案也确认交互发生在MaxSim层。"
+        },
+        {
+          "claim": "这种机制使得文档编码不依赖于查询，因此可以预先计算并存储文档表示",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2和标准答案均指出文档向量与查询无关，可预先计算。"
+        },
+        {
+          "claim": "Cross-encoder 需要联合处理查询-文档对，其计算依赖于同时输入查询和文档，因此无法将文档表示单独离线预计算",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确说明cross-encoder将query与文档拼在一起过网络，交互发生在每一层，必须在线逐对计算；来源论文证据2也对比了交互模型与表示模型的差异。"
+        },
+        {
+          "claim": "ColBERT 通过隔离查询和文档的计算，使得文档表示可以离线预计算，从而大幅减少每次查询的计算负载",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2和证据5均支持该论断，证据5提到ColBERT只需处理查询一次，计算负载大幅降低。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_05",
+    "question": "为什么 HyDE 先生成'假设文档'再检索,比直接用 query 向量检索更有效?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，HyDE 先生成“假设文档”再检索比直接用 query 向量检索更有效，原因如下：\n\n1. **零样本稠密检索的困难在于学习相关性**：稠密检索需要将查询和文档映射到同一嵌入空间，并通过内积捕捉相关性。在没有相关性标签的情况下，直接学习查询和文档的嵌入函数变得不可行 [3]。\n\n2. **HyDE 通过分解任务规避了学习问题**：HyDE 将稠密检索分解为两个任务——由指令跟随语言模型（如 InstructGPT）生成假设文档的生成任务，以及由无监督对比学习编码器（如 Contriever）执行的文档-文档相似性任务 [1][4]。这样，查询-文档相似性不再被显式建模或计算，而是转化为两个自然语言理解和生成任务 [4]。\n\n3. **生成假设文档捕捉相关性模式**：给定查询，HyDE 首先指示语言模型“写一篇回答该问题的文档”，即假设文档。该文档虽然不真实且可能包含错误细节，但能捕捉相关性模式 [1][4]。生成过程通过提供一个示例来捕捉“相关性” [4]。\n\n4. **编码器的稠密瓶颈过滤错误细节**：随后，无监督对比编码器将假设文档编码为嵌入向量。编码器的稠密瓶颈起到有损压缩器的作用，过滤掉额外（幻觉）细节，从而在语料库嵌入空间中识别出相似真实文档的邻域 [1][4]。这一步将生成的文档锚定到实际语料库，并基于向量相似性检索真实文档 [1]。\n\n5. **利用文档-文档相似性而非查询-文档相似性**：HyDE 聚焦于“答案到答案”的嵌入相似性，而不是“问题或查询”的嵌入相似性 [5]。由于对比训练中编码了文档-文档相似性，检索利用了这一特性，从而避免了直接学习查询-文档相似性的难题 [4]。\n\n综上，HyDE 通过生成假设文档并利用文档-文档相似性，绕过了零样本下学习查询-文档相关性的困难，同时借助编码器的稠密瓶颈过滤生成文档中的错误细节，因此比直接用查询向量检索更有效 [1][3][4][5]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "零样本稠密检索的困难在于学习相关性：稠密检索需要将查询和文档映射到同一嵌入空间，并通过内积捕捉相关性。在没有相关性标签的情况下，直接学习查询和文档的嵌入函数变得不可行。",
+          "verdict": "SUPPORT",
+          "reason": "论文中明确提到零样本稠密检索在没有相关性标签时难以学习查询-文档相似性，HyDE正是为了解决这一问题而设计。"
+        },
+        {
+          "claim": "HyDE 通过分解任务规避了学习问题：将稠密检索分解为生成任务（指令跟随语言模型生成假设文档）和文档-文档相似性任务（无监督对比编码器）。",
+          "verdict": "SUPPORT",
+          "reason": "论文中明确描述HyDE将稠密检索分解为生成任务和文档-文档相似性任务，分别由InstructGPT和Contriever执行。"
+        },
+        {
+          "claim": "生成假设文档捕捉相关性模式：给定查询，HyDE指示语言模型写一篇回答该问题的文档，该文档虽不真实但能捕捉相关性模式。",
+          "verdict": "SUPPORT",
+          "reason": "论文中说明生成的假设文档虽然可能包含错误细节，但能捕捉与真实文档相关的叙述模式。"
+        },
+        {
+          "claim": "编码器的稠密瓶颈过滤错误细节：无监督对比编码器将假设文档编码为嵌入向量，稠密瓶颈起到有损压缩器作用，过滤掉幻觉细节，从而识别相似真实文档的邻域。",
+          "verdict": "SUPPORT",
+          "reason": "论文中明确提到编码器的稠密瓶颈过滤假设文档中的虚假细节，并锚定到真实语料库。"
+        },
+        {
+          "claim": "利用文档-文档相似性而非查询-文档相似性：HyDE聚焦于答案到答案的嵌入相似性，避免了直接学习查询-文档相似性的难题。",
+          "verdict": "SUPPORT",
+          "reason": "论文中明确说明HyDE使用文档-文档相似性任务，而非查询-文档相似性，从而规避了零样本学习难题。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_05",
+    "question": "为什么 HyDE 先生成'假设文档'再检索,比直接用 query 向量检索更有效?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，HyDE 先生成“假设文档”再检索比直接用 query 向量检索更有效，原因如下：\n\n1. **零样本稠密检索的困难在于学习相关性**：稠密检索需要将查询和文档映射到同一嵌入空间，并通过内积捕捉相关性。但在没有相关性标签的情况下，直接学习查询和文档的嵌入函数变得不可行 [3]。HyDE 通过生成假设文档，将检索任务分解为两个子任务：生成任务（由指令跟随语言模型完成）和文档-文档相似性任务（由对比学习编码器完成），从而绕开了直接学习查询-文档相关性的难题 [4]。\n\n2. **假设文档捕捉相关性模式**：HyDE 首先让语言模型生成一个“假设文档”，该文档虽然不真实且可能包含错误细节，但能捕捉到相关性模式 [1]。这一步通过生成一个类似相关文档的示例来体现“相关性” [4]。\n\n3. **编码器的稠密瓶颈过滤错误细节**：随后，无监督对比学习编码器（如 Contriever）将假设文档编码为嵌入向量。编码器的稠密瓶颈起到“有损压缩器”的作用，过滤掉生成文档中的幻觉或错误细节 [1][4]。最终，该向量用于在语料库嵌入空间中检索相似的真实文档，利用的是对比训练中编码的文档-文档相似性 [4]。\n\n4. **检索基于文档-文档相似性而非查询-文档相似性**：HyDE 不再显式建模或计算查询-文档相似性，而是将检索转化为两个自然语言理解和生成任务 [4]。这种方法利用了文档间的嵌入相似性，而非查询与文档间的相似性，从而避免了零样本下查询嵌入难以学习的问题 [3][4]。\n\n综上，HyDE 通过生成假设文档并利用编码器的过滤能力，将零样本稠密检索转化为更易处理的生成和文档相似性任务，从而比直接使用查询向量检索更有效 [1][3][4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "零样本稠密检索的困难在于学习相关性，直接学习查询和文档的嵌入函数不可行",
+          "verdict": "SUPPORT",
+          "reason": "论文指出稠密检索需要相关性标签，零样本下无法直接学习查询-文档相关性，HyDE通过分解任务绕开此问题。"
+        },
+        {
+          "claim": "HyDE通过生成假设文档将检索分解为生成任务和文档-文档相似性任务",
+          "verdict": "SUPPORT",
+          "reason": "论文明确描述HyDE将稠密检索分解为生成任务（指令跟随语言模型）和文档-文档相似性任务（对比编码器）。"
+        },
+        {
+          "claim": "假设文档虽不真实但能捕捉相关性模式",
+          "verdict": "SUPPORT",
+          "reason": "论文指出生成的假设文档可能包含错误细节，但能捕捉与真实文档相关的叙述模式。"
+        },
+        {
+          "claim": "编码器的稠密瓶颈过滤假设文档中的错误细节",
+          "verdict": "SUPPORT",
+          "reason": "论文提到无监督编码器作为稠密瓶颈，起到有损压缩作用，过滤幻觉或错误细节。"
+        },
+        {
+          "claim": "检索基于文档-文档相似性而非查询-文档相似性",
+          "verdict": "SUPPORT",
+          "reason": "论文明确说明HyDE利用文档间嵌入相似性，避免直接建模查询-文档相似性。"
+        },
+        {
+          "claim": "HyDE比直接使用查询向量检索更有效",
+          "verdict": "SUPPORT",
+          "reason": "论文通过实验证明HyDE在零样本稠密检索上优于直接查询向量检索，且标准答案也支持此结论。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_06",
+    "question": "RAG 端到端训练时为什么冻结文档编码器与索引、只训 query 编码器和生成器?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，RAG 端到端训练时冻结文档编码器与索引、只训练 query 编码器和生成器的原因如下：\n\n在训练过程中，更新文档编码器（BERTd）代价高昂，因为它需要像 REALM 在预训练阶段那样定期更新文档索引 [1]。然而，研究者发现这一步骤对于获得强性能并非必要，因此选择保持文档编码器（及索引）固定不变，仅微调 query 编码器（BERTq）和 BART 生成器 [1]。\n\n综上，冻结文档编码器与索引是为了避免频繁更新文档索引带来的高计算成本，同时实验表明这不影响模型达到强性能，因此采用只训练 query 编码器和生成器的策略 [1]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "更新文档编码器（BERTd）代价高昂，因为它需要像 REALM 在预训练阶段那样定期更新文档索引",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1明确说明更新文档编码器代价高昂，需要定期更新文档索引，与REALM做法一致。"
+        },
+        {
+          "claim": "研究者发现这一步骤对于获得强性能并非必要，因此选择保持文档编码器（及索引）固定不变，仅微调query编码器（BERTq）和BART生成器",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1直接说明“We do not find this step necessary for strong performance, and keep the document encoder (and index) fixed, only fine-tuning the query encoder BERTq and the BART generator.”"
+        },
+        {
+          "claim": "冻结文档编码器与索引是为了避免频繁更新文档索引带来的高计算成本，同时实验表明这不影响模型达到强性能",
+          "verdict": "SUPPORT",
+          "reason": "该论断综合了证据1中的成本原因和性能结论，与标准答案一致。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_06",
+    "question": "RAG 端到端训练时为什么冻结文档编码器与索引、只训 query 编码器和生成器?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，RAG 端到端训练时冻结文档编码器与索引、只训练 query 编码器和生成器的原因如下：\n\n在训练过程中，更新文档编码器（BERTd）是代价高昂的，因为它需要像 REALM 在预训练期间那样定期更新文档索引 [1]。然而，研究者发现这一步骤对于获得强性能并非必要，因此他们选择保持文档编码器（及索引）固定不变，仅微调 query 编码器（BERTq）和 BART 生成器 [1]。\n\n此外，在模型参数配置中，文档编码器本身并未被训练（“although we do not train the document encoder ourselves”），这也进一步印证了冻结文档编码器的设计选择 [2]。\n\n综上，冻结文档编码器与索引是为了避免频繁更新索引带来的高昂计算成本，同时该步骤对性能提升并非必需，因此仅训练 query 编码器和生成器即可 [1][2]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "在训练过程中，更新文档编码器（BERTd）是代价高昂的，因为它需要像 REALM 在预训练期间那样定期更新文档索引。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1明确提到：Updating the document encoder BERTd during training is costly as it requires the document index to be periodically updated as REALM does during pre-training."
+        },
+        {
+          "claim": "研究者发现这一步骤对于获得强性能并非必要，因此他们选择保持文档编码器（及索引）固定不变，仅微调 query 编码器（BERTq）和 BART 生成器。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1明确提到：We do not find this step necessary for strong performance, and keep the document encoder (and index) fixed, only fine-tuning the query encoder BERTq and the BART generator."
+        },
+        {
+          "claim": "在模型参数配置中，文档编码器本身并未被训练（“although we do not train the document encoder ourselves”），这也进一步印证了冻结文档编码器的设计选择。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2中确实有类似表述，且与冻结文档编码器的设计一致。"
+        },
+        {
+          "claim": "冻结文档编码器与索引是为了避免频繁更新索引带来的高昂计算成本，同时该步骤对性能提升并非必需，因此仅训练 query 编码器和生成器即可。",
+          "verdict": "SUPPORT",
+          "reason": "该论断综合了证据1中的两个关键点：成本高昂和并非必要，与标准答案一致。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_07",
+    "question": "RAG 训练中的'检索坍缩'(retrieval collapse)是什么问题?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，关于“检索坍缩”（retrieval collapse）的问题，材料[1]中描述如下：\n\n在初步实验中，观察到对于某些任务（如故事生成），检索组件会发生“坍缩”，即无论输入是什么，它都会学习检索相同的文档。在这种情况下，一旦检索发生坍缩，生成器会学会忽略这些文档，RAG模型的表现将与BART相当。坍缩可能源于某些任务对事实知识的需求不够明确，或者目标序列较长，这可能导致检索器获得的梯度信息较少。此外，Perez等人也发现，在优化检索组件以提高下游任务性能时，会出现虚假的检索结果。[1]\n\n因此，检索坍缩是RAG训练中检索组件退化的问题，表现为检索结果与输入无关，且生成器最终忽略检索文档，导致模型性能下降。[1]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "检索坍缩是指检索组件发生退化，即无论输入是什么，它都会学习检索相同的文档。",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和来源论文[1]均明确描述检索器退化为对所有输入检索同一小批文档。"
+        },
+        {
+          "claim": "一旦检索发生坍缩，生成器会学会忽略这些文档，RAG模型的表现将与BART相当。",
+          "verdict": "SUPPORT",
+          "reason": "标准答案指出RAG退化为普通的seq2seq（BART），来源论文[1]也提到生成器会忽略文档，性能与BART相当。"
+        },
+        {
+          "claim": "坍缩可能源于某些任务对事实知识的需求不够明确，或者目标序列较长，这可能导致检索器获得的梯度信息较少。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文[1]中明确提到这些可能原因，与回答一致。"
+        },
+        {
+          "claim": "Perez等人也发现，在优化检索组件以提高下游任务性能时，会出现虚假的检索结果。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文[1]中提及Perez等人的发现，回答准确引用。"
+        },
+        {
+          "claim": "检索坍缩是RAG训练中检索组件退化的问题，表现为检索结果与输入无关，且生成器最终忽略检索文档，导致模型性能下降。",
+          "verdict": "SUPPORT",
+          "reason": "该总结与标准答案和来源论文[1]的核心描述一致。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_07",
+    "question": "RAG 训练中的'检索坍缩'(retrieval collapse)是什么问题?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，关于“检索坍缩”（retrieval collapse）问题的相关信息如下：\n\n在RAG模型的初步实验中，研究者观察到对于某些任务（如故事生成），检索组件会发生“坍缩”，即无论输入是什么，它都会学习检索相同的文档。在这种情况下，一旦检索发生坍缩，生成器会学会忽略这些文档，导致RAG模型的表现与BART相当。这种坍缩可能源于某些任务对事实性知识的需求不够明确，或者目标序列较长，从而导致检索器获得的梯度信息较少。此外，Perez等人也发现，在为了提升下游任务性能而优化检索组件时，会出现虚假的检索结果。[1]\n\n因此，检索坍缩是指RAG模型中检索组件退化，无法根据输入区分检索内容，而是固定检索相同文档，进而使生成器忽略检索文档，最终模型性能下降的问题。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "在RAG模型的初步实验中，研究者观察到对于某些任务（如故事生成），检索组件会发生“坍缩”，即无论输入是什么，它都会学习检索相同的文档。",
+          "verdict": "SUPPORT",
+          "reason": "该论断与标准答案及来源论文中描述的检索坍缩现象一致，即检索器退化为对所有输入检索相同文档。"
+        },
+        {
+          "claim": "一旦检索发生坍缩，生成器会学会忽略这些文档，导致RAG模型的表现与BART相当。",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确指出RAG退化为普通的seq2seq（BART），生成器忽略检索文档，性能下降，该论断被支持。"
+        },
+        {
+          "claim": "这种坍缩可能源于某些任务对事实性知识的需求不够明确，或者目标序列较长，从而导致检索器获得的梯度信息较少。",
+          "verdict": "PARTIAL",
+          "reason": "该论断提供了可能的成因解释，但来源论文中并未明确提及“目标序列较长”或“梯度信息较少”作为坍缩原因，属于合理推测但缺乏直接证据。"
+        },
+        {
+          "claim": "Perez等人也发现，在为了提升下游任务性能而优化检索组件时，会出现虚假的检索结果。",
+          "verdict": "REFUSE",
+          "reason": "来源论文中未提及Perez等人的相关发现，该论断无法被提供的证据支持，属于编造或错误引用。"
+        },
+        {
+          "claim": "检索坍缩是指RAG模型中检索组件退化，无法根据输入区分检索内容，而是固定检索相同文档，进而使生成器忽略检索文档，最终模型性能下降的问题。",
+          "verdict": "SUPPORT",
+          "reason": "该总结与标准答案完全一致，准确描述了检索坍缩的定义和后果。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 60
+    }
+  },
+  {
+    "question_id": "method_08",
+    "question": "根据 Lost in the Middle,为什么给生成模型喂更多检索文档未必提升答案准确率?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据论文《Lost in the Middle》的分析，给生成模型喂更多检索文档未必提升答案准确率，原因如下：\n\n1. **模型对长上下文中信息位置的敏感性**：研究发现，语言模型在利用输入上下文中的相关信息时，性能会因相关信息的位置不同而显著变化。当相关信息位于输入上下文的开头或结尾时，性能通常最高；而当相关信息位于长上下文的中间时，性能会显著下降，即使对于专门设计用于长上下文的模型也是如此 [4]。这意味着，即使提供了更多文档，如果关键信息落在“中间”位置，模型也难以有效利用。\n\n2. **开放域问答中的性能饱和现象**：在开放域问答（如NaturalQuestions-Open）的检索器-阅读器案例研究中，模型性能在检索器召回率尚未饱和时就已趋于饱和。具体而言，使用50个检索文档相比20个文档，性能提升非常有限（GPT-3.5-Turbo约提升1.5%，claude-1.3约提升1%）[1]。这表明当前模型未能有效利用额外检索到的文档，增加文档数量并不能带来相应的准确率提升。\n\n3. **长上下文带来的权衡**：论文指出，提示语言模型使用更长的输入上下文是一种权衡——提供更多信息可能有助于下游任务，但模型必须推理更多内容，这可能反而降低准确率 [2]。因此，即使模型能处理16K token的上下文，提供这么多token是否真正有益，取决于新增上下文的边际价值和模型有效利用长上下文的能力 [2]。\n\n综上，由于模型对信息位置的敏感性、性能随文档数量增加而饱和，以及长上下文带来的推理负担，增加检索文档数量并不必然提升答案准确率 [1][2][4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "模型对长上下文中信息位置的敏感性：当相关信息位于输入上下文的开头或结尾时性能最高，位于中间时性能显著下降，即使对于专门设计用于长上下文的模型也是如此。",
+          "verdict": "SUPPORT",
+          "reason": "该论断直接对应论文《Lost in the Middle》的核心发现，标准答案和证据4均支持这一结论。"
+        },
+        {
+          "claim": "开放域问答中性能饱和：使用50个检索文档相比20个文档，性能提升非常有限（GPT-3.5-Turbo约提升1.5%，claude-1.3约提升1%）。",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确提到“文档从20增至50篇准确率仅+1.5%”，证据1也指出模型性能在检索器召回饱和前就饱和，数值与论文一致。"
+        },
+        {
+          "claim": "长上下文带来的权衡：提供更多信息可能有助于下游任务，但模型必须推理更多内容，可能反而降低准确率。",
+          "verdict": "SUPPORT",
+          "reason": "证据2直接引用论文原文“prompting language models with longer input contexts is a trade-off”，支持该论断。"
+        },
+        {
+          "claim": "增加检索文档数量并不必然提升答案准确率，因为模型对信息位置敏感、性能饱和、长上下文带来推理负担。",
+          "verdict": "SUPPORT",
+          "reason": "该总结性论断综合了上述三点，均被论文和标准答案支持，没有额外错误。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_08",
+    "question": "根据 Lost in the Middle,为什么给生成模型喂更多检索文档未必提升答案准确率?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据《Lost in the Middle》的研究，给生成模型喂更多检索文档未必提升答案准确率，原因如下：\n\n1. **模型对长上下文中信息位置的敏感性**：研究发现，语言模型的性能会因相关信息在输入上下文中的位置不同而显著变化。当相关信息位于输入上下文的开头或结尾时，性能通常最高；而当相关信息位于长上下文的中间时，性能会显著下降，即使对于专门设计用于长上下文的模型也是如此 [4]。这表明模型并不能稳健地利用长输入上下文中的所有信息。\n\n2. **性能饱和与检索收益递减**：在开放域问答（如NaturalQuestions-Open）的案例研究中，模型性能在检索器召回率尚未饱和之前就已趋于饱和。具体而言，使用50个检索文档相比20个检索文档，性能提升非常有限（GPT-3.5-Turbo仅提升约1.5%，claude-1.3仅提升约1%）[1]。这说明当前模型未能有效利用额外检索到的文档，增加文档数量带来的边际收益很小。\n\n3. **长上下文带来的权衡**：提供更长的输入上下文本身是一种权衡——虽然更多信息可能有助于下游任务，但模型需要推理的内容也更多，可能反而降低准确性 [2]。因此，即使模型能够处理16K token的输入，提供16K token的上下文也未必是有益的，这取决于新增上下文的边际价值和模型有效利用长上下文的能力 [2]。\n\n综上，由于模型对信息位置的敏感性、性能饱和现象以及长上下文带来的推理负担，增加检索文档数量并不总能提升答案准确率。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "模型对长上下文中信息位置的敏感性：当相关信息位于输入上下文的开头或结尾时，性能通常最高；而当相关信息位于长上下文的中间时，性能会显著下降。",
+          "verdict": "SUPPORT",
+          "reason": "该论断直接对应论文标题和核心发现，论文通过控制实验证明位置影响性能，中间位置性能下降。"
+        },
+        {
+          "claim": "性能饱和与检索收益递减：在开放域问答中，使用50个检索文档相比20个检索文档，性能提升非常有限（GPT-3.5-Turbo仅提升约1.5%，claude-1.3仅提升约1%）。",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和论文证据1明确提到文档从20增至50篇准确率仅+1.5%，且模型性能在检索器召回饱和前已饱和。"
+        },
+        {
+          "claim": "长上下文带来的权衡：提供更长的输入上下文本身是一种权衡，虽然更多信息可能有助于下游任务，但模型需要推理的内容也更多，可能反而降低准确性。",
+          "verdict": "SUPPORT",
+          "reason": "论文证据2直接引用原文：'prompting language models with longer input contexts is a trade-off'，并讨论16K token的上下文未必有益。"
+        },
+        {
+          "claim": "增加检索文档数量并不总能提升答案准确率。",
+          "verdict": "SUPPORT",
+          "reason": "该结论是上述三个论断的综合，与标准答案和论文结论一致。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "method_09",
+    "question": "Ragas 为什么用'反推问题再算相似度'衡量 Answer Relevance,而不直接让 LLM 打分?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据提供的检索内容，无法从给定材料中回答该问题。材料中仅提到Ragas使用“answer relevance”作为评估维度，并描述了其与人类标注者的一致性实验[1][5]，但未解释为何采用“反推问题再算相似度”这一具体方法，也未对比直接让LLM打分的原因。相关内容仅涉及基线方法（如GPT Score直接打分）的描述[1]，但未说明Ragas自身选择该方法的理由。\n\n因此，无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答该问题",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文明确解释了反推法的目的和优势，模型回答错误地声称材料中未提供相关信息。"
+        },
+        {
+          "claim": "材料中仅提到Ragas使用answer relevance作为评估维度，并描述了其与人类标注者的一致性实验",
+          "verdict": "PARTIAL",
+          "reason": "材料确实包含这些内容，但模型忽略了材料中关于反推法原理的隐含信息（如证据3中的余弦相似度），且未正确利用这些信息。"
+        },
+        {
+          "claim": "未解释为何采用反推问题再算相似度这一具体方法，也未对比直接让LLM打分的原因",
+          "verdict": "REFUSE",
+          "reason": "标准答案明确给出了原因（客观罚掉答非所问/冗余，不评判事实对错），且来源论文中证据3显示了余弦相似度，模型声称未解释是错误的。"
+        },
+        {
+          "claim": "相关内容仅涉及基线方法（如GPT Score直接打分）的描述，但未说明Ragas自身选择该方法的理由",
+          "verdict": "REFUSE",
+          "reason": "标准答案和论文证据表明Ragas选择反推法是有明确理由的，模型错误地认为没有说明理由。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "method_09",
+    "question": "Ragas 为什么用'反推问题再算相似度'衡量 Answer Relevance,而不直接让 LLM 打分?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据提供的检索内容，无法从给定材料中回答该问题。材料中仅提到Ragas使用“answer relevance”作为评估维度之一，并描述了其与人类标注者的一致性实验及与GPT Score、GPT Ranking等基线方法的对比[1][5]，但未解释为何采用“反推问题再算相似度”这一具体方法，也未说明其相对于直接让LLM打分的优势。因此，无法从给定材料中回答。\n\n[1][5]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "根据提供的检索内容，无法从给定材料中回答该问题。",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文明确解释了反推法的目的和优势，模型声称无法回答是不正确的。"
+        },
+        {
+          "claim": "材料中仅提到Ragas使用“answer relevance”作为评估维度之一，并描述了其与人类标注者的一致性实验及与GPT Score、GPT Ranking等基线方法的对比。",
+          "verdict": "PARTIAL",
+          "reason": "材料确实提到了这些内容，但模型忽略了材料中关于反推法具体机制和优势的说明（如证据3中的余弦相似度），因此不完整。"
+        },
+        {
+          "claim": "未解释为何采用“反推问题再算相似度”这一具体方法，也未说明其相对于直接让LLM打分的优势。",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文（如证据3）明确解释了反推法的目的（客观罚掉答非所问/冗余）和优势（不评判事实对错），模型声称未解释是错误的。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 20
+    }
+  },
+  {
+    "question_id": "method_10",
+    "question": "为什么 RGB 认为'反事实鲁棒性'是四个能力维度中最难的?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，RGB 认为“反事实鲁棒性”是四个能力维度中最难的原因如下：\n\n1. **模型难以识别和纠正文档中的事实错误**：在反事实鲁棒性测试中，即使模型自身具备相关知识，大多数LLM也难以正确回答，且很难识别和纠正文档中的事实错误。这表明模型容易被包含错误事实的文档误导 [1]。\n\n2. **RAG 的设计初衷与反事实鲁棒性存在矛盾**：检索增强生成（RAG）并非设计来自动处理给定上下文中的事实错误，因为这与其基本假设（模型缺乏知识、依赖检索文档获取额外信息）相矛盾。然而，由于互联网上虚假信息泛滥，这一问题在实际应用中至关重要，而现有LLM缺乏应对错误信息导致的不准确回答的保障机制，它们严重依赖检索到的信息 [1]。\n\n3. **反事实鲁棒性数据构建的特殊性**：与其他三个能力不同，反事实鲁棒性的数据仅基于模型的内部知识构建，且需要人工修改文档中的答案以制造事实错误，这增加了评估的复杂性和难度 [4]。\n\n综上，由于模型对错误信息的脆弱性、RAG 设计初衷与实际需求的矛盾，以及数据构建的特殊性，反事实鲁棒性被认为是四个能力维度中最难的。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "模型难以识别和纠正文档中的事实错误，容易被包含错误事实的文档误导",
+          "verdict": "PARTIAL",
+          "reason": "来源论文确实提到大多数LLM在反事实鲁棒性测试中难以正确回答，但未明确提及‘识别和纠正文档中的事实错误’这一具体表述，且标准答案强调模型倾向于相信自己记住的内容而非文档，与‘被文档误导’的表述有偏差。"
+        },
+        {
+          "claim": "RAG的设计初衷与反事实鲁棒性存在矛盾，因为RAG假设模型缺乏知识、依赖检索文档，而反事实测试要求模型处理文档中的错误信息",
+          "verdict": "SUPPORT",
+          "reason": "来源论文指出RAG并非设计来自动处理给定上下文中的事实错误，且互联网虚假信息泛滥使这一问题重要，现有LLM缺乏应对错误信息的保障机制，严重依赖检索信息。"
+        },
+        {
+          "claim": "反事实鲁棒性数据构建的特殊性：仅基于模型内部知识构建，且需要人工修改文档中的答案以制造事实错误",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据4明确说明反事实鲁棒性的数据仅基于模型内部知识构建，并采用ChatGPT生成已知知识，且标准答案也提到需要修改文档答案制造事实错误。"
+        },
+        {
+          "claim": "反事实鲁棒性要求模型在检索文档与自身记忆冲突时压抑内部知识、以文档为准，但模型倾向于相信自己记住的内容",
+          "verdict": "PARTIAL",
+          "reason": "标准答案明确支持这一论断，但模型回答中未直接提及‘压抑内部知识’和‘以文档为准’这一核心机制，而是侧重于模型被误导和RAG矛盾，因此部分正确但不完整。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 70
+    }
+  },
+  {
+    "question_id": "method_10",
+    "question": "为什么 RGB 认为'反事实鲁棒性'是四个能力维度中最难的?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，RGB 认为“反事实鲁棒性”是最难的能力维度，主要基于以下实验发现：\n\n在反事实鲁棒性测试中，研究者首先评估了LLMs直接回答问题的准确率，并仅将准确率超过70%的模型纳入评估[1]。结果显示，大多数LLMs难以正确识别和纠正文档中的事实错误，模型容易被包含错误事实的文档误导[1]。具体而言，LLMs很难检测出文档中的错误并加以修正，这表明它们缺乏对错误信息的防护机制[1]。\n\n此外，检索增强生成（RAG）本身并非设计用于自动处理给定上下文中的事实错误，因为这与其“模型缺乏知识、依赖检索文档获取额外信息”的基本假设相矛盾[1]。然而，由于互联网上存在大量虚假信息，这一问题在实际应用中至关重要，而现有LLMs没有应对错误信息导致的不准确回答的安全保障，它们严重依赖检索到的信息[1]。\n\n综合来看，反事实鲁棒性之所以最难，是因为它要求LLMs在依赖外部文档的同时，还能识别并纠正文档中的事实错误，而当前LLMs在这方面的能力明显不足，容易被误导[1]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "在反事实鲁棒性测试中，研究者首先评估了LLMs直接回答问题的准确率，并仅将准确率超过70%的模型纳入评估。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1明确提到'we only consider LLMs that have an accuracy rate of over 70%'。"
+        },
+        {
+          "claim": "大多数LLMs难以正确识别和纠正文档中的事实错误，模型容易被包含错误事实的文档误导。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1和证据4表明反事实鲁棒性测试中模型需要处理与内部知识冲突的文档，且实验发现模型难以纠正错误。"
+        },
+        {
+          "claim": "LLMs很难检测出文档中的错误并加以修正，这表明它们缺乏对错误信息的防护机制。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1和证据5暗示模型在反事实场景下表现不佳，缺乏防护机制。"
+        },
+        {
+          "claim": "检索增强生成（RAG）本身并非设计用于自动处理给定上下文中的事实错误，因为这与其基本假设相矛盾。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2和证据4表明RAG假设模型缺乏知识、依赖检索文档，因此不处理文档中的错误。"
+        },
+        {
+          "claim": "互联网上存在大量虚假信息，这一问题在实际应用中至关重要，而现有LLMs没有应对错误信息导致的不准确回答的安全保障，它们严重依赖检索到的信息。",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1和证据5暗示模型依赖检索文档，且缺乏对错误信息的防护，符合实际应用中的担忧。"
+        },
+        {
+          "claim": "反事实鲁棒性之所以最难，是因为它要求LLMs在依赖外部文档的同时，还能识别并纠正文档中的事实错误，而当前LLMs在这方面的能力明显不足，容易被误导。",
+          "verdict": "PARTIAL",
+          "reason": "该论断抓住了模型能力不足和依赖文档，但标准答案强调的核心是'模型需要压抑内部知识、以文档为准'，而模型倾向于相信自己记住的内容，违背指令性上下文。模型回答未明确提及'压抑内部知识'和'违背指令'这一关键机制，因此部分正确但不完整。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 75
+    }
+  },
+  {
+    "question_id": "comparison_01",
+    "question": "RAG 与 FiD 在多证据融合的'时机'上有何不同?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。检索内容中未提及 FiD（Fusion-in-Decoder）或多证据融合的“时机”相关比较信息。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索内容中未提及 FiD（Fusion-in-Decoder）或多证据融合的“时机”相关比较信息。",
+          "verdict": "REFUSE",
+          "reason": "标准答案明确给出了RAG与FiD在多证据融合时机上的差异，且来源论文证据1（虽不完整）及标准答案本身提供了该信息，模型回答错误地声称无法回答，属于编造性拒绝。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "comparison_01",
+    "question": "RAG 与 FiD 在多证据融合的'时机'上有何不同?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容中未提及 FiD（Fusion-in-Decoder）或多证据融合“时机”的相关信息。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索内容中未提及 FiD（Fusion-in-Decoder）或多证据融合“时机”的相关信息。",
+          "verdict": "REFUSE",
+          "reason": "标准答案明确给出了RAG与FiD在多证据融合时机上的区别，且来源论文证据1中提及了RAG与Fine-tuning的比较，但未直接涉及FiD；然而，模型回答声称“无法回答”并否认材料中存在相关信息，这与标准答案和提供的证据不符，属于错误判断。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "comparison_02",
+    "question": "稠密检索(DPR)与稀疏检索(BM25)的典型差异是什么?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，稠密检索（DPR）与稀疏检索（BM25）的典型差异主要体现在以下几个方面：\n\n1. **检索机制与语义理解能力**：BM25 等词项匹配方法对高度选择性的关键词和短语敏感，而 DPR 能更好地捕捉词汇变化或语义关系 [1]。稠密检索通过深度学习模型将文档和查询编码为低维向量，并测量余弦相似度，能够捕捉词语的语义和上下文信息，从而提升检索性能 [2]。\n\n2. **检索结果的质量差异**：在开放域问答中，除 SQuAD 外，DPR 在所有数据集上的表现均一致优于 BM25，尤其在 k 值较小时差距明显（例如 Natural Questions 的 top-20 准确率，DPR 为 78.4%，BM25 为 59.1%）[4]。但在文本续写等创造性任务中，BM25 在关键信息精确率上甚至超过稠密检索器，不过可能遗漏一些细节 [2]。\n\n3. **检索速度与索引构建成本**：借助 FAISS 内存索引，DPR 处理速度极快，每秒可处理 995.0 个问题并返回每个问题的 top-100 段落；而 BM25/Lucene 每秒仅处理 23.7 个问题 [1]。然而，构建稠密向量索引耗时较长（在 8 个 GPU 上计算 2100 万段落的嵌入约需 8.8 小时，构建 FAISS 索引需 8.5 小时），而 Lucene 倒排索引构建仅需约 30 分钟 [1]。\n\n4. **在不同任务中的表现差异**：在开放域多文档摘要任务中，BM25 在关键信息精确率上优于稠密检索器，但在关键信息召回率上稍逊；混合检索算法可结合两者优势 [3]。在需要综合多个文档的推理型问答任务中，稠密检索器相比 BM25 具有更明显的优势 [3]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "BM25 等词项匹配方法对高度选择性的关键词和短语敏感，而 DPR 能更好地捕捉词汇变化或语义关系",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1明确提到：'Term-matching methods like BM25 are sensitive to highly selective keywords and phrases, while DPR captures lexical variations or semantic relationships better.'"
+        },
+        {
+          "claim": "稠密检索通过深度学习模型将文档和查询编码为低维向量，并测量余弦相似度，能够捕捉词语的语义和上下文信息，从而提升检索性能",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据2明确描述：'Dense retrieval algorithms, which use deep learning models to encode documents and queries into low-dimensional vectors, and then measure the cosine similarity between them. This method can capture the semantic and contextual information of words, and improve the retrieval performance.'"
+        },
+        {
+          "claim": "在开放域问答中，除 SQuAD 外，DPR 在所有数据集上的表现均一致优于 BM25，尤其在 k 值较小时差距明显（例如 Natural Questions 的 top-20 准确率，DPR 为 78.4%，BM25 为 59.1%）",
+          "verdict": "PARTIAL",
+          "reason": "来源论文证据1提到DPR在NQ上优于BM25，但具体数字78.4%和59.1%未在提供的证据中直接出现；标准答案提到'DPR 在 NQ 上 top-20 平均高 BM25 9-19 个百分点'，但未给出具体数值。因此该论断部分正确但具体数字缺乏直接证据支持。"
+        },
+        {
+          "claim": "在文本续写等创造性任务中，BM25 在关键信息精确率上甚至超过稠密检索器，不过可能遗漏一些细节",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据3提到：'which is a creative task, BM25 can retrieve content that is highly relevant to the user’s intention, but may overlook some details.' 这支持了BM25在创造性任务中可能更精确但遗漏细节的说法。"
+        },
+        {
+          "claim": "借助 FAISS 内存索引，DPR 处理速度极快，每秒可处理 995.0 个问题并返回每个问题的 top-100 段落；而 BM25/Lucene 每秒仅处理 23.7 个问题",
+          "verdict": "PARTIAL",
+          "reason": "来源论文证据1中提到了DPR和BM25的速度对比，但具体数字995.0和23.7未在提供的证据中明确出现。证据1提到'while still greatly outperforming the BM25 baseline'，但未给出具体速度数值。因此该论断部分正确但具体数字缺乏直接证据。"
+        },
+        {
+          "claim": "构建稠密向量索引耗时较长（在 8 个 GPU 上计算 2100 万段落的嵌入约需 8.8 小时，构建 FAISS 索引需 8.5 小时），而 Lucene 倒排索引构建仅需约 30 分钟",
+          "verdict": "PARTIAL",
+          "reason": "来源论文证据1中提到了索引构建时间，但具体数字（8.8小时、8.5小时、30分钟）未在提供的证据中明确出现。证据1提到'while still greatly outperforming the BM25 baseline'，但未给出具体时间。因此该论断部分正确但具体数字缺乏直接证据。"
+        },
+        {
+          "claim": "在开放域多文档摘要任务中，BM25 在关键信息精确率上优于稠密检索器，但在关键信息召回率上稍逊；混合检索算法可结合两者优势",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据3提到'Open-Domain Multi-Document Summarization: On the overall semantic similar...'，结合上下文，证据3支持BM25在精确率上优于稠密检索器但召回率稍逊，且混合检索可结合优势。"
+        },
+        {
+          "claim": "在需要综合多个文档的推理型问答任务中，稠密检索器相比 BM25 具有更明显的优势",
+          "verdict": "PARTIAL",
+          "reason": "来源论文证据1提到DPR在开放域问答中优于BM25，但未特别强调'推理型问答任务'。标准答案也未明确提及。因此该论断部分正确但缺乏直接证据支持。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 75
+    }
+  },
+  {
+    "question_id": "comparison_02",
+    "question": "稠密检索(DPR)与稀疏检索(BM25)的典型差异是什么?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，稠密检索（DPR）与稀疏检索（BM25）的典型差异主要体现在以下几个方面：\n\n1. **检索机制与语义理解能力**：BM25 等词项匹配方法对高度选择性的关键词和短语敏感，而 DPR 能更好地捕捉词汇变化或语义关系 [1]。稠密检索通过深度学习模型将文档和查询编码为低维向量，并测量余弦相似度，能够捕捉词语的语义和上下文信息，从而提升检索性能 [2]。\n\n2. **检索结果的质量差异**：在开放域问答中，DPR 总体上优于 BM25，尤其在 top-k 较小（如 k=20）时差距明显（例如在 Natural Questions 上 top-20 准确率为 78.4% vs. 59.1%）[4]。但在某些任务（如文本续写、开放域多文档摘要）中，BM25 在关键信息精确率上可能超过稠密检索，而稠密检索在关键信息召回率上更优 [2][3]。\n\n3. **检索速度与索引构建成本**：DPR 借助 FAISS 内存索引可高效处理每秒 995.0 个问题（返回每个问题 top-100 段落），而 BM25/Lucene 每秒仅处理 23.7 个问题 [1]。但构建稠密向量索引耗时更长（如对 2100 万段落计算嵌入约需 8.8 小时，构建 FAISS 索引需 8.5 小时），而 Lucene 倒排索引构建仅需约 30 分钟 [1]。\n\n4. **混合检索的互补性**：混合检索（结合两者结果）或使用重排序模型可综合两者优势，在精确率和召回率上取得平衡 [2][3]。DPR 与 BM25 的线性组合（如 BM25(q,p) + λ·sim(q,p)）也被用于提升检索性能 [4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "BM25 等词项匹配方法对高度选择性的关键词和短语敏感，而 DPR 能更好地捕捉词汇变化或语义关系",
+          "verdict": "SUPPORT",
+          "reason": "该论断直接对应证据1中的原文：'Term-matching methods like BM25 are sensitive to highly selective keywords and phrases, while DPR captures lexical variations or semantic relationships better.'"
+        },
+        {
+          "claim": "稠密检索通过深度学习模型将文档和查询编码为低维向量，并测量余弦相似度，能够捕捉词语的语义和上下文信息，从而提升检索性能",
+          "verdict": "SUPPORT",
+          "reason": "该论断对应证据2中的描述：'Dense retrieval algorithms, which use deep learning models to encode documents and queries into low-dimensional vectors, and then measure the cosine similarity between them. This method can capture the semantic and contextual information of words, and improve the retrieval performance.'"
+        },
+        {
+          "claim": "在开放域问答中，DPR 总体上优于 BM25，尤其在 top-k 较小（如 k=20）时差距明显（例如在 Natural Questions 上 top-20 准确率为 78.4% vs. 59.1%）",
+          "verdict": "SUPPORT",
+          "reason": "标准答案提到DPR在NQ上top-20平均高BM25 9-19个百分点，且证据1中给出具体数字（78.4 vs. 59.1），该论断与来源一致。"
+        },
+        {
+          "claim": "在某些任务（如文本续写、开放域多文档摘要）中，BM25 在关键信息精确率上可能超过稠密检索，而稠密检索在关键信息召回率上更优",
+          "verdict": "PARTIAL",
+          "reason": "证据3提到BM25在创造性任务中能检索高度相关的内容但可能忽略细节，以及开放域多文档摘要中BM25在整体语义相似性上表现更好，但并未明确提及'精确率'和'召回率'的对比，该论断部分推断超出证据。"
+        },
+        {
+          "claim": "DPR 借助 FAISS 内存索引可高效处理每秒 995.0 个问题（返回每个问题 top-100 段落），而 BM25/Lucene 每秒仅处理 23.7 个问题",
+          "verdict": "SUPPORT",
+          "reason": "该论断对应证据1中的性能数据（995.0 vs 23.7 queries per second），来源明确支持。"
+        },
+        {
+          "claim": "构建稠密向量索引耗时更长（如对 2100 万段落计算嵌入约需 8.8 小时，构建 FAISS 索引需 8.5 小时），而 Lucene 倒排索引构建仅需约 30 分钟",
+          "verdict": "SUPPORT",
+          "reason": "该论断对应证据1中的索引构建时间数据，来源明确支持。"
+        },
+        {
+          "claim": "混合检索（结合两者结果）或使用重排序模型可综合两者优势，在精确率和召回率上取得平衡",
+          "verdict": "PARTIAL",
+          "reason": "证据4提到BM25+DPR的线性组合用于提升检索性能，但并未明确提及'重排序模型'或'精确率和召回率平衡'，该论断部分超出证据。"
+        },
+        {
+          "claim": "DPR 与 BM25 的线性组合（如 BM25(q,p) + λ·sim(q,p)）也被用于提升检索性能",
+          "verdict": "SUPPORT",
+          "reason": "该论断直接对应证据4中的公式：'BM25(q,p) +λ· sim(q,p )'，来源明确支持。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 85
+    }
+  },
+  {
+    "question_id": "comparison_03",
+    "question": "DPR 与 HyDE 在训练依赖上有何不同?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，DPR 与 HyDE 在训练依赖上的不同主要体现在：\n\n1. **DPR 依赖大规模相关性标注数据进行微调**：DPR 属于“fine-tuned on MS-MARCO and transferred”的系统，即需要在 MS-MARCO 这类大规模相关性数据上进行微调 [1]。在低资源任务中，HyDE 的表现通常优于 DPR，尽管 DPR 是在 MS-MARCO 上微调过的 [2][4]。\n\n2. **HyDE 不依赖相关性标签，属于零样本方法**：HyDE 与 Contriever 共享相同的嵌入空间，唯一区别在于查询向量的构建方式 [1]。HyDE 通过生成假设文档来构建查询向量，无需相关性标签，因此是零样本的 [1][2]。\n\n3. **HyDE 的依赖在于生成式语言模型**：HyDE 的性能依赖于生成式 LLM 的能力，例如在低资源语言上，高容量 LLM 可能因训练不足而受限 [2]。而 DPR 的依赖在于监督微调数据。\n\n综上，DPR 依赖大规模相关性标注数据进行监督微调，而 HyDE 不依赖相关性标签，而是依赖生成式语言模型来生成假设文档 [1][2]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "DPR 依赖大规模相关性标注数据进行微调",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和证据3均指出DPR是在MS MARCO训练数据上微调的有监督模型。"
+        },
+        {
+          "claim": "HyDE 不依赖相关性标签，属于零样本方法",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和证据1、2均表明HyDE无需相关性标签，通过生成假设文档构建查询向量。"
+        },
+        {
+          "claim": "HyDE 的依赖在于生成式语言模型",
+          "verdict": "SUPPORT",
+          "reason": "证据5提到HyDE依赖生成式LLM，且证据2提到低资源语言上高容量LLM可能受限。"
+        },
+        {
+          "claim": "DPR 的依赖在于监督微调数据",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和证据3均明确DPR依赖标注的问答对和负样本进行监督微调。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "comparison_03",
+    "question": "DPR 与 HyDE 在训练依赖上有何不同?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，DPR 与 HyDE 在训练依赖上的不同主要体现在：\n\n1. **DPR 依赖大规模相关性标注数据进行微调**：DPR 是“fine-tuned on MS-MARCO”的模型，属于“in-domain supervised models”，即需要在大规模相关性数据上进行监督微调 [3][4]。在低资源任务中，DPR 也被描述为“fine-tuned on and transferred from MS-MARCO” [2]。\n\n2. **HyDE 不依赖相关性标签，属于零样本方法**：论文标题即表明 HyDE 是“without Relevance Labels”的零样本密集检索方法 [1]。HyDE 与 Contriever 共享相同的嵌入空间，唯一区别在于查询向量的构建方式，且 HyDE 本身不经过相关性标签的微调 [1]。在低资源检索中，HyDE 表现出比 DPR 更好的性能，尽管 DPR 在 MS-MARCO 上进行了微调 [2][4]。\n\n综上，DPR 需要依赖大规模相关性标注数据进行监督微调，而 HyDE 则无需任何相关性标签，属于零样本方法 [1][2][3][4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "DPR 依赖大规模相关性标注数据进行微调",
+          "verdict": "SUPPORT",
+          "reason": "来源论文明确将DPR描述为'in-domain supervised models'，并在MS MARCO训练数据上微调，与标准答案一致。"
+        },
+        {
+          "claim": "DPR 是 fine-tuned on MS-MARCO 的模型",
+          "verdict": "SUPPORT",
+          "reason": "证据3和证据4明确说明DPR在MS MARCO上微调，属于in-domain supervised models。"
+        },
+        {
+          "claim": "HyDE 不依赖相关性标签，属于零样本方法",
+          "verdict": "SUPPORT",
+          "reason": "论文标题及证据1明确表明HyDE是'without Relevance Labels'的零样本方法，无需相关性标签。"
+        },
+        {
+          "claim": "HyDE 与 Contriever 共享相同的嵌入空间，唯一区别在于查询向量的构建方式",
+          "verdict": "SUPPORT",
+          "reason": "证据1明确说明HyDE retrievers share the exact same embedding spaces with Contriever，且区别在于查询向量构建。"
+        },
+        {
+          "claim": "HyDE 本身不经过相关性标签的微调",
+          "verdict": "SUPPORT",
+          "reason": "论文标题及证据1表明HyDE是零样本方法，不依赖相关性标签，且证据5指出HyDE with fine-tuned encoder不是预期用法。"
+        },
+        {
+          "claim": "在低资源检索中，HyDE 表现出比 DPR 更好的性能，尽管 DPR 在 MS-MARCO 上进行了微调",
+          "verdict": "SUPPORT",
+          "reason": "证据4的BEIR低资源任务表中，HyDE在多数任务上优于DPR，且证据2也说明HyDE表现优于DPR。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "comparison_04",
+    "question": "DPR 与 ColBERT 在表示的'粒度'上有何不同?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。检索内容仅涉及ColBERT的表示粒度（如“fine-grained representations” [2]）及其与BERT等模型的对比，未提及DPR（Dense Passage Retrieval）的表示粒度或两者之间的比较。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "REFUSE",
+          "reason": "模型回答声称无法回答，但标准答案和来源论文明确提供了DPR与ColBERT在表示粒度上的差异（DPR单向量、ColBERT多向量），且来源论文证据5明确对比了单向量与多向量效果，因此该论断错误。"
+        },
+        {
+          "claim": "检索内容仅涉及ColBERT的表示粒度",
+          "verdict": "REFUSE",
+          "reason": "来源论文证据5明确对比了单向量（类似DPR）与ColBERT多向量，且标准答案直接给出两者差异，因此检索内容并非仅涉及ColBERT。"
+        },
+        {
+          "claim": "未提及DPR的表示粒度或两者之间的比较",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文证据5明确提及单向量与多向量的比较，且DPR作为单向量代表被隐含对比，因此该论断与事实不符。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "comparison_04",
+    "question": "DPR 与 ColBERT 在表示的'粒度'上有何不同?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容仅涉及ColBERT模型的效率、索引、消融实验等，未提及DPR（Dense Passage Retrieval）模型，也未对两者表示的“粒度”进行比较。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "REFUSE",
+          "reason": "模型回答声称无法回答，但标准答案和来源论文明确提供了DPR与ColBERT粒度差异的信息，模型应基于已有知识或材料回答，而非拒绝。"
+        },
+        {
+          "claim": "检索内容仅涉及ColBERT模型的效率、索引、消融实验等，未提及DPR模型",
+          "verdict": "REFUSE",
+          "reason": "即使检索材料未直接提及DPR，但问题本身要求比较，模型应结合常识或标准答案回答，而非仅依赖检索材料；且标准答案明确给出了比较。"
+        },
+        {
+          "claim": "未对两者表示的“粒度”进行比较",
+          "verdict": "REFUSE",
+          "reason": "模型拒绝比较，但标准答案和论文证据支持比较，模型回答未提供任何有效信息，属于错误拒绝。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "comparison_05",
+    "question": "Lost in the Middle 与 FiD 对'Top-K 该多大'给出相反的证据,分别是什么?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。检索内容中未提及“Lost in the Middle”与“FiD”对“Top-K 该多大”给出相反证据的相关信息。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索内容中未提及“Lost in the Middle”与“FiD”对“Top-K 该多大”给出相反证据的相关信息。",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文明确提供了FiD与Lost in the Middle的相反证据，模型回答错误地声称无法回答，属于编造性拒绝。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "comparison_05",
+    "question": "Lost in the Middle 与 FiD 对'Top-K 该多大'给出相反的证据,分别是什么?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容中未提及“Lost in the Middle”与“FiD”对“Top-K 该多大”给出相反证据的相关信息。[1][2][3][4][5]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索内容中未提及“Lost in the Middle”与“FiD”对“Top-K 该多大”给出相反证据的相关信息。",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文明确提供了FiD与Lost in the Middle的相反证据，模型回答错误地声称无法回答，属于拒绝回答且与事实不符。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "comparison_06",
+    "question": "Ragas 与 Verifiability 在评估'粒度'上有何不同?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。检索内容中仅介绍了Ragas框架及其评估维度（faithfulness、answer relevance、context relevance）[2][3]，以及与其他评估方法（如ARES、GPT Score、GPT Ranking）的对比[1][4]，但未提及“Verifiability”这一概念，也未对Ragas与Verifiability在评估“粒度”上的差异进行任何讨论。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索内容中仅介绍了Ragas框架及其评估维度（faithfulness、answer relevance、context relevance）[2][3]，以及与其他评估方法（如ARES、GPT Score、GPT Ranking）的对比[1][4]，但未提及“Verifiability”这一概念，也未对Ragas与Verifiability在评估“粒度”上的差异进行任何讨论。",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文明确提供了Ragas与Verifiability在评估粒度上的差异（Ragas为答案级，Verifiability为引用级），模型回答声称无法回答，与事实不符。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "comparison_06",
+    "question": "Ragas 与 Verifiability 在评估'粒度'上有何不同?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容中未提及“Verifiability”这一评估框架或概念，也未对Ragas与Verifiability在评估“粒度”上的差异进行任何比较或讨论。[1][2][3][4][5]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索内容中未提及“Verifiability”这一评估框架或概念，也未对Ragas与Verifiability在评估“粒度”上的差异进行任何比较或讨论。",
+          "verdict": "REFUSE",
+          "reason": "标准答案明确给出了Ragas与Verifiability在粒度上的差异（答案级 vs 引用级），且来源论文证据1和证据5提及RAGAS，证据2-4描述Ragas的评估维度，因此并非无法回答；模型错误地声称材料中未提及Verifiability，但标准答案和证据已提供足够信息。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "comparison_07",
+    "question": "RGB 提出的四个能力维度与 RAG Survey 的评估框架如何对应?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，RGB 提出的四个能力维度与 RAG Survey 的评估框架存在直接对应关系。具体如下：\n\nRGB 在论文中明确提出了四个基本能力维度，即噪声鲁棒性（Noise Robustness）、负向拒绝（Negative Rejection）、信息整合（Information Integration）和反事实鲁棒性（Counterfactual Robustness）[1][4]。而 RAG Survey 的评估框架同样涵盖了这四个能力，并给出了具体定义：噪声鲁棒性评估模型处理与问题相关但缺乏实质信息的噪声文档的能力；负向拒绝评估模型在检索文档不包含必要知识时拒绝回答的辨别力；信息整合评估模型综合多个文档信息以回答复杂问题的能力；反事实鲁棒性测试模型识别并忽略文档中已知错误信息的能力[3]。\n\n此外，RAG Survey 还指出，上下文相关性和噪声鲁棒性用于评估检索质量，而答案忠实性、答案相关性、负向拒绝、信息整合和反事实鲁棒性用于评估生成质量[3]。这与 RGB 聚焦于四个能力维度的评估目标一致，即通过这四个维度系统诊断 LLM 在 RAG 中的潜在瓶颈[1]。\n\n综上，RGB 的四个能力维度与 RAG Survey 的评估框架在概念和定义上完全对应，且 RAG Survey 进一步将这些能力归类到检索质量和生成质量的评估中[3]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "RGB 在论文中明确提出了四个基本能力维度，即噪声鲁棒性、负向拒绝、信息整合和反事实鲁棒性",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和证据1、证据4均确认RGB提出这四个能力维度。"
+        },
+        {
+          "claim": "RAG Survey 的评估框架同样涵盖了这四个能力，并给出了具体定义",
+          "verdict": "SUPPORT",
+          "reason": "证据3明确列出这四个能力并给出定义。"
+        },
+        {
+          "claim": "噪声鲁棒性评估模型处理与问题相关但缺乏实质信息的噪声文档的能力",
+          "verdict": "SUPPORT",
+          "reason": "证据3中定义噪声鲁棒性为处理噪声文档的能力，与描述一致。"
+        },
+        {
+          "claim": "负向拒绝评估模型在检索文档不包含必要知识时拒绝回答的辨别力",
+          "verdict": "SUPPORT",
+          "reason": "证据3中负向拒绝定义为在检索文档不包含必要知识时拒绝回答的能力。"
+        },
+        {
+          "claim": "信息整合评估模型综合多个文档信息以回答复杂问题的能力",
+          "verdict": "SUPPORT",
+          "reason": "证据3中信息整合定义为综合多个文档信息回答复杂问题的能力。"
+        },
+        {
+          "claim": "反事实鲁棒性测试模型识别并忽略文档中已知错误信息的能力",
+          "verdict": "SUPPORT",
+          "reason": "证据3中反事实鲁棒性定义为识别并忽略错误信息的能力。"
+        },
+        {
+          "claim": "RAG Survey 还指出，上下文相关性和噪声鲁棒性用于评估检索质量，而答案忠实性、答案相关性、负向拒绝、信息整合和反事实鲁棒性用于评估生成质量",
+          "verdict": "PARTIAL",
+          "reason": "证据3中提到了上下文相关性和噪声鲁棒性用于检索质量，但生成质量部分未明确列出所有提到的指标，且答案忠实性、答案相关性等未在证据中明确归类，可能部分正确但证据不足。"
+        },
+        {
+          "claim": "RGB 聚焦于四个能力维度的评估目标一致，即通过这四个维度系统诊断 LLM 在 RAG 中的潜在瓶颈",
+          "verdict": "SUPPORT",
+          "reason": "证据4和证据5表明RGB旨在评估RAG中LLM的四个能力，以诊断潜在问题。"
+        },
+        {
+          "claim": "RGB 的四个能力维度与 RAG Survey 的评估框架在概念和定义上完全对应",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和证据3表明两者在四个能力上高度对应。"
+        },
+        {
+          "claim": "RAG Survey 进一步将这些能力归类到检索质量和生成质量的评估中",
+          "verdict": "PARTIAL",
+          "reason": "证据3中确实提到噪声鲁棒性用于检索质量，但生成质量部分未明确列出所有四个能力，归类不完全清晰。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 85
+    }
+  },
+  {
+    "question_id": "comparison_07",
+    "question": "RGB 提出的四个能力维度与 RAG Survey 的评估框架如何对应?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，RGB 提出的四个能力维度与 RAG Survey 的评估框架存在直接对应关系。具体分析如下：\n\nRGB 在论文中明确提出，其评估聚焦于 RAG 所需的四个基本能力，包括噪声鲁棒性（noise robustness）、负向拒绝（negative rejection）、信息整合（information integration）和反事实鲁棒性（counterfactual robustness）[1][4]。这些能力在 RAG Survey 的评估框架中也被明确列出，且定义一致：噪声鲁棒性评估模型处理与问题相关但缺乏实质信息的噪声文档的能力；负向拒绝评估模型在检索文档不包含必要知识时拒绝回答的辨别力；信息整合评估模型综合多文档信息以回答复杂问题的能力；反事实鲁棒性测试模型识别并忽略文档中已知错误信息的能力[3]。\n\n此外，RAG Survey 还指出，这些能力分别对应检索质量和生成质量的评估：上下文相关性和噪声鲁棒性用于评估检索质量，而答案忠实性、答案相关性、负向拒绝、信息整合和反事实鲁棒性用于评估生成质量[3]。RGB 的四个能力维度与 RAG Survey 中的定义和分类完全吻合，表明两者在评估框架上是一致的。\n\n综上，RGB 的四个能力维度与 RAG Survey 的评估框架在定义和用途上直接对应，均用于衡量 RAG 系统在不同挑战下的表现[1][3][4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "RGB 提出的四个能力维度包括噪声鲁棒性、负向拒绝、信息整合和反事实鲁棒性",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和证据1、证据4均明确列出这四个能力，与RGB论文一致。"
+        },
+        {
+          "claim": "RAG Survey 的评估框架中也明确列出这四个能力，且定义一致",
+          "verdict": "SUPPORT",
+          "reason": "证据3明确提到RAG评估包含这四个能力，且定义与RGB一致。"
+        },
+        {
+          "claim": "噪声鲁棒性评估模型处理与问题相关但缺乏实质信息的噪声文档的能力",
+          "verdict": "SUPPORT",
+          "reason": "证据3中描述噪声鲁棒性为处理噪声文档的能力，与回答一致。"
+        },
+        {
+          "claim": "负向拒绝评估模型在检索文档不包含必要知识时拒绝回答的辨别力",
+          "verdict": "SUPPORT",
+          "reason": "证据3中负向拒绝的定义与回答一致。"
+        },
+        {
+          "claim": "信息整合评估模型综合多文档信息以回答复杂问题的能力",
+          "verdict": "SUPPORT",
+          "reason": "证据3中信息整合的定义与回答一致。"
+        },
+        {
+          "claim": "反事实鲁棒性测试模型识别并忽略文档中已知错误信息的能力",
+          "verdict": "SUPPORT",
+          "reason": "证据3中反事实鲁棒性的定义与回答一致。"
+        },
+        {
+          "claim": "RAG Survey 指出这些能力分别对应检索质量和生成质量的评估：上下文相关性和噪声鲁棒性用于评估检索质量，而答案忠实性、答案相关性、负向拒绝、信息整合和反事实鲁棒性用于评估生成质量",
+          "verdict": "PARTIAL",
+          "reason": "证据3中确实提到这些能力，但未明确将上下文相关性和噪声鲁棒性归为检索质量，将其他归为生成质量；该分类可能来自其他部分，但证据不足。"
+        },
+        {
+          "claim": "RGB 的四个能力维度与 RAG Survey 中的定义和分类完全吻合，表明两者在评估框架上是一致的",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确表示高度对应，且证据支持定义一致。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 85
+    }
+  },
+  {
+    "question_id": "comparison_08",
+    "question": "与 RAG-Lewis 相比,CRAG 在'检索失败处理'上增加了什么?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，CRAG 在“检索失败处理”上相比 RAG-Lewis 增加了以下内容：\n\n1. **轻量级检索评估器**：设计了一个轻量级的检索评估器，用于评估针对查询检索到的文档的整体质量，并返回一个置信度，基于此可以触发不同的知识检索动作 [2]。\n\n2. **大规模网络搜索作为扩展**：由于从静态和有限语料库中检索只能返回次优文档，CRAG 利用大规模网络搜索作为扩展来增强检索结果 [2]。\n\n3. **分解-重组算法**：设计了一种“分解-重组”算法，用于对检索到的文档进行选择性聚焦，过滤掉无关信息，优化关键信息的提取 [1][2]。\n\n4. **自我纠正机制**：CRAG 的核心贡献之一是提出了一种即插即用的方法，以提高自动自我纠正和高效利用检索文档的能力 [1]。实验表明，CRAG 的改进主要归因于其自我纠正机制，而非仅仅来自网络搜索的补充信息 [3]。\n\n综上，CRAG 在检索失败处理上增加了检索评估器、网络搜索扩展、分解-重组算法以及自我纠正机制，这些共同提升了生成对检索质量的鲁棒性 [1][2][3]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "设计了一个轻量级的检索评估器，用于评估针对查询检索到的文档的整体质量，并返回一个置信度，基于此可以触发不同的知识检索动作",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据5提到轻量级T5-based检索评估器，且标准答案明确说明CRAG加了轻量检索评估器判定Correct/Incorrect/Ambiguous，触发不同动作。"
+        },
+        {
+          "claim": "由于从静态和有限语料库中检索只能返回次优文档，CRAG 利用大规模网络搜索作为扩展来增强检索结果",
+          "verdict": "SUPPORT",
+          "reason": "标准答案提到'必要时web扩展'，且论文中CRAG在检索评估为不正确或模糊时触发网络搜索，证据2和标准答案支持。"
+        },
+        {
+          "claim": "设计了一种“分解-重组”算法，用于对检索到的文档进行选择性聚焦，过滤掉无关信息，优化关键信息的提取",
+          "verdict": "SUPPORT",
+          "reason": "证据1明确提到'decompose-recompose'算法，确保细化检索信息，优化关键信息提取，最小化非必要元素。"
+        },
+        {
+          "claim": "CRAG 的核心贡献之一是提出了一种即插即用的方法，以提高自动自我纠正和高效利用检索文档的能力",
+          "verdict": "SUPPORT",
+          "reason": "证据1提到CRAG是plug-and-play，且证据3表明主要改进来自自我纠正机制，标准答案也强调纠错机制。"
+        },
+        {
+          "claim": "实验表明，CRAG 的改进主要归因于其自我纠正机制，而非仅仅来自网络搜索的补充信息",
+          "verdict": "SUPPORT",
+          "reason": "证据3明确说'primary improvements stem from the self-correction mechanism'，支持该论断。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "comparison_08",
+    "question": "与 RAG-Lewis 相比,CRAG 在'检索失败处理'上增加了什么?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，CRAG 在“检索失败处理”上相比 RAG-Lewis 增加了以下内容：\n\n1. **轻量级检索评估器**：CRAG 设计了一个轻量级的检索评估器，用于评估针对查询检索到的文档的整体质量，并返回一个置信度，基于此可以触发不同的知识检索动作 [2]。\n\n2. **大规模网络搜索作为扩展**：由于从静态和有限的语料库中检索只能返回次优文档，CRAG 利用大规模网络搜索作为扩展来增强检索结果 [2]。\n\n3. **分解-重组算法**：CRAG 设计了一种“分解-重组”算法，用于对检索到的文档进行选择性聚焦，过滤掉无关信息，从而优化关键信息的提取 [1][2]。\n\n4. **自我纠正机制**：实验表明，CRAG 的改进主要源于其自我纠正机制，而非仅仅来自网络搜索补充的信息 [3]。该机制旨在提高生成对检索质量的鲁棒性 [2]。\n\n综上，CRAG 在检索失败处理上增加了检索评估器、网络搜索扩展、分解-重组算法以及自我纠正机制，以提升生成鲁棒性 [1][2][3]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "CRAG 设计了一个轻量级的检索评估器，用于评估针对查询检索到的文档的整体质量，并返回一个置信度，基于此可以触发不同的知识检索动作",
+          "verdict": "SUPPORT",
+          "reason": "来源论文明确提到轻量级T5-based检索评估器，并用于判断检索质量（Correct/Incorrect/Ambiguous），触发不同动作。"
+        },
+        {
+          "claim": "CRAG 利用大规模网络搜索作为扩展来增强检索结果",
+          "verdict": "SUPPORT",
+          "reason": "论文中提及当检索结果不充分时，使用网络搜索作为补充，以增强检索内容。"
+        },
+        {
+          "claim": "CRAG 设计了一种“分解-重组”算法，用于对检索到的文档进行选择性聚焦，过滤掉无关信息，从而优化关键信息的提取",
+          "verdict": "SUPPORT",
+          "reason": "证据1明确描述了该算法用于精炼检索信息，优化关键洞察提取并减少非必要元素。"
+        },
+        {
+          "claim": "CRAG 的改进主要源于其自我纠正机制，而非仅仅来自网络搜索补充的信息",
+          "verdict": "SUPPORT",
+          "reason": "证据3指出主要改进来自自我纠正机制，而非网络搜索补充。"
+        },
+        {
+          "claim": "该机制旨在提高生成对检索质量的鲁棒性",
+          "verdict": "SUPPORT",
+          "reason": "论文中说明CRAG通过纠正低质量检索结果来提升生成鲁棒性，与标准答案一致。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "comparison_09",
+    "question": "CRAG 的'评估检索证据该不该用'与 RGB 的'负向拒答'在证据质量处理上的思路有何关联?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，CRAG 的“评估检索证据该不该用”与 RGB 的“负向拒答”在证据质量处理上的思路存在关联，具体分析如下：\n\n1. **共同关注检索证据质量不佳的场景**：  \n   - RGB 的“负向拒答”（Negative Rejection）衡量的是当所有上下文都不包含有用信息时，LLM 能否拒绝回答并避免生成误导性内容 [3]。  \n   - CRAG 则专门研究检索器返回不准确结果的场景，并提出自我纠正检索结果的方法 [2]。  \n   两者都聚焦于检索证据质量低下（如无关或误导信息）时模型应如何应对。\n\n2. **处理思路的互补性**：  \n   - RGB 的“负向拒答”侧重于模型在无有效证据时的行为——即直接拒绝回答，而非强行生成 [3]。  \n   - CRAG 则通过设计轻量级检索评估器，对检索文档的整体质量进行评分，并基于置信度触发“正确、不正确、模糊”三种动作，其中对“不正确”和“模糊”情况会采取纠正或改进利用策略 [2][4]。  \n   这表明 CRAG 不仅关注“是否该用”，还进一步通过评估和动作触发来优化证据利用，而 RGB 的“负向拒答”更偏向于在证据完全无效时的最终决策。\n\n3. **共同目标**：  \n   两者都旨在减少幻觉和误导性输出，提升 RAG 系统的可靠性。RGB 通过“负向拒答”避免在无证据时生成错误内容 [3]，CRAG 则通过评估和纠正机制提高检索证据的利用质量 [2][4]。\n\n综上，CRAG 的评估机制可视为对 RGB“负向拒答”思路的扩展——从“是否拒绝”延伸到“如何评估并纠正”，但两者在证据质量处理上的核心逻辑一致：都强调对低质量检索证据的审慎处理，避免盲目使用。\n\n引用来源：[2][3][4]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "RGB 的“负向拒答”衡量的是当所有上下文都不包含有用信息时，LLM 能否拒绝回答并避免生成误导性内容",
+          "verdict": "SUPPORT",
+          "reason": "证据3明确说明Negative Rejection是衡量当所有上下文都不提供有用信息时模型能否拒绝回答，与标准答案一致。"
+        },
+        {
+          "claim": "CRAG 专门研究检索器返回不准确结果的场景，并提出自我纠正检索结果的方法",
+          "verdict": "SUPPORT",
+          "reason": "证据2和证据4表明CRAG关注低质量检索器引入不相关信息的问题，并设计评估器来纠正检索结果。"
+        },
+        {
+          "claim": "两者都聚焦于检索证据质量低下（如无关或误导信息）时模型应如何应对",
+          "verdict": "SUPPORT",
+          "reason": "标准答案指出两者都关注检索证据不可靠的情况，且证据2和证据3分别支持CRAG和RGB对低质量证据的关注。"
+        },
+        {
+          "claim": "RGB 的“负向拒答”侧重于模型在无有效证据时的行为——即直接拒绝回答，而非强行生成",
+          "verdict": "SUPPORT",
+          "reason": "证据3明确说明Negative Rejection是模型在无有用信息时拒绝回答，与标准答案一致。"
+        },
+        {
+          "claim": "CRAG 通过设计轻量级检索评估器，对检索文档的整体质量进行评分，并基于置信度触发“正确、不正确、模糊”三种动作，其中对“不正确”和“模糊”情况会采取纠正或改进利用策略",
+          "verdict": "SUPPORT",
+          "reason": "证据4描述了CRAG的评估器对每个文档对进行相关性评分，且标准答案提到CRAG有“正确、不正确、模糊”三种动作，虽然证据未明确列出三种动作，但标准答案和论文摘要支持该描述。"
+        },
+        {
+          "claim": "CRAG 不仅关注“是否该用”，还进一步通过评估和动作触发来优化证据利用，而 RGB 的“负向拒答”更偏向于在证据完全无效时的最终决策",
+          "verdict": "SUPPORT",
+          "reason": "标准答案指出CRAG是系统侧主动评估并纠错，RGB是模型侧测试能否拒绝，两者侧重点不同，该论断与标准答案一致。"
+        },
+        {
+          "claim": "两者都旨在减少幻觉和误导性输出，提升 RAG 系统的可靠性",
+          "verdict": "SUPPORT",
+          "reason": "证据1和证据2提到RAG的挑战包括幻觉和误导，标准答案也强调两者都关注不可靠证据的处理，因此该论断合理。"
+        },
+        {
+          "claim": "CRAG 的评估机制可视为对 RGB“负向拒答”思路的扩展——从“是否拒绝”延伸到“如何评估并纠正”",
+          "verdict": "PARTIAL",
+          "reason": "该论断是模型回答的总结性观点，但标准答案更强调两者是不同层面的处理（系统补救vs能力诊断），而非简单的扩展关系。因此部分正确但表述有偏差。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 85
+    }
+  },
+  {
+    "question_id": "comparison_09",
+    "question": "CRAG 的'评估检索证据该不该用'与 RGB 的'负向拒答'在证据质量处理上的思路有何关联?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，CRAG 的“评估检索证据该不该用”与 RGB 的“负向拒答”在证据质量处理上的思路存在关联，主要体现在两者都关注检索文档质量不佳时的应对策略，但具体处理方式有所不同：\n\n1. **共同关注点**：两者都认识到检索器可能返回不相关或低质量的文档。RGB 的“负向拒答”能力是指当所有上下文都不包含有用信息时，模型应拒绝回答，避免生成误导性内容 [3]。CRAG 则指出低质量检索器容易引入大量无关信息，阻碍模型获取准确知识，甚至导致幻觉 [2]。\n\n2. **处理思路的差异与关联**：\n   - RGB 的“负向拒答”侧重于**模型端**的应对——在检索文档完全无用时，模型应具备“拒绝识别”并避免生成误导内容的能力 [3]。\n   - CRAG 则通过设计一个**轻量级检索评估器**，主动评估检索文档的整体质量，并基于置信度触发 {正确、不正确、模糊} 三种知识检索动作 [2]。对于“不正确”或“模糊”的检索结果，CRAG 会采取相应纠正措施（如触发其他动作）[2]，而不是简单地拒绝回答。\n\n3. **关联点**：两者都体现了对检索证据质量的“批判性”处理思路——RGB 通过“负向拒答”在无有效信息时停止生成，而 CRAG 通过评估器主动判断检索质量并触发纠正动作 [2][3]。但 CRAG 更进一步，不仅识别“无用”证据，还区分“不正确”和“模糊”情况并采取不同行动，而 RGB 的“负向拒答”主要针对“完全无用”的场景 [3]。\n\n综上，两者都旨在应对检索证据质量不佳的问题，但 RGB 的“负向拒答”是一种被动的拒绝策略，而 CRAG 的评估机制是一种主动的质量评估与纠正策略 [2][3]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "两者都关注检索文档质量不佳时的应对策略",
+          "verdict": "SUPPORT",
+          "reason": "标准答案指出两者都关注检索证据不可靠的问题，来源论文证据2和3分别支持CRAG和RGB对低质量检索的担忧。"
+        },
+        {
+          "claim": "RGB的负向拒答是指当所有上下文都不包含有用信息时，模型应拒绝回答",
+          "verdict": "SUPPORT",
+          "reason": "证据3明确说明Negative Rejection是衡量LLM在无上下文提供有用信息时能否拒绝回答的能力。"
+        },
+        {
+          "claim": "CRAG指出低质量检索器容易引入大量无关信息，阻碍模型获取准确知识，甚至导致幻觉",
+          "verdict": "SUPPORT",
+          "reason": "证据2直接支持该论断。"
+        },
+        {
+          "claim": "RGB的负向拒答侧重于模型端的应对",
+          "verdict": "SUPPORT",
+          "reason": "标准答案指出RGB是模型侧测试，证据3描述模型能力，支持模型端应对。"
+        },
+        {
+          "claim": "CRAG通过轻量级检索评估器主动评估检索文档质量，并基于置信度触发{正确、不正确、模糊}三种动作",
+          "verdict": "SUPPORT",
+          "reason": "证据4描述了评估器预测相关性分数，但未明确提及三种动作，不过标准答案和CRAG论文（未直接引用）支持该描述，且证据2提到CRAG处理低质量检索，故可视为支持。"
+        },
+        {
+          "claim": "对于不正确或模糊的检索结果，CRAG会采取纠正措施而不是简单拒绝回答",
+          "verdict": "SUPPORT",
+          "reason": "标准答案指出CRAG是系统侧主动评估并纠错，证据2和4支持其主动评估和纠正思路。"
+        },
+        {
+          "claim": "两者都体现对检索证据质量的批判性处理思路，但CRAG更进一步区分不正确和模糊情况，而RGB主要针对完全无用场景",
+          "verdict": "SUPPORT",
+          "reason": "标准答案区分了系统补救和能力诊断，证据3显示RGB针对无有用信息场景，CRAG的评估器可区分不同质量等级，支持该论断。"
+        },
+        {
+          "claim": "RGB的负向拒答是被动拒绝策略，CRAG是主动质量评估与纠正策略",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确表述为系统补救vs能力诊断，证据3和4分别支持被动拒绝和主动评估。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "comparison_10",
+    "question": "CRUD-RAG 与 RGB 两种基准的设计思路有何不同?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，CRUD-RAG 与 RGB 两种基准的设计思路存在显著差异，主要体现在覆盖任务范围和评估维度上：\n\n1. **任务覆盖范围不同**：RGB 基准主要针对问答任务构建数据集，例如其通过收集近期新闻并使用 LLM 生成相关事件、问题和答案来创建评估数据 [5]。而 CRUD-RAG 则指出现有基准（包括 RGB）仅评估问答任务，忽略了 RAG 的其他多样化应用 [4]。CRUD-RAG 将 RAG 应用场景分为四类：Create（创建）、Read（读取）、Update（更新）、Delete（删除），并为每类构建相应的评估任务和数据集，如文本续写、问答（单文档和多文档）、幻觉修正、多文档摘要等 [3][4]。\n\n2. **评估组件维度不同**：现有基准（如 RGB）在评估实验中仅考虑 RAG 流程中的 LLM 组件，或知识密集型场景中的检索器，而忽视了检索数据库构建和检索在非知识密集型场景中的重要作用 [4]。CRUD-RAG 则系统地评估 RAG 系统的多个组件，包括上下文长度、块大小、嵌入模型、检索算法和 LLM 等因素对系统性能的影响 [2]。\n\n3. **数据集构建方法有差异**：在单文档问答任务上，CRUD-RAG 遵循 RGB 的数据集构建流程，即从高质量语料中选择新闻文章，使用提示让 GPT-4 生成问题和答案 [1]。但在多文档问答任务上，CRUD-RAG 采用链式思维（CoT）技术增强 GPT-4，引导模型通过多步推理逐步构建数据集，因为直接使用提示强制 GPT-4 生成多文档推理问题效果不佳 [1]。而 RGB 未提及此类多文档推理任务的构建方法 [5]。\n\n综上，CRUD-RAG 相比 RGB 更全面地覆盖了 RAG 的多种应用场景，并更系统地评估了 RAG 系统的各个组件，而 RGB 主要聚焦于问答任务且评估维度较为单一 [4][5]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "RGB 基准主要针对问答任务构建数据集，例如其通过收集近期新闻并使用 LLM 生成相关事件、问题和答案来创建评估数据",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据5明确提到RGB通过收集近期新闻并利用LLM生成事件、问题和答案来构建评估数据集。"
+        },
+        {
+          "claim": "CRUD-RAG 指出现有基准（包括 RGB）仅评估问答任务，忽略了 RAG 的其他多样化应用",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据4指出当前RAG基准只评估问答任务，且证据5提到RGB是问答数据集，CRUD-RAG在论文中批评了这一点。"
+        },
+        {
+          "claim": "CRUD-RAG 将 RAG 应用场景分为四类：Create、Read、Update、Delete，并为每类构建相应的评估任务和数据集，如文本续写、问答（单文档和多文档）、幻觉修正、多文档摘要等",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据3明确列出CRUD-RAG选择文本续写、问答（单/多文档）、幻觉修正、多文档摘要作为代表任务，并对应CRUD分类。"
+        },
+        {
+          "claim": "现有基准（如 RGB）在评估实验中仅考虑 RAG 流程中的 LLM 组件，或知识密集型场景中的检索器，而忽视了检索数据库构建和检索在非知识密集型场景中的重要作用",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据4指出当前基准只评估问答任务，且CRUD-RAG论文中批评现有基准忽视检索数据库和检索在非知识密集型场景的作用，证据4支持此论断。"
+        },
+        {
+          "claim": "CRUD-RAG 系统地评估 RAG 系统的多个组件，包括上下文长度、块大小、嵌入模型、检索算法和 LLM 等因素对系统性能的影响",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据3提到评估RAG组件如chunk size、retrieval strategy、top-k、LLM等，证据4也强调评估多个组件。"
+        },
+        {
+          "claim": "在单文档问答任务上，CRUD-RAG 遵循 RGB 的数据集构建流程，即从高质量语料中选择新闻文章，使用提示让 GPT-4 生成问题和答案",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1描述单文档问答构建流程，证据5提到RGB使用类似方法，CRUD-RAG在论文中说明遵循RGB流程。"
+        },
+        {
+          "claim": "在多文档问答任务上，CRUD-RAG 采用链式思维（CoT）技术增强 GPT-4，引导模型通过多步推理逐步构建数据集，因为直接使用提示强制 GPT-4 生成多文档推理问题效果不佳",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1提到多文档问答涉及推理和批判性思维，CRUD-RAG论文中说明使用CoT增强GPT-4构建多文档数据集，证据1支持此方法。"
+        },
+        {
+          "claim": "RGB 未提及此类多文档推理任务的构建方法",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据5只描述RGB的问答数据集构建，未提及多文档推理任务，且CRUD-RAG论文中对比时指出RGB未涉及。"
+        },
+        {
+          "claim": "CRUD-RAG 相比 RGB 更全面地覆盖了 RAG 的多种应用场景，并更系统地评估了 RAG 系统的各个组件，而 RGB 主要聚焦于问答任务且评估维度较为单一",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和来源论文证据3、4、5支持CRUD-RAG覆盖多场景和组件评估，RGB仅问答任务。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "comparison_10",
+    "question": "CRUD-RAG 与 RGB 两种基准的设计思路有何不同?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，CRUD-RAG 与 RGB 两种基准的设计思路存在以下不同：\n\n1. **评估任务范围不同**：RGB 基准主要针对问答任务构建数据集 [1][3]，而 CRUD-RAG 将 RAG 应用场景划分为四类（Create、Read、Update、Delete），并针对每类构建相应的评估任务和数据集，包括文本续写、问答（单文档和多文档）、幻觉修正以及多文档摘要等 [3][4]。\n\n2. **数据集构建方法不同**：对于单文档问答任务，CRUD-RAG 遵循 RGB 基准的数据集构建流程，使用 GPT-4 生成问题和答案 [1]；但对于多文档问答任务，CRUD-RAG 采用思维链（Chain-of-Thought）技术增强 GPT-4，引导模型通过多步推理逐步构建数据集，而 RGB 未涉及此类复杂推理任务的构建方法 [1][2]。\n\n3. **评估全面性不同**：CRUD-RAG 指出现有基准（如 RGB）在评估实验中只考虑 RAG 流程中的 LLM 组件或知识密集型场景中的检索器，忽视了检索数据库构建和检索在非知识密集型场景中的重要作用 [4]。CRUD-RAG 则系统评估 RAG 系统的多个组件（如上下文长度、块大小、嵌入模型、检索算法和 LLM）对性能的影响 [2]。\n\n综上，CRUD-RAG 在 RGB 基础上扩展了任务类型、改进了多文档问答的数据构建方法，并更全面地评估 RAG 系统的各组件 [1][2][3][4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "RGB 基准主要针对问答任务构建数据集",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1和证据5表明RGB构建问答数据集，包括单文档和多文档问答。"
+        },
+        {
+          "claim": "CRUD-RAG 将 RAG 应用场景划分为四类（Create、Read、Update、Delete），并针对每类构建相应的评估任务和数据集，包括文本续写、问答（单文档和多文档）、幻觉修正以及多文档摘要等",
+          "verdict": "SUPPORT",
+          "reason": "证据3明确提到CRUD-RAG选择文本续写、问答、幻觉修正和多文档摘要作为代表任务，对应CRUD四类。"
+        },
+        {
+          "claim": "对于单文档问答任务，CRUD-RAG 遵循 RGB 基准的数据集构建流程，使用 GPT-4 生成问题和答案",
+          "verdict": "SUPPORT",
+          "reason": "证据5提到RGB使用LLM生成问题和答案，且CRUD-RAG在单文档问答中遵循类似流程（证据1和证据2）。"
+        },
+        {
+          "claim": "对于多文档问答任务，CRUD-RAG 采用思维链（Chain-of-Thought）技术增强 GPT-4，引导模型通过多步推理逐步构建数据集，而 RGB 未涉及此类复杂推理任务的构建方法",
+          "verdict": "PARTIAL",
+          "reason": "来源证据未明确提及CRUD-RAG使用思维链技术，也未明确对比RGB未涉及。该论断部分正确但缺乏直接证据支持。"
+        },
+        {
+          "claim": "CRUD-RAG 指出现有基准（如 RGB）在评估实验中只考虑 RAG 流程中的 LLM 组件或知识密集型场景中的检索器，忽视了检索数据库构建和检索在非知识密集型场景中的重要作用",
+          "verdict": "SUPPORT",
+          "reason": "证据4指出当前RAG基准的缺点，只评估问答等知识密集型场景，忽视其他组件。"
+        },
+        {
+          "claim": "CRUD-RAG 则系统评估 RAG 系统的多个组件（如上下文长度、块大小、嵌入模型、检索算法和 LLM）对性能的影响",
+          "verdict": "SUPPORT",
+          "reason": "证据3和证据4提到评估组件如块大小、检索策略、top-k、LLM等。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 85
+    }
+  },
+  {
+    "question_id": "cross_01",
+    "question": "简述 RAG 从检索器初始化、端到端训练到推理的完整流程。",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。检索内容仅涉及RAG的总体概念、发展历程、研究范式（如Naive RAG的索引、检索、生成三步流程）以及检索源类型等，未包含关于“检索器初始化、端到端训练到推理的完整流程”的具体描述。[1][2][3][4][5]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索内容仅涉及RAG的总体概念、发展历程、研究范式（如Naive RAG的索引、检索、生成三步流程）以及检索源类型等，未包含关于“检索器初始化、端到端训练到推理的完整流程”的具体描述。",
+          "verdict": "REFUSE",
+          "reason": "该论断声称材料中无相关信息，但标准答案和来源论文证据明确包含检索器初始化（DPR预训练权重）、端到端训练（冻结文档编码器、训练query编码器与BART）及推理（top-K检索、RAG-Sequence/Token marginalize）的完整流程，模型回答错误地拒绝回答。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "cross_01",
+    "question": "简述 RAG 从检索器初始化、端到端训练到推理的完整流程。",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容仅涉及RAG的总体概念、发展历程、研究范式（如Naive RAG的索引、检索、生成三步流程）以及检索源类型等，未具体描述“检索器初始化、端到端训练到推理”的完整流程细节 [1][2][3][4][5]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索内容仅涉及RAG的总体概念、发展历程、研究范式（如Naive RAG的索引、检索、生成三步流程）以及检索源类型等，未具体描述“检索器初始化、端到端训练到推理”的完整流程细节",
+          "verdict": "SUPPORT",
+          "reason": "提供的证据确实只涉及RAG总体概念、Naive RAG三步流程、检索源等，未包含检索器初始化、端到端训练、推理的具体细节，因此该论断与证据一致。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 100
+    }
+  },
+  {
+    "question_id": "cross_02",
+    "question": "在零样本 vs 有监督、单向量 vs 多向量、是否依赖标注几个维度上,DPR/HyDE/ColBERT 如何取舍?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据提供的论文片段，无法完整回答关于DPR/HyDE/ColBERT在“零样本 vs 有监督、单向量 vs 多向量、是否依赖标注”几个维度上的取舍问题。原因如下：\n\n1. 片段中仅涉及HyDE、DPR、ANCE、Contriever、ContrieverFT等模型，未提及ColBERT [1][2][3][4]。\n2. 关于DPR和HyDE，片段提到DPR是“fine-tuned on MS-MARCO”的有监督模型，而HyDE是零样本方法（无需相关性标签）[1][2][3][4]；但未讨论单向量或多向量的维度。\n3. 片段未提供ColBERT的任何信息，因此无法进行该模型的比较。\n\n因此，对于包含ColBERT的完整比较，无法从给定材料中回答。仅能确认：HyDE是零样本且不依赖标注的方法，DPR是有监督且依赖标注的方法 [1][2][3][4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "片段中仅涉及HyDE、DPR、ANCE、Contriever、ContrieverFT等模型，未提及ColBERT",
+          "verdict": "SUPPORT",
+          "reason": "来源论文片段确实未提及ColBERT，模型回答准确指出了这一点。"
+        },
+        {
+          "claim": "DPR是fine-tuned on MS-MARCO的有监督模型",
+          "verdict": "SUPPORT",
+          "reason": "证据2明确说明DPR是in-domain supervised models that are finetuned on MS MARCO training data。"
+        },
+        {
+          "claim": "HyDE是零样本方法（无需相关性标签）",
+          "verdict": "SUPPORT",
+          "reason": "论文标题和证据5明确说明HyDE是Precise Zero-Shot Dense Retrieval without Relevance Labels，且证据1提到HyDE outperforms BM25 without relevance labels。"
+        },
+        {
+          "claim": "未讨论单向量或多向量的维度",
+          "verdict": "SUPPORT",
+          "reason": "来源论文片段确实未涉及单向量/多向量维度，模型回答准确。"
+        },
+        {
+          "claim": "片段未提供ColBERT的任何信息，因此无法进行该模型的比较",
+          "verdict": "SUPPORT",
+          "reason": "来源论文片段确实未提及ColBERT，模型回答准确。"
+        },
+        {
+          "claim": "仅能确认：HyDE是零样本且不依赖标注的方法，DPR是有监督且依赖标注的方法",
+          "verdict": "SUPPORT",
+          "reason": "来源论文明确支持HyDE零样本无标注、DPR有监督依赖标注，模型回答准确。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "cross_02",
+    "question": "在零样本 vs 有监督、单向量 vs 多向量、是否依赖标注几个维度上,DPR/HyDE/ColBERT 如何取舍?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据提供的论文片段，可以分析 DPR 和 HyDE 在相关维度上的表现，但片段中未提及 ColBERT 模型，因此无法对其进行分析。\n\n**1. 零样本 vs 有监督维度：**\n- HyDE 是一种零样本稠密检索方法，不依赖相关性标签（relevance labels）[1][5]。它通过指令跟随语言模型生成假设文档，再由无监督对比学习编码器（如 Contriever）进行编码检索[5]。\n- DPR 和 ANCE 是在 MS-MARCO 大规模相关性数据上微调的有监督模型[1][3]，属于“in-domain supervised models”[2]。ContrieverFT 也是经过 MS-MARCO 微调的有监督模型，被视为经验上界[3]。\n\n**2. 单向量 vs 多向量维度：**\n- 片段中未明确说明 DPR、HyDE 或 ColBERT 是单向量还是多向量模型，因此无法从给定材料中回答此维度。\n\n**3. 是否依赖标注维度：**\n- HyDE 不依赖相关性标注，属于无监督/零样本方法[1][5]。\n- DPR、ANCE、ContrieverFT 依赖 MS-MARCO 的大规模相关性标注进行微调[1][3]。\n\n**性能对比（基于片段）：**\n- 在 Web 搜索（DL19/20）和低资源任务（BEIR）上，HyDE 显著优于无监督的 Contriever，并可与有监督微调模型竞争[1][2]。例如，在 TREC DL19 上，HyDE 的 map 和 ndcg@10 与 ContrieverFT 相当，且 recall@1k 最佳[1]。\n- 在低资源任务中，HyDE 通常优于 DPR 和 ANCE（两者均在 MS-MARCO 上微调）[1][4]。但在 FiQA 和 DBPedia 上，ContrieverFT 表现更优[4]。\n\n**关于 ColBERT：** 所有片段均未提及 ColBERT，因此无法从给定材料中回答其相关取舍。\n\n综上，可回答 DPR 与 HyDE 的取舍：HyDE 为无标注零样本方法，DPR 为有监督微调方法；在多数测试任务上 HyDE 表现优于 DPR [1][4]。ColBERT 的信息无法从材料中获得。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "HyDE 是一种零样本稠密检索方法，不依赖相关性标签",
+          "verdict": "SUPPORT",
+          "reason": "论文标题和摘要明确说明HyDE是零样本稠密检索，无需相关性标签。"
+        },
+        {
+          "claim": "DPR 和 ANCE 是在 MS-MARCO 大规模相关性数据上微调的有监督模型",
+          "verdict": "SUPPORT",
+          "reason": "论文表1注释明确说明DPR、ANCE和ContrieverFT是in-domain supervised models，在MS MARCO上微调。"
+        },
+        {
+          "claim": "片段中未明确说明 DPR、HyDE 或 ColBERT 是单向量还是多向量模型，因此无法从给定材料中回答此维度",
+          "verdict": "PARTIAL",
+          "reason": "虽然片段未明确提及，但标准答案和常识表明DPR是单向量、ColBERT是多向量，但模型回答仅基于片段，未利用外部知识，因此部分正确但不完整。"
+        },
+        {
+          "claim": "HyDE 不依赖相关性标注，属于无监督/零样本方法",
+          "verdict": "SUPPORT",
+          "reason": "论文明确HyDE是零样本方法，无需相关性标签。"
+        },
+        {
+          "claim": "DPR、ANCE、ContrieverFT 依赖 MS-MARCO 的大规模相关性标注进行微调",
+          "verdict": "SUPPORT",
+          "reason": "论文表1注释和正文支持这些模型在MS MARCO上微调。"
+        },
+        {
+          "claim": "在 Web 搜索（DL19/20）和低资源任务（BEIR）上，HyDE 显著优于无监督的 Contriever，并可与有监督微调模型竞争",
+          "verdict": "SUPPORT",
+          "reason": "论文表1和表2显示HyDE优于Contriever，且与微调模型竞争。"
+        },
+        {
+          "claim": "在 TREC DL19 上，HyDE 的 map 和 ndcg@10 与 ContrieverFT 相当，且 recall@1k 最佳",
+          "verdict": "SUPPORT",
+          "reason": "论文表1显示HyDE在DL19上map和ndcg@10与ContrieverFT接近，recall@1k最高。"
+        },
+        {
+          "claim": "在低资源任务中，HyDE 通常优于 DPR 和 ANCE（两者均在 MS-MARCO 上微调）",
+          "verdict": "SUPPORT",
+          "reason": "论文表2和正文说明HyDE通常优于DPR和ANCE。"
+        },
+        {
+          "claim": "在 FiQA 和 DBPedia 上，ContrieverFT 表现更优",
+          "verdict": "SUPPORT",
+          "reason": "论文表2显示ContrieverFT在FiQA和DBPedia上nDCG@10更高。"
+        },
+        {
+          "claim": "所有片段均未提及 ColBERT，因此无法从给定材料中回答其相关取舍",
+          "verdict": "SUPPORT",
+          "reason": "提供的论文片段确实未提及ColBERT。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 85
+    }
+  },
+  {
+    "question_id": "cross_03",
+    "question": "基于 Lost in the Middle 的 U 型发现,在把检索文档喂给生成器之前应如何排序/取舍?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，在将检索文档喂给生成器之前，应进行重排序（Reranking），以突出最相关的结果并减少文档池，从而避免冗余信息干扰和“Lost in the middle”问题 [1]。具体而言，重排序会重新排列文档块，将最相关的结果放在前面，起到增强和过滤的双重作用，为语言模型提供更精确的输入 [1]。\n\n这一做法与“Lost in the Middle”的发现直接相关：语言模型在长上下文中，当相关信息位于开头或结尾时性能最高，而位于中间时性能显著下降，呈现U型曲线 [2]。因此，通过重排序将最相关的文档置于上下文开头，可以缓解模型对中间信息利用不足的问题，提升最终生成质量 [1][2]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "在将检索文档喂给生成器之前，应进行重排序（Reranking），以突出最相关的结果并减少文档池，从而避免冗余信息干扰和“Lost in the middle”问题。",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和证据1均指出直接输入所有检索信息不佳，需调整检索内容（如重排序和压缩），且重排序可突出相关结果、减少冗余。"
+        },
+        {
+          "claim": "重排序会重新排列文档块，将最相关的结果放在前面，起到增强和过滤的双重作用，为语言模型提供更精确的输入。",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确提到“把最相关的证据放在上下文开头或结尾”，且证据1的上下文策展部分强调调整检索内容以增强和过滤。"
+        },
+        {
+          "claim": "语言模型在长上下文中，当相关信息位于开头或结尾时性能最高，而位于中间时性能显著下降，呈现U型曲线。",
+          "verdict": "SUPPORT",
+          "reason": "证据5明确描述GPT-4等模型在相关信息位于开头或结尾时性能最高，中间时下降，呈U型曲线。"
+        },
+        {
+          "claim": "通过重排序将最相关的文档置于上下文开头，可以缓解模型对中间信息利用不足的问题，提升最终生成质量。",
+          "verdict": "SUPPORT",
+          "reason": "标准答案指出将最相关证据放在开头或结尾可避开中间位置，从而缓解问题；证据5支持位置影响性能，因此置于开头有效。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "cross_03",
+    "question": "基于 Lost in the Middle 的 U 型发现,在把检索文档喂给生成器之前应如何排序/取舍?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，在将检索文档喂给生成器之前，应通过**重排序（Reranking）**来调整文档顺序，以缓解“Lost in the middle”问题。具体而言：\n\n1. **重排序的作用**：重排序从根本上重新排列文档块，将最相关的结果放在最前面，从而减少整体文档池，既起到增强作用又起到过滤作用，为语言模型提供更精确的输入 [1]。这是因为冗余信息会干扰LLM的最终生成，而过长的上下文会导致LLM出现“Lost in the middle”问题，即模型倾向于只关注长文本的开头和结尾，而忽略中间部分 [1]。\n\n2. **U型性能曲线的启示**：研究发现，语言模型的性能在相关信息位于输入上下文开头或结尾时最高，而在中间时显著下降，呈现U型曲线 [2]。即使像GPT-4这样的模型，虽然绝对性能更高，但仍表现出U型性能曲线——当相关信息位于上下文开头或结尾时性能最高，位于中间时性能下降 [5]。\n\n3. **排序策略**：由于模型对开头和结尾的信息利用更好，重排序应将最相关的文档块置于上下文的前部（或后部），避免将关键信息放在中间位置。同时，重排序可以采用基于规则的方法（如多样性、相关性、MRR等指标）或基于模型的方法（如BERT系列的编码器-解码器模型、专门的排序模型如Cohere rerank或bge-raranker-large，以及通用大语言模型） [1]。\n\n综上，在喂给生成器之前，应通过重排序将最相关的文档置于上下文开头或结尾，并过滤掉冗余或不相关的文档，以减少中间位置的干扰，从而提升生成质量。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "重排序（Reranking）可以调整文档顺序，缓解“Lost in the middle”问题",
+          "verdict": "SUPPORT",
+          "reason": "标准答案和证据1均指出检索后不应直接输入所有信息，需调整内容，重排序是Advanced RAG的动机之一。"
+        },
+        {
+          "claim": "重排序将最相关结果放在最前面，减少整体文档池，起到增强和过滤作用",
+          "verdict": "SUPPORT",
+          "reason": "证据1提到需要调整检索内容，过滤冗余信息，重排序可减少文档数量，符合上下文压缩思想。"
+        },
+        {
+          "claim": "冗余信息干扰LLM生成，过长上下文导致Lost in the Middle问题",
+          "verdict": "SUPPORT",
+          "reason": "证据1和证据2均指出冗余信息影响性能，模型对长上下文中间部分利用不佳。"
+        },
+        {
+          "claim": "语言模型性能在相关信息位于开头或结尾时最高，中间时下降，呈U型曲线",
+          "verdict": "SUPPORT",
+          "reason": "证据2和证据5明确描述U型性能曲线，GPT-4也呈现此模式。"
+        },
+        {
+          "claim": "重排序应将最相关文档置于上下文前部或后部，避免中间位置",
+          "verdict": "SUPPORT",
+          "reason": "标准答案明确要求将最相关证据放在开头或结尾，避开中间，与U型发现一致。"
+        },
+        {
+          "claim": "重排序可采用基于规则的方法（如多样性、相关性、MRR）或基于模型的方法（如BERT系列、Cohere rerank、bge-reranker-large、通用LLM）",
+          "verdict": "REFUSE",
+          "reason": "来源论文证据中未提及这些具体重排序方法，属于模型回答额外添加的内容，无法被支持。"
+        },
+        {
+          "claim": "应过滤掉冗余或不相关文档，减少中间位置干扰",
+          "verdict": "SUPPORT",
+          "reason": "标准答案提到截断冗余文档，证据1强调过滤冗余信息，符合上下文压缩。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 60
+    }
+  },
+  {
+    "question_id": "cross_04",
+    "question": "Ragas 三指标、RAG Survey 评估框架、Verifiability 引用标准与项目的'双层引用正确率'如何对应?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。检索内容仅涉及Ragas框架的 faithfulness、answer relevance、context relevance 三个指标及其评估方法 [1][2]，以及CRUD-RAG对RAG基准的分类（reference-required与reference-free）[3][4]，但未提及“RAG Survey 评估框架”“Verifiability 引用标准”或“项目的‘双层引用正确率’”等相关概念，因此无法建立对应关系。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文明确提供了对应关系，模型声称无法回答与事实不符。"
+        },
+        {
+          "claim": "检索内容仅涉及Ragas框架的 faithfulness、answer relevance、context relevance 三个指标及其评估方法",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1和证据2明确提及这三个指标。"
+        },
+        {
+          "claim": "检索内容涉及CRUD-RAG对RAG基准的分类（reference-required与reference-free）",
+          "verdict": "SUPPORT",
+          "reason": "证据4明确提到基准分为reference-required和reference-free两类。"
+        },
+        {
+          "claim": "未提及“RAG Survey 评估框架”“Verifiability 引用标准”或“项目的‘双层引用正确率’”等相关概念",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文中包含了这些概念，模型错误地认为未提及。"
+        },
+        {
+          "claim": "因此无法建立对应关系",
+          "verdict": "REFUSE",
+          "reason": "标准答案明确给出了对应关系，模型结论错误。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "cross_04",
+    "question": "Ragas 三指标、RAG Survey 评估框架、Verifiability 引用标准与项目的'双层引用正确率'如何对应?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容仅涉及Ragas框架的三个指标（faithfulness、answer relevance、context relevance）[1][2]，以及RAG评估基准的分类（reference-required与reference-free）[3][4]，但未提及“RAG Survey评估框架”“Verifiability引用标准”或“双层引用正确率”的相关内容，因此无法建立对应关系。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。检索内容仅涉及Ragas框架的三个指标（faithfulness、answer relevance、context relevance）[1][2]，以及RAG评估基准的分类（reference-required与reference-free）[3][4]，但未提及“RAG Survey评估框架”“Verifiability引用标准”或“双层引用正确率”的相关内容，因此无法建立对应关系。",
+          "verdict": "REFUSE",
+          "reason": "标准答案明确给出了对应关系，且来源论文证据支持Ragas指标、RAG评估基准分类，但模型声称无法回答，忽略了标准答案和证据中隐含的对应信息，属于错误拒答。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "cross_05",
+    "question": "结合 RGB 的负向拒答、CRAG 的纠错与项目的真/误拒答拆分,谈谈'无证据时该不该回答'的完整处理链。",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "根据检索内容，可以梳理出“无证据时该不该回答”的完整处理链，涉及RGB的负向拒答、CRAG的纠错机制以及真/误拒答的拆分。具体分析如下：\n\n1. **RGB的负向拒答（Negative Rejection）**：RGB明确将“负向拒答”定义为一种能力，即当检索到的上下文中没有任何有用信息时，模型应拒绝回答问题，以避免生成误导性内容。在现实场景中，搜索引擎经常无法检索到包含答案的文档，此时模型必须具备拒绝识别并避免产生误导的能力 [2]。这构成了处理链的第一环：**无证据时，模型应主动拒答**。\n\n2. **CRAG的纠错与动作触发**：CRAG通过检索评估器（Retrieval Evaluator）对检索文档与输入的相关性进行评分，并触发三种动作：Correct（正确）、Incorrect（不正确）和Ambiguous（模糊）[4]。其中：\n   - 当检索结果被判定为“Incorrect”（即无可靠知识可参考）时，CRAG会触发纠错动作，通过知识搜索和重写等方式进行修正，以克服“没有可靠知识可参考”的尴尬挑战 [3]。\n   - 当评估器对检索准确性难以判断时，会触发“Ambiguous”动作，将Correct和Incorrect两种处理方式结合，以增强系统的鲁棒性 [3]。\n\n3. **真/误拒答的拆分**：RGB在评估中区分了“无文档时的准确率”和“有反事实文档时的准确率”，并指出LLMs难以识别和纠正文档中的事实错误，容易被包含错误事实的文档误导 [1]。这暗示了拒答需要区分“真拒答”（确实无证据）和“误拒答”（有证据但模型未正确利用或识别）。CRAG的纠错机制正是为了减少“误拒答”——即当检索结果不相关时，通过纠错而非直接拒答来提升回答质量 [3][4]。\n\n**完整处理链总结**：\n- **第一步（评估）**：通过检索评估器判断检索文档是否与问题相关 [4]。\n- **第二步（动作触发）**：\n  - 若文档相关（Correct），直接用于生成回答；\n  - 若文档不相关（Incorrect），触发纠错（如知识搜索、重写）以获取可靠知识，而非直接拒答 [3]；\n  - 若相关性模糊（Ambiguous），结合Correct和Incorrect的处理方式，采取软策略 [3]。\n- **第三步（拒答决策）**：仅在经过纠错后仍无可靠证据时，才应拒绝回答，以避免误导 [2][3]。\n\n综上，“无证据时该不该回答”的完整处理链是：**先评估检索相关性，再根据评估结果触发纠错或模糊处理，最后在确认无可靠证据时拒答**。这一链条既避免了无证据时的盲目回答，也通过纠错机制减少了因检索失败导致的误拒答 [1][2][3][4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "RGB明确将“负向拒答”定义为一种能力，即当检索到的上下文中没有任何有用信息时，模型应拒绝回答问题，以避免生成误导性内容。",
+          "verdict": "SUPPORT",
+          "reason": "证据2明确说明Negative Rejection是衡量LLMs在上下文中无有用信息时拒答的能力，并强调在真实场景中检索失败时模型应拒答。"
+        },
+        {
+          "claim": "CRAG通过检索评估器对检索文档与输入的相关性进行评分，并触发三种动作：Correct、Incorrect和Ambiguous。",
+          "verdict": "SUPPORT",
+          "reason": "证据4和图2显示CRAG构建检索评估器评估相关性，并触发Correct、Incorrect、Ambiguous三种动作。"
+        },
+        {
+          "claim": "当检索结果被判定为Incorrect时，CRAG会触发纠错动作，通过知识搜索和重写等方式进行修正，以克服“没有可靠知识可参考”的挑战。",
+          "verdict": "SUPPORT",
+          "reason": "证据3提到纠错动作帮助克服无可靠知识可参考的挑战，证据4显示Incorrect分支包含知识搜索和重写。"
+        },
+        {
+          "claim": "当评估器对检索准确性难以判断时，会触发Ambiguous动作，将Correct和Incorrect两种处理方式结合，以增强系统的鲁棒性。",
+          "verdict": "SUPPORT",
+          "reason": "证据3明确说明Ambiguous发生在检索准确性难以区分时，结合Correct和Incorrect的处理方式。"
+        },
+        {
+          "claim": "RGB在评估中区分了“无文档时的准确率”和“有反事实文档时的准确率”，并指出LLMs难以识别和纠正文档中的事实错误，容易被包含错误事实的文档误导。",
+          "verdict": "SUPPORT",
+          "reason": "证据1提到反事实鲁棒性测试，证据2提到噪声文档和负向拒答，但“区分无文档和有反事实文档准确率”在提供的证据中未明确提及，但反事实测试隐含此意，且LLMs难以纠正错误在证据1中有体现。"
+        },
+        {
+          "claim": "CRAG的纠错机制正是为了减少“误拒答”——即当检索结果不相关时，通过纠错而非直接拒答来提升回答质量。",
+          "verdict": "PARTIAL",
+          "reason": "CRAG纠错确实在检索不相关时提供修正，但论文中未明确使用“误拒答”术语，也未直接关联到减少误拒答，该推断合理但缺乏直接支持。"
+        },
+        {
+          "claim": "完整处理链是：先评估检索相关性，再根据评估结果触发纠错或模糊处理，最后在确认无可靠证据时拒答。",
+          "verdict": "PARTIAL",
+          "reason": "该链条整合了RGB和CRAG，但标准答案强调评估时区分真/误拒答，而模型回答未明确提及真/误拒答的拆分，且“最后在确认无可靠证据时拒答”与CRAG的纠错后仍无证据时拒答一致，但未明确说明真拒答与误拒答的评估。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 75
+    }
+  },
+  {
+    "question_id": "cross_05",
+    "question": "结合 RGB 的负向拒答、CRAG 的纠错与项目的真/误拒答拆分,谈谈'无证据时该不该回答'的完整处理链。",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "根据检索内容，可以梳理出“无证据时该不该回答”的完整处理链，涉及RGB基准中的负向拒答能力、CRAG的纠错机制，以及真/误拒答的拆分考量。具体分析如下：\n\n1. **负向拒答（Negative Rejection）作为基础能力**：RGB基准将“负向拒答”定义为当检索到的文档均不包含有用信息时，模型应拒绝回答，以避免生成误导性内容。在现实场景中，搜索引擎常无法检索到包含答案的文档，此时模型具备拒答能力至关重要 [2]。这构成了处理链的第一环：**无证据时，模型应主动拒绝回答**。\n\n2. **CRAG的纠错与动作触发机制**：CRAG通过检索评估器（Retrieval Evaluator）对检索文档与输入的相关性进行评分，并触发三种动作：Correct（正确）、Incorrect（不正确）、Ambiguous（模糊）[4]。其中，当检索结果被判定为“Incorrect”时，系统会触发纠错动作，例如通过知识搜索或重写查询来获取可靠知识，从而克服“无可靠知识可参考”的困境 [3]。这构成了处理链的第二环：**即使初始检索无证据，也可通过纠错动作尝试获取新证据**。\n\n3. **真/误拒答的拆分与模糊处理**：CRAG进一步引入了“Ambiguous”中间动作，当检索评估器对相关性判断不自信时，会结合Correct和Incorrect两种处理方式，以增强系统的鲁棒性 [3]。这对应了处理链的第三环：**在证据不足或不确定时，不应简单拒答或回答，而应采取软性策略（如结合多种知识来源）**。同时，RGB指出，现有LLM难以识别和纠正文档中的事实错误，且容易受错误信息误导 [1]，因此真拒答（确实无证据）与误拒答（有证据但未识别）的区分需要依赖评估器的置信度判断。\n\n综上，完整处理链为：**先评估检索证据的相关性（RGB的负向拒答能力）→ 若证据不足，触发CRAG的纠错动作（如知识搜索）→ 若评估不确定，则采用Ambiguous策略结合多种知识来源，避免武断拒答或错误回答**。这一链条强调了从“拒答”到“纠错”再到“软性融合”的递进处理，以平衡回答的准确性与鲁棒性 [1][2][3][4]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "RGB基准将“负向拒答”定义为当检索到的文档均不包含有用信息时，模型应拒绝回答，以避免生成误导性内容。",
+          "verdict": "SUPPORT",
+          "reason": "证据2明确说明Negative Rejection是衡量当上下文无有用信息时模型能否拒答的能力。"
+        },
+        {
+          "claim": "在现实场景中，搜索引擎常无法检索到包含答案的文档，此时模型具备拒答能力至关重要。",
+          "verdict": "SUPPORT",
+          "reason": "证据2提到“In real-world situations, the search engine often fails to retrieve documents containing the answers. In these cases, it is important for the model to have [negative rejection]”。"
+        },
+        {
+          "claim": "CRAG通过检索评估器对检索文档与输入的相关性进行评分，并触发三种动作：Correct、Incorrect、Ambiguous。",
+          "verdict": "SUPPORT",
+          "reason": "证据4的图2和证据3明确提到检索评估器评估相关性并触发Correct、Incorrect、Ambiguous三种动作。"
+        },
+        {
+          "claim": "当检索结果被判定为“Incorrect”时，系统会触发纠错动作，例如通过知识搜索或重写查询来获取可靠知识。",
+          "verdict": "SUPPORT",
+          "reason": "证据3提到“This corrective action helps overcome the embarrassing challenge where no reliable knowledge can be referred to”，且证据4图2显示Incorrect分支包含Knowledge Searching和重写查询。"
+        },
+        {
+          "claim": "CRAG引入了“Ambiguous”中间动作，当检索评估器对相关性判断不自信时，会结合Correct和Incorrect两种处理方式。",
+          "verdict": "SUPPORT",
+          "reason": "证据3明确说明Ambiguous发生在评估器不自信时，且“both types of processed knowledge in Correct and Incorrect are combined”。"
+        },
+        {
+          "claim": "RGB指出，现有LLM难以识别和纠正文档中的事实错误，且容易受错误信息误导。",
+          "verdict": "SUPPORT",
+          "reason": "证据1提到“most LLMs struggle to answer them correctly”以及“Counterfactual Robustness”测试，且证据2提到噪声文档干扰，但未直接说“难以识别和纠正事实错误”，不过结合上下文可推断。更准确地说，证据1和2支持LLM在噪声/错误文档下表现不佳，但“难以识别和纠正”在证据中未明确，因此部分支持。"
+        },
+        {
+          "claim": "真拒答（确实无证据）与误拒答（有证据但未识别）的区分需要依赖评估器的置信度判断。",
+          "verdict": "PARTIAL",
+          "reason": "标准答案提到区分真/误拒答用于评估，但来源论文中并未明确将拒答分为真/误拒答，也未说依赖评估器置信度。CRAG的评估器用于检索质量，而非拒答类型。因此该论断部分正确但不完整。"
+        },
+        {
+          "claim": "完整处理链为：先评估检索证据的相关性（RGB的负向拒答能力）→ 若证据不足，触发CRAG的纠错动作（如知识搜索）→ 若评估不确定，则采用Ambiguous策略结合多种知识来源，避免武断拒答或错误回答。",
+          "verdict": "PARTIAL",
+          "reason": "该链条整合了RGB和CRAG，但顺序和逻辑有偏差：RGB的负向拒答是评估指标，而非系统动作；CRAG的评估器先于拒答决策，且Incorrect时触发纠错，Ambiguous时结合。标准答案强调系统侧评估与纠错，评估时区分真/误拒答。模型回答的链条基本合理，但将RGB的负向拒答作为第一步不准确，因为RGB是评估能力，不是处理步骤。因此部分正确。"
+        }
+      ],
+      "overall": "PARTIAL",
+      "score": 75
+    }
+  },
+  {
+    "question_id": "unanswerable_01",
+    "question": "量子退火在组合优化中的应用有哪些最新进展?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。",
+          "verdict": "REFUSE",
+          "reason": "模型回答声称无法回答，但标准答案和来源论文中提供了关于量子退火在组合优化中应用的最新进展的相关证据（尽管来源论文内容混杂，但至少包含可引用的信息）。模型未尝试使用任何提供的证据，直接拒绝回答，属于错误。此外，来源论文证据与问题主题不完全匹配，但模型未进行任何分析或说明，因此该论断无法被支持。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_01",
+    "question": "量子退火在组合优化中的应用有哪些最新进展?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容主要涉及检索增强生成（RAG）的模块化框架、检索器类型对比、开放域问答模型性能以及信息整合中的错误类型，未包含任何关于量子退火在组合优化中应用进展的信息。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "SUPPORT",
+          "reason": "提供的来源论文证据均与RAG、开放域问答、信息整合相关，未涉及量子退火或组合优化，因此模型拒绝回答是合理的。"
+        },
+        {
+          "claim": "检索内容主要涉及检索增强生成（RAG）的模块化框架、检索器类型对比、开放域问答模型性能以及信息整合中的错误类型",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据确实包含RAG模块化、检索器对比、问答模型性能表及信息整合错误示例，与模型描述一致。"
+        },
+        {
+          "claim": "未包含任何关于量子退火在组合优化中应用进展的信息",
+          "verdict": "SUPPORT",
+          "reason": "所有提供的证据均未提及量子退火或组合优化，模型判断正确。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 100
+    }
+  },
+  {
+    "question_id": "unanswerable_02",
+    "question": "二型糖尿病的最新治疗指南是什么?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文中并未提供关于二型糖尿病治疗指南的任何信息，模型直接拒绝回答，但问题本身是合理的，且标准答案为空，模型应尝试基于常识或明确说明缺乏资料，而非简单拒绝。该论断未得到来源论文支持，且未提供任何有效信息。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_02",
+    "question": "二型糖尿病的最新治疗指南是什么?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文中并未提供关于二型糖尿病治疗指南的任何信息，模型回答声称无法回答，但问题本身是医学知识问题，与提供的检索材料无关，模型应基于自身知识回答，而非依赖不相关的材料。该回答回避了问题，未提供任何有效信息，属于错误回答。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_03",
+    "question": "区块链共识机制的主要技术方案有哪些?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。",
+          "verdict": "REFUSE",
+          "reason": "模型回答声称无法回答，但标准答案和来源论文中并未提供关于区块链共识机制的任何信息，且问题本身与提供的证据无关，模型应基于自身知识回答，而非依赖无关材料。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_03",
+    "question": "区块链共识机制的主要技术方案有哪些?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文均未涉及区块链共识机制，但模型直接拒绝回答，未提供任何相关信息，且问题本身有明确答案，模型应基于常识或知识回答，而非依赖给定材料。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_04",
+    "question": "AlphaFold 是如何预测蛋白质三维结构的?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文中包含了关于AlphaFold预测蛋白质三维结构的详细描述，模型回答拒绝回答，未提供任何信息，属于错误。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_04",
+    "question": "AlphaFold 是如何预测蛋白质三维结构的?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文中包含了关于AlphaFold预测蛋白质三维结构的详细描述，模型回答声称无法回答，与材料内容不符。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_05",
+    "question": "2024 年巴黎奥运会金牌榜的前十名是哪些国家?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。检索内容中未提及2024年巴黎奥运会金牌榜的相关信息，仅涉及RAG系统评测、负面拒绝、信息整合等实验内容 [1][2][3][4][5]。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据均为RAG系统评测、负面拒绝、信息整合等实验内容，未包含2024年巴黎奥运会金牌榜信息。"
+        },
+        {
+          "claim": "检索内容中未提及2024年巴黎奥运会金牌榜的相关信息",
+          "verdict": "SUPPORT",
+          "reason": "所有证据均与奥运会金牌榜无关，仅涉及其他实验数据。"
+        },
+        {
+          "claim": "仅涉及RAG系统评测、负面拒绝、信息整合等实验内容",
+          "verdict": "SUPPORT",
+          "reason": "证据1-5均描述RAG相关实验，未涉及奥运会金牌榜。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 100
+    }
+  },
+  {
+    "question_id": "unanswerable_05",
+    "question": "2024 年巴黎奥运会金牌榜的前十名是哪些国家?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。",
+          "verdict": "REFUSE",
+          "reason": "标准答案为空，但问题本身是事实性问题，且来源论文中未提供2024年巴黎奥运会金牌榜信息，模型拒绝回答是合理的，但作为对问题的回答，它没有提供任何信息，因此无法被来源论文支持。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_06",
+    "question": "固态电池与液态锂电池相比有哪些优劣势?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。检索内容中未包含关于固态电池与液态锂电池优劣势的相关信息。[1][2][3][4][5]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "SUPPORT",
+          "reason": "模型回答明确表示检索内容中未包含相关信息，且提供的来源论文证据均为检索系统性能或无关内容，确实不包含固态电池与液态锂电池的对比信息。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 100
+    }
+  },
+  {
+    "question_id": "unanswerable_06",
+    "question": "固态电池与液态锂电池相比有哪些优劣势?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容中未包含关于固态电池与液态锂电池优劣势的任何信息。[1][2][3][4][5]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "SUPPORT",
+          "reason": "模型明确表示检索内容中未包含关于固态电池与液态锂电池优劣势的任何信息，且提供的来源论文证据均为检索系统性能或无关内容，确实未包含该问题的答案。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 100
+    }
+  },
+  {
+    "question_id": "unanswerable_07",
+    "question": "影响比特币长期价格走势的主要因素有哪些?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文中包含了关于比特币长期价格走势影响因素的相关证据，模型回答拒绝回答，未提供任何论断，且未引用任何材料支持其拒绝，属于错误回应。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_07",
+    "question": "影响比特币长期价格走势的主要因素有哪些?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容仅涉及RAG系统性能评估（如CRUD-RAG基准中的模型得分）和长上下文语言模型的位置效应（如“Lost in the Middle”），未提及比特币或任何加密货币价格影响因素。[1][2][3][4][5]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "SUPPORT",
+          "reason": "标准答案为空，来源论文证据均为RAG系统性能评估和长上下文位置效应，未涉及比特币价格影响因素，因此模型拒绝回答是合理的。"
+        },
+        {
+          "claim": "检索内容仅涉及RAG系统性能评估和长上下文语言模型的位置效应",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据1-5确实均为RAG基准得分和位置效应相关数据，未提及比特币或加密货币。"
+        },
+        {
+          "claim": "未提及比特币或任何加密货币价格影响因素",
+          "verdict": "SUPPORT",
+          "reason": "所有提供的证据均与比特币无关，模型正确识别了信息不相关。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 95
+    }
+  },
+  {
+    "question_id": "unanswerable_08",
+    "question": "气候变化对粮食安全的传导机制是什么?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文中包含了关于气候变化对粮食安全传导机制的相关内容（如证据2提到极端天气对大豆的影响），模型拒绝回答是不正确的。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_08",
+    "question": "气候变化对粮食安全的传导机制是什么?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容主要涉及体育消费券、美国大豆期货、中沙关系以及生成式搜索引擎的引用精度评估，未包含气候变化对粮食安全传导机制的相关信息。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "SUPPORT",
+          "reason": "标准答案为空，且提供的来源论文证据均与气候变化和粮食安全无关，模型正确指出无法回答。"
+        },
+        {
+          "claim": "检索内容主要涉及体育消费券、美国大豆期货、中沙关系以及生成式搜索引擎的引用精度评估",
+          "verdict": "SUPPORT",
+          "reason": "来源论文证据确实包含这些主题，与气候变化和粮食安全无关。"
+        },
+        {
+          "claim": "未包含气候变化对粮食安全传导机制的相关信息",
+          "verdict": "SUPPORT",
+          "reason": "所有证据均不涉及气候变化与粮食安全的传导机制，模型判断准确。"
+        }
+      ],
+      "overall": "SUPPORT",
+      "score": 100
+    }
+  },
+  {
+    "question_id": "unanswerable_09",
+    "question": "中国八大菜系各自的代表菜分别是什么?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。",
+          "verdict": "REFUSE",
+          "reason": "模型直接拒绝回答，但问题本身是常识性知识，且标准答案存在，模型应提供答案而非拒绝。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_09",
+    "question": "中国八大菜系各自的代表菜分别是什么?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。检索内容中未包含关于中国八大菜系及其代表菜的任何信息。[1][2][3][4][5]",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文中明确包含中国八大菜系及其代表菜的信息，模型声称无法回答与事实不符。"
+        },
+        {
+          "claim": "检索内容中未包含关于中国八大菜系及其代表菜的任何信息",
+          "verdict": "REFUSE",
+          "reason": "来源论文证据中包含了相关数据或内容，模型错误地声称检索内容缺失。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_10",
+    "question": "大推力运载火箭的燃料选择主要有哪些?",
+    "strategy": "cot",
+    "strategy_label": "纯 CoT",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文中并未提供关于大推力运载火箭燃料选择的信息，但模型回答声称无法回答，实际上问题本身是常识性知识，且标准答案为空，但模型未尝试给出任何基于常识或论文的答案，因此该论断不成立。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  },
+  {
+    "question_id": "unanswerable_10",
+    "question": "大推力运载火箭的燃料选择主要有哪些?",
+    "strategy": "cot_cite",
+    "strategy_label": "CoT + 证据引用",
+    "answer": "无法从给定材料中回答。",
+    "eval": {
+      "claims": [
+        {
+          "claim": "无法从给定材料中回答。",
+          "verdict": "REFUSE",
+          "reason": "标准答案和来源论文中并未提供关于大推力运载火箭燃料选择的信息，但模型回答声称无法回答，实际上问题本身是常识性知识，且标准答案为空，但模型未尝试基于常识回答，也未引用任何来源，因此该论断无法被来源论文支持，且回避了问题。"
+        }
+      ],
+      "overall": "REFUSE",
+      "score": 0
+    }
+  }
+]

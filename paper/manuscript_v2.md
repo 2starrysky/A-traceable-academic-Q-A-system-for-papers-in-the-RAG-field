@@ -8,13 +8,13 @@ Retrieval-Augmented Generation (RAG) has become a standard paradigm for groundin
 
 This gap matters because many real-world applications --- legal research, medical literature review, academic paper assistance --- operate on small, curated knowledge bases where users demand precise source attribution, not just topical relevance. In such settings, the standard assumption that "hybrid retrieval always outperforms dense retrieval" or "larger Top-K always helps" may not hold, yet empirical data is scarce.
 
-We present an empirical study that systematically compares retrieval and generation configurations for a **traceable academic Q&A system** over a curated knowledge base of 12 RAG research papers. Our study makes three contributions:
+We present an empirical study that systematically compares retrieval and generation configurations for a **traceable academic Q&A system** over a curated knowledge base of 12 RAG research papers. We report three key findings:
 
-1. **Experimental**: We compare Dense, Hybrid (RRF fusion), and Hybrid+Reranker configurations on both retrieval quality (Hit@K, MRR) and generation quality (citation accuracy, refusal behavior), including a负 result where BM25 entirely fails on Chinese semantic queries.
+1. **Retrieval configuration**: Dense retrieval significantly outperforms BM25 on Chinese semantic queries, while Hybrid retrieval recovers missed Dense results at slight ranking cost. Reranking improves citation accuracy but incurs substantial latency on CPU. We also document a negative result where BM25 entirely fails on Chinese semantic queries.
 
-2. **Evaluation**: We adopt a **dual-layer citation accuracy** standard (paper + section match) as the primary metric, complemented by a four-class refusal taxonomy (true refusal, false refusal, answered correctly, should have refused) and oracle retrieval attribution to separate retrieval errors from generation errors.
+2. **Evaluation design**: A **dual-layer citation accuracy** standard (paper + section match) serves as the primary metric, complemented by a four-class refusal taxonomy (true refusal, false refusal, answered correctly, should have refused) and oracle retrieval attribution to separate retrieval errors from generation errors.
 
-3. **Analytical**: We provide layered error attribution across the full pipeline (parsing → chunking → retrieval → fusion → reranking → generation → citation), revealing that generation conservatism dominates errors in the dense baseline, while BM25 fails primarily at retrieval.
+3. **Error characterization**: Layered error attribution across the full pipeline (parsing → chunking → retrieval → fusion → reranking → generation → citation) reveals that generation conservatism dominates errors in the dense baseline, while BM25 fails primarily at retrieval.
 
 We also explore the impact of **prompt engineering** on generation quality through a controlled ablation study, showing that a simple constraint instruction ("answer only from retrieved content") yields the largest single improvement in supported-answer rate.
 
@@ -26,13 +26,13 @@ RAG combines parametric memory (LLMs) with non-parametric memory (external retri
 
 ### 2.2 Retrieval Methods
 
-**Dense retrieval** uses neural encoders to map text into continuous vector spaces, retrieving via approximate nearest neighbor search. DPR \cite{karpukhin2020dpr} demonstrated that dense retrieval outperforms BM25 by 9--19\% on open-domain QA benchmarks, though the authors caution that results on large-scale Wikipedia may not transfer to small, domain-specific corpora.
+**Dense retrieval** uses neural encoders to map text into continuous vector spaces, retrieving via approximate nearest neighbor search. DPR \cite{karpukhin2020dpr} demonstrated that dense retrieval outperforms BM25 by 9--19\% on open-domain QA benchmarks, though the authors caution that results on large-scale Wikipedia may not transfer to small, domain-specific corpora. HyDE \cite{gao2022hyde} proposed zero-shot dense retrieval by generating a hypothetical document from the query before encoding, eliminating the need for relevance labels.
 
 **Sparse retrieval** (BM25) \cite{robertson2009bm25} relies on term frequency and inverse document frequency for lexical matching. While interpretable and fast, it fails on semantic paraphrases.
 
 **Hybrid retrieval** combines sparse and dense methods, typically via Reciprocal Rank Fusion (RRF) \cite{gao2024survey}. The intuition is that BM25 captures exact keyword matches while dense retrieval captures semantic similarity, providing complementary coverage.
 
-**Reranking** applies a cross-encoder to score query-document pairs after initial retrieval. Lost in the Middle \cite{liu2023litm} showed that LLM performance degrades when relevant information appears in the middle of long contexts, motivating reranking to push relevant passages to the top. ColBERT \cite{khattab2020colbert} proposed late interaction as a more efficient alternative.
+**Reranking** applies a cross-encoder to score query-document pairs after initial retrieval. Lost in the Middle \cite{liu2023litm} showed that LLM performance degrades when relevant information appears in the middle of long contexts, motivating reranking to push relevant passages to the top. ColBERT \cite{khattab2020colbert} proposed late interaction as a more efficient alternative. CRAG \cite{yan2024crag} introduced corrective retrieval with a lightweight evaluator that triggers different actions based on retrieval confidence.
 
 ### 2.3 RAG Evaluation
 
@@ -66,10 +66,10 @@ We process 12 RAG-related papers from PDF to structured documents using pypdf, e
 
 We evaluate four configurations:
 
-- **Dense**: bge-m3 embeddings (1024-dim) indexed with FAISS IndexFlatIP. Retrieves by cosine similarity.
-- **BM25**: rank-bm25 with tiktoken tokenization. Retrieves by term frequency scoring.
-- **Hybrid**: Dense + BM25 combined via RRF (k=60). Each retriever returns top-10 candidates; RRF merges and re-ranks to top-5.
-- **Hybrid+Reranker**: Hybrid retrieves top-20, then bge-reranker-v2-m3 (cross-encoder) re-ranks to top-5.
+- **Dense**: bge-m3 \cite{xiao2023bge} embeddings (1024-dim) indexed with FAISS \cite{johnson2019faiss} IndexFlatIP. Retrieves by cosine similarity.
+- **BM25**: rank-bm25 with tiktoken tokenization. Retrieves by BM25Okapi scoring with IDF weighting and length normalization \cite{robertson2009bm25}.
+- **Hybrid**: Dense + BM25 combined via RRF (k=60). Each retriever returns top-2$\times$k candidates; RRF merges and re-ranks to top-k.
+- **Hybrid+Reranker**: Hybrid retrieves top-20, then bge-reranker-v2-m3 \cite{xiao2023bge} (cross-encoder) re-ranks to top-5.
 
 All configurations share the same interface: `search(query, top_k) → [RetrievalHit]`, enabling plug-and-play comparison.
 
@@ -81,7 +81,7 @@ The generation prompt enforces five constraints: (1) answer only from provided c
 
 ### 4.1 Knowledge Base
 
-We curate 12 papers covering RAG systems (Lewis et al. 2020, Gao et al. 2024 survey), retrieval methods (DPR, HyDE, ColBERT, CRAG, FiD), evaluation (Ragas, CRUD-RAG, RGB, Verifiability), and context analysis (Lost in the Middle). These represent the core literature of the RAG field and provide diverse question types for evaluation.
+We curate 12 papers covering RAG systems (Lewis et al. 2020, Gao et al. 2024 survey), retrieval methods (DPR \cite{karpukhin2020dpr}, HyDE \cite{gao2022hyde}, ColBERT \cite{khattab2020colbert}, CRAG \cite{yan2024crag}, FiD \cite{izacard2020fid}), evaluation (Ragas \cite{es2025ragas}, CRUD-RAG \cite{lyu2024crudrag}, RGB \cite{chen2023rgb}, Verifiability \cite{liu2023verifiability}), and context analysis (Lost in the Middle \cite{liu2023litm}). These represent the core literature of the RAG field and provide diverse question types for evaluation.
 
 ### 4.2 Evaluation Set
 
@@ -136,9 +136,9 @@ Table \ref{tab:rq1} presents the main results comparing four retrieval configura
 
 **Key findings:**
 
-**Dense significantly outperforms BM25** (E1 vs E2). BM25 achieves Hit@1=0.00 on our Chinese semantic query set, confirming that lexical matching fundamentally fails for semantic questions on Chinese text. This is a负 result but an important one: it demonstrates that BM25 should not be used as a baseline for Chinese-language RAG systems without semantic preprocessing.
+**Dense significantly outperforms BM25** (E1 vs E2). BM25 achieves Hit@1=0.00 on our Chinese semantic query set, confirming that lexical matching fundamentally fails for semantic questions on Chinese text. This is a negative result but an important one: it demonstrates that BM25 should not be used as a baseline for Chinese-language RAG systems without semantic preprocessing.
 
-**Hybrid retrieval enhances recall but slightly degrades ranking** (E3 vs E1). While E3's overall Hit@1 (0.650) is lower than E1 (0.700), a per-question analysis reveals that E3 recovers 10 out of 11 questions that E1 fails to retrieve --- BM25's exact keyword matches补了 Dense's blind spots on English terms and numeric tokens. However, BM25 noise pushes some correctly-ranked Dense results down, explaining the slight MRR decrease.
+**Hybrid retrieval enhances recall but slightly degrades ranking** (E3 vs E1). While E3's overall Hit@1 (0.650) is lower than E1 (0.700), a per-question analysis reveals that E3 recovers 10 out of 11 questions that E1 fails to retrieve --- BM25's exact keyword matches complement Dense's blind spots on English terms and numeric tokens. However, BM25 noise pushes some correctly-ranked Dense results down, explaining the slight MRR decrease.
 
 **Reranking improves citation accuracy and reduces false refusal, at high latency cost** (E4 vs E3). The reranker pushes correct chunks forward (67 moved up, 31 moved down across 40 answerable questions), reducing false refusal from 0.425 to 0.350 and achieving the highest citation accuracy (0.962). However, the cross-encoder adds ~306 seconds per question on CPU, making it impractical without GPU acceleration.
 
@@ -260,7 +260,7 @@ E7 provides the first systematic quantification of prompt components in our RAG 
 
 2. **Single LLM**: All experiments use DeepSeek deepseek-chat. Different LLMs may exhibit different conservatism levels and citation behaviors.
 
-3. **LLM-as-judge variability**: E7 uses LLM-based evaluation, which shows ~5\% variance across runs (same zero-shot condition: 36\% vs 30\% Support Rate in different runs). Results should be interpreted with this noise margin.
+3. **LLM-as-judge variability**: E7 uses LLM-based evaluation, which shows $\sim$5\% variance across runs (same zero-shot condition: 36\% vs 30\% Support Rate in different runs). Results should be interpreted with this noise margin.
 
 4. **Example domain shift**: E7 few-shot examples are hand-crafted general RAG examples, not drawn from the 12-paper knowledge base. This may introduce domain mismatch.
 
@@ -280,7 +280,7 @@ We presented an empirical study comparing retrieval and generation configuration
 
 **Prompt engineering**: A simple constraint instruction yields the largest single improvement in generation quality (+26pp Support Rate), outperforming CoT and few-shot techniques.
 
-Our three contributions --- systematic retrieval comparison, dual-layer citation evaluation with oracle attribution, and layered error analysis --- provide empirical evidence for designing traceable RAG systems in small-scale academic settings. Future work includes scaling to larger knowledge bases, multi-LLM comparison, and GPU-accelerated reranking for real-time deployment.
+Our findings --- systematic retrieval comparison, dual-layer citation evaluation with oracle attribution, and layered error analysis --- provide empirical evidence for designing traceable RAG systems in small-scale academic settings. Future work includes scaling to larger knowledge bases, multi-LLM comparison, and GPU-accelerated reranking for real-time deployment.
 
 ## References
 

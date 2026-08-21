@@ -1,0 +1,10 @@
+﻿experiment,experiment_name,strategy,total_questions,support_rate,partial_rate,refuse_rate,error_rate,avg_score
+E7.3,示例选择策略,few_shot_2_random,50,42.0,16.0,42.0,0.0,54.8
+E7.3,示例选择策略,few_shot_2_similarity,50,40.0,14.0,46.0,0.0,50.8
+E7.3,示例选择策略,few_shot_2_topic,50,38.0,16.0,46.0,0.0,51.9
+E7.4,约束指令,zero_shot,50,36.0,16.0,48.0,0.0,50.3
+E7.4,约束指令,constrained,50,62.0,12.0,26.0,0.0,70.2
+E7.5,CoT + 证据引用,cot,50,40.0,20.0,40.0,0.0,55.4
+E7.5,CoT + 证据引用,cot_cite,50,46.0,18.0,36.0,0.0,61.8
+E7.6,最优组合 vs 基线,zero_shot,50,30.0,18.0,52.0,0.0,46.1
+E7.6,最优组合 vs 基线,optimal,50,60.0,20.0,20.0,0.0,76.8
